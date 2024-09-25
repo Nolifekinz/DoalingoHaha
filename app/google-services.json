@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "843682319642",
+    "project_id": "dualingo-49314",
+    "storage_bucket": "dualingo-49314.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:843682319642:android:766bf4a4a71119b86c30a3",
+        "android_client_info": {
+          "package_name": "com.example.dualingo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXMgzdxqEp_Qf6FNwfaJ1zBPIHtObI0oc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
