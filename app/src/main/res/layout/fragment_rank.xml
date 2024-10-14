@@ -1,79 +1,39 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/backgroundapp"
-    tools:context=".RankFragment">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Phần hiển thị các rank theo chiều ngang -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRanks"
         android:layout_width="match_parent"
-        android:layout_height="143dp"
-        android:background="@drawable/backgroundappbot"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp" />
 
-        <ImageView
-            android:id="@+id/imgrank1"
-            android:layout_width="55dp"
-            android:layout_height="61dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imgrank2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/test" />
+    <!-- Thời gian kết thúc mùa giải -->
+    <TextView
+        android:id="@+id/tvSeasonEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Giải đấu kết thúc sau: 3 ngày 9 giờ"
+        android:textSize="16sp"
+        android:textColor="#000000" />
 
-        <ImageView
-            android:id="@+id/imgrank2"
-            android:layout_width="55dp"
-            android:layout_height="61dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imgrank5"
-            app:layout_constraintTop_toTopOf="parent" />
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000"
+        android:layout_marginVertical="16dp"/>
 
-        <ImageView
-            android:id="@+id/imgrank5"
-            android:layout_width="55dp"
-            android:layout_height="61dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <!-- Danh sách người dùng có cùng bậc rank -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvUsers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
 
-        <ImageView
-            android:id="@+id/imgrank3"
-            android:layout_width="55dp"
-            android:layout_height="61dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imgrank5"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="55dp"
-            android:layout_height="61dp"
-            android:layout_marginStart="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imgrank3"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textRank"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="Giải đấu kết thúc sau: ..."
-            android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imgrank5" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

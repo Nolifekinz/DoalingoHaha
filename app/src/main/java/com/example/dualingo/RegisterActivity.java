@@ -68,7 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onSuccess(AuthResult authResult) {
                         FirebaseUser user = authResult.getUser();
                         Toast.makeText(getApplicationContext(), "Success  "+user.getUid()+"   "+user.getEmail().substring(0, user.getEmail().indexOf('@')), Toast.LENGTH_SHORT).show();
-                        User userModel = new User(user.getUid(), user.getEmail(), user.getEmail().substring(0, user.getEmail().indexOf('@')));
+                        User userModel = new User(user.getUid(), user.getEmail(), user.getEmail().substring(0, user.getEmail().indexOf('@')), 0L, 0L);
                         FirebaseFirestore.getInstance().collection("users")
                                 .document(user.getUid())
                                 .set(userModel)

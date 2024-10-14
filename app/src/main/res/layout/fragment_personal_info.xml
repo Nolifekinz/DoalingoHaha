@@ -45,7 +45,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_gravity="center"
-                        app:cardCornerRadius="90dp"
+                        app:cardCornerRadius="50dp"
                         app:cardElevation="0dp">
 
                         <ImageView
@@ -196,41 +196,13 @@
                 android:orientation="vertical">
 
                 <Button
-                    android:id="@+id/btnConnect"
+                    android:id="@+id/btnAddFriend"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="18dp"
                     android:background="@drawable/progress_exercice"
                     android:fontFamily="@font/duolingo_medium"
-                    android:text="Kết nối"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tagSettings" />
-
-                <Button
-                    android:id="@+id/btnChangeAvatar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/progress_exercice"
-                    android:fontFamily="@font/duolingo_medium"
-                    android:text="Ảnh đại diện"
-                    android:textAlignment="center"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tagSettings" />
-
-                <Button
-                    android:id="@+id/btnDisconnect"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/progress_exercice"
-                    android:fontFamily="@font/duolingo_medium"
-                    android:text="Ngắt kết nối"
+                    android:text="Kết bạn"
                     android:textAlignment="center"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"

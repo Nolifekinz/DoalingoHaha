@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.dualingo.databinding.ActivityMainBinding;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,9 +22,11 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
 
-        Intent intent=new Intent(MainActivity.this,LoginActivity.class);
-        startActivity(intent);
-
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent intent=new Intent(MainActivity.this,LoginActivity.class);
+            startActivity(intent);
+        }
+        replaceFragment(new HomeFragment());
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new RankFragment());
             } else if (itemId == R.id.avata) {
                 replaceFragment(new PersonalInfoFragment());
+            } else if (itemId == R.id.duoal) {
+                replaceFragment(new TestFragment());
             }
 
             return true;

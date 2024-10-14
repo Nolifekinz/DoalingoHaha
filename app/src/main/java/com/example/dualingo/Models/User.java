@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class User {
-    public User(String id, String email, String username) {
+    public User(String id, String email, String username, Long exp, Long rank) {
         this.username = username;
         this.id = id;
         this.email = email;
+        this.exp = exp;
+        this.rank = rank;
+    }
+    public User() {
     }
 
     public String getId() {
@@ -58,8 +62,25 @@ public class User {
         this.followingList = folowingList;
     }
 
+    public Long getExp() {
+        return exp;
+    }
+
+    public void setExp(Long exp) {
+        this.exp = exp;
+    }
+
+    public Long getRank() {
+        return rank;
+    }
+
+    public void setRank(Long rank) {
+        this.rank = rank;
+    }
+
     String id="",username="",email="",profilePic="";
     List<String> followerList = new ArrayList<>();
     List<String> followingList = new ArrayList<>();
-
+    Long exp = 0L;
+    Long rank = 0L;
 }

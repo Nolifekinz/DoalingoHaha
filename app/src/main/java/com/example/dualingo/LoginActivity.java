@@ -25,10 +25,6 @@ public class LoginActivity extends AppCompatActivity {
         binding= ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            finish();
-        }
-
         binding.btnLogin.setOnClickListener(view -> login());
 
         binding.btnGotoRegister.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
