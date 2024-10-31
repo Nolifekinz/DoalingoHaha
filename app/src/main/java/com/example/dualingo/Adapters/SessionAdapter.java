@@ -35,14 +35,14 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
     @Override
     public void onBindViewHolder(@NonNull SessionViewHolder holder, int position) {
         Session session = sessionList.get(position);
-        holder.tvSessionTitle.setText(session.getSessionTitle());
+//        holder.tvSessionTitle.setText(session.getSessionTitle());
 
         // Thiết lập RecyclerView con cho Lecture
-        LectureAdapter lectureAdapter = new LectureAdapter(context, session.getLectures(), lecture -> {
-            // Xử lý khi click vào lecture
-        });
+//        LectureAdapter lectureAdapter = new LectureAdapter(context, session.getLectures(), lecture -> {
+//            // Xử lý khi click vào lecture
+//        });
         holder.rvLectures.setLayoutManager(new GridLayoutManager(context, 2));
-        holder.rvLectures.setAdapter(lectureAdapter);
+//        holder.rvLectures.setAdapter(lectureAdapter);
     }
 
     @Override

@@ -78,9 +78,18 @@ public class User {
         this.rank = rank;
     }
 
+    public List<String> getOpponentList() {
+        return opponentList;
+    }
+
+    public void setOpponentList(List<String> opponentList) {
+        this.opponentList = opponentList;
+    }
+
     String id="",username="",email="",profilePic="";
     List<String> followerList = new ArrayList<>();
     List<String> followingList = new ArrayList<>();
+    List<String> opponentList = new ArrayList<>();
     Long exp = 0L;
     Long rank = 0L;
 }

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@android:color/white"
+    android:elevation="2dp">
+
+    <!-- Từ tiếng Anh -->
+    <TextView
+        android:id="@+id/tvEnglishWord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="English word"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <!-- Nghĩa tiếng Việt -->
+    <TextView
+        android:id="@+id/tvPronunciation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvWordType"
+        android:layout_marginTop="4dp"
+        android:text="Cách phát âm: /ˈæp.əl/"
+        android:textColor="@color/gray"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvVietnameseMeaning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nghĩa: meaning"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:layout_below="@id/tvEnglishWord"
+        android:layout_marginTop="4dp"/>
+
+    <!-- Loại từ -->
+    <TextView
+        android:id="@+id/tvWordType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loại từ: loai tu"
+        android:textSize="14sp"
+        android:textColor="@color/gray"
+        android:layout_below="@id/tvVietnameseMeaning"
+        android:layout_marginTop="2dp" />
+
+    <!-- Cách phát âm -->
+
+    <!-- Nút loa -->
+    <ImageView
+        android:id="@+id/ivSpeak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_volume_up"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:padding="6dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/speak"/>
+
+    <!-- Phần ví dụ (ẩn mặc định) -->
+    <TextView
+        android:id="@+id/tvExample"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:visibility="gone"
+        android:layout_below="@id/tvPronunciation"
+        android:paddingTop="4dp"
+        android:text="Ví dụ: " />
+</RelativeLayout>

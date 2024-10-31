@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.dualingo.Models.Rank;
 import com.example.dualingo.R;
 
@@ -33,7 +34,9 @@ public class RankAdapter extends RecyclerView.Adapter<RankAdapter.RankViewHolder
     public void onBindViewHolder(@NonNull RankViewHolder holder, int position) {
         Rank rank = rankList.get(position);
         holder.tvRank.setText(rank.getName());
-        // Load hình ảnh rank từ URL hoặc từ drawable
+        Glide.with(holder.itemView.getContext())
+                .load(rank.getImageUrl())
+                .into(holder.imgRank);
     }
 
     @Override

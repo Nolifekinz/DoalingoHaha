@@ -1,31 +1,37 @@
 package com.example.dualingo.Models;
 
 public class Lecture {
+    private String idLecture;
     private String title;
-    private int imageResId; // ID của resource hình ảnh (ví dụ R.drawable.sample_image)
+    private int imageResId;
 
-    public Lecture(String title, int imageResId) {
-        this.title = title;
-        this.imageResId = imageResId;
+    public String getIdLecture() {
+        return idLecture;
     }
 
-    // Getter cho tiêu đề
+    public void setIdLecture(String idLecture) {
+        this.idLecture = idLecture;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    // Setter cho tiêu đề
     public void setTitle(String title) {
         this.title = title;
     }
 
-    // Getter cho resource ID của hình ảnh
     public int getImageResId() {
         return imageResId;
     }
 
-    // Setter cho resource ID của hình ảnh
     public void setImageResId(int imageResId) {
+        this.imageResId = imageResId;
+    }
+
+    public Lecture(String idLecture, String title, int imageResId) {
+        this.idLecture = idLecture;
+        this.title = title;
         this.imageResId = imageResId;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.dualingo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -98,7 +99,8 @@ public class HomeFragment extends Fragment {
         for (String word : selectedWords) {
             resultSentence.append(word).append(" ");
         }
-        // Kiểm tra kết quả hoặc hiển thị thông báo
+        Intent intent= new Intent(getActivity(), IntroductionActivity.class);
+        startActivity(intent);
     }
 
     @Override

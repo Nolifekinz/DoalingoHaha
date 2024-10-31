@@ -45,7 +45,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
 
     class UserViewHolder extends RecyclerView.ViewHolder {
         TextView tvPosition, tvUserName, tvScore;
-        ImageView imgUser, imgStar;
+        ImageView imgUser;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);

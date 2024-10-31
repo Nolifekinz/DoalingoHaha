@@ -40,8 +40,8 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
     @Override
     public void onBindViewHolder(@NonNull LectureViewHolder holder, int position) {
         Lecture lecture = lectureList.get(position);
-        holder.tvLectureTitle.setText(lecture.getTitle());
-        holder.imgLecture.setImageResource(lecture.getImageResId()); // Assuming you have an image resource ID
+//        holder.tvLectureTitle.setText(lecture.getTitle());
+//        holder.imgLecture.setImageResource(lecture.getImageResId()); // Assuming you have an image resource ID
 
         holder.itemView.setOnClickListener(v -> listener.onLectureClick(lecture));
     }

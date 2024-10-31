@@ -42,17 +42,17 @@ public class TestFragment extends Fragment {
     private void initSessionList() {
         sessionList = new ArrayList<>();
 
-        // Tạo lecture
-        List<Lecture> lectures1 = new ArrayList<>();
-        lectures1.add(new Lecture("Lecture 1", R.drawable.mail_icon));
-        lectures1.add(new Lecture("Lecture 2", R.drawable.coin));
-
-        List<Lecture> lectures2 = new ArrayList<>();
-        lectures2.add(new Lecture("Lecture 3", R.drawable.mail_icon));
-        lectures2.add(new Lecture("Lecture 4", R.drawable.coin));
-
-        // Tạo session
-        sessionList.add(new Session("Session 1", lectures1));
-        sessionList.add(new Session("Session 2", lectures2));
+//        // Tạo lecture
+//        List<Lecture> lectures1 = new ArrayList<>();
+//        lectures1.add(new Lecture("Lecture 1", R.drawable.mail_icon));
+//        lectures1.add(new Lecture("Lecture 2", R.drawable.coin));
+//
+//        List<Lecture> lectures2 = new ArrayList<>();
+//        lectures2.add(new Lecture("Lecture 3", R.drawable.mail_icon));
+//        lectures2.add(new Lecture("Lecture 4", R.drawable.coin));
+//
+//        // Tạo session
+//        sessionList.add(new Session("Session 1", lectures1));
+//        sessionList.add(new Session("Session 2", lectures2));
     }
 }
