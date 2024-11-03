@@ -5,7 +5,7 @@ import java.util.List;
 public class Session {
     private String idSession;
     private String sessionTitle;
-    private String imgUrl;
+    private int imgUrl;
     private List<Lecture> lectures;
 
     public String getIdSession() {
@@ -24,11 +24,11 @@ public class Session {
         this.sessionTitle = sessionTitle;
     }
 
-    public String getImgUrl() {
+    public int getImgUrl() {
         return imgUrl;
     }
 
-    public void setImgUrl(String imgUrl) {
+    public void setImgUrl(int imgUrl) {
         this.imgUrl = imgUrl;
     }
 
@@ -40,7 +40,7 @@ public class Session {
         this.lectures = lectures;
     }
 
-    public Session(String idSession, String sessionTitle, String imgUrl, List<Lecture> lectures) {
+    public Session(String idSession, String sessionTitle, int imgUrl, List<Lecture> lectures) {
         this.idSession = idSession;
         this.sessionTitle = sessionTitle;
         this.imgUrl = imgUrl;

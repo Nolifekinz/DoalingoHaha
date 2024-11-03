@@ -1,15 +1,19 @@
 package com.example.dualingo.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dualingo.Adapters.LearningActivity.FillBlank;
 import com.example.dualingo.Models.Session;
 import com.example.dualingo.R;
 
@@ -28,21 +32,25 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
     @NonNull
     @Override
     public SessionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_session, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_session, parent, false);
         return new SessionViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SessionViewHolder holder, int position) {
         Session session = sessionList.get(position);
-//        holder.tvSessionTitle.setText(session.getSessionTitle());
+        // Thiết lập ảnh chủ đề và tên chủ đề cho session
+        holder.tvSessionTitle.setText(session.getSessionTitle());
+        holder.image_session_title.setImageResource(session.getImgUrl());
 
         // Thiết lập RecyclerView con cho Lecture
-//        LectureAdapter lectureAdapter = new LectureAdapter(context, session.getLectures(), lecture -> {
-//            // Xử lý khi click vào lecture
-//        });
-        holder.rvLectures.setLayoutManager(new GridLayoutManager(context, 2));
-//        holder.rvLectures.setAdapter(lectureAdapter);
+        LectureAdapter lectureAdapter = new LectureAdapter(context, session.getLectures(), view -> {
+
+        });
+
+        // Kết nối adapter cho rv lecture
+        holder.rvLectures.setLayoutManager(new GridLayoutManager(context, 1));
+        holder.rvLectures.setAdapter(lectureAdapter);
     }
 
     @Override
@@ -53,10 +61,12 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
     public static class SessionViewHolder extends RecyclerView.ViewHolder {
         TextView tvSessionTitle;
         RecyclerView rvLectures;
+        ImageView image_session_title;
 
         public SessionViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvSessionTitle = itemView.findViewById(R.id.tvSession);
+            image_session_title = itemView.findViewById(R.id.image_session_title);
+            tvSessionTitle = itemView.findViewById(R.id.session_title);
             rvLectures = itemView.findViewById(R.id.rvLectures);
         }
     }

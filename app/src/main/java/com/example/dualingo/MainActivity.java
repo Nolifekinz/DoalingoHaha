@@ -28,12 +28,11 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        }
+//        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+//            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+//            startActivity(intent);
+//            return;
+//        }
 
         // Khởi tạo các fragment
         homeFragment = new HomeFragment();
@@ -59,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.train) {
                 switchFragment(vocabularyFragment);
             }
-
             return true;
         });
     }

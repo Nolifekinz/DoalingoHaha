@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,8 +41,10 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
     @Override
     public void onBindViewHolder(@NonNull LectureViewHolder holder, int position) {
         Lecture lecture = lectureList.get(position);
-//        holder.tvLectureTitle.setText(lecture.getTitle());
-//        holder.imgLecture.setImageResource(lecture.getImageResId()); // Assuming you have an image resource ID
+
+        // Thiết lập ảnh và tên cho bài học
+        holder.tvLectureTitle.setText(lecture.getTitle());
+        holder.imgLecture.setImageResource(lecture.getImageResId());
 
         holder.itemView.setOnClickListener(v -> listener.onLectureClick(lecture));
     }
@@ -52,13 +55,14 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
     }
 
     public static class LectureViewHolder extends RecyclerView.ViewHolder {
-        ImageButton imgLecture;
+        ImageView imgLecture;
         TextView tvLectureTitle;
 
         public LectureViewHolder(@NonNull View itemView) {
             super(itemView);
             imgLecture = itemView.findViewById(R.id.imgLecture);
             tvLectureTitle = itemView.findViewById(R.id.tvLectureTitle);
+
         }
     }
 }

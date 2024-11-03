@@ -1,38 +1,71 @@
-<!-- fragment_home.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_question"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Translate the following sentence:"
-        android:padding="16dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp"
+        android:weightSum="4">
 
+        <ImageView
+            android:id="@+id/flag_language"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/vietnam_flag"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/streak"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="50"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/duolingo_fontfamily"
+            android:gravity="center"
+            app:drawableStartCompat="@drawable/fire" />
+
+        <TextView
+            android:id="@+id/level"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="50"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/duolingo_fontfamily"
+            android:gravity="center"
+            app:drawableStartCompat="@drawable/crown" />
+        <ImageView
+            android:id="@+id/notify"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/notify"
+            android:scaleX="0.8"
+            android:scaleY="0.8"
+            android:layout_gravity="center"/>
+
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/resultRecyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:layout_gravity="center"
-        android:padding="16dp" />
+        android:id="@+id/rvSession"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-    <!-- Danh sách từ -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/wordRecyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:layout_gravity="center"
-        android:padding="16dp" />
-
-
-    <Button
-        android:id="@+id/submitButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_gravity="center"
-        android:padding="16dp"/>
 </LinearLayout>

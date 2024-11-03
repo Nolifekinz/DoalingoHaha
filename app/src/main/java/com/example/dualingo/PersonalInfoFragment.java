@@ -98,7 +98,7 @@ public class PersonalInfoFragment extends Fragment {
         setupImagePicker();  // Đảm bảo setup launcher ngay khi khởi tạo view
 
         binding.btnDeleteAccount.setOnClickListener(view1 -> logout());
-        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        //currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         getProfileDataFromFirebase(currentUserId);
 

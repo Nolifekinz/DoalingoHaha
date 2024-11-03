@@ -4,7 +4,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="16dp"
-    android:background="@drawable/word_background"
     android:text="Word"
     android:textSize="18sp"
     android:layout_margin="10dp"/>

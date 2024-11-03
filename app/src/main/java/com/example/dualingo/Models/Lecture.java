@@ -1,5 +1,7 @@
 package com.example.dualingo.Models;
 
+import android.content.Intent;
+
 public class Lecture {
     private String idLecture;
     private String title;

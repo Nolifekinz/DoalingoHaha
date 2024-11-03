@@ -3,17 +3,12 @@ package com.example.dualingo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.dualingo.databinding.ActivityLoginBinding;
-import com.example.dualingo.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
@@ -28,23 +23,22 @@ public class LoginActivity extends AppCompatActivity {
         binding.btnLogin.setOnClickListener(view -> login());
 
         binding.btnGotoRegister.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
-
-
     }
 
     void login() {
-        String email = binding.etUsername.getText().toString();
-        String password = binding.etPassword.getText().toString();
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(getApplicationContext(), "Sai định dạng email", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (password.length() < 6) {
-            Toast.makeText(getApplicationContext(), "Mật khẩu phải ít nhất 6 kí tự", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        loginWithFirebase(email, password);
+          finish();
+//        String email = binding.etUsername.getText().toString();
+//        String password = binding.etPassword.getText().toString();
+//        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+//            Toast.makeText(getApplicationContext(), "Sai định dạng email", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        if (password.length() < 6) {
+//            Toast.makeText(getApplicationContext(), "Mật khẩu phải ít nhất 6 kí tự", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        loginWithFirebase(email, password);
     }
 
     void loginWithFirebase(String email, String password) {
