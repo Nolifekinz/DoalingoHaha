@@ -33,7 +33,7 @@ public class TestFragment extends Fragment {
         // Thiết lập RecyclerView cho session
         recyclerView = view.findViewById(R.id.rvLectures);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1)); // 1 cột cho session
-        sessionAdapter = new SessionAdapter(getContext(), sessionList);
+        sessionAdapter = new SessionAdapter(getContext(), sessionList,null);
         recyclerView.setAdapter(sessionAdapter);
 
         return view;

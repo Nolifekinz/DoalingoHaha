@@ -17,7 +17,10 @@
         android:theme="@style/Theme.Dualingonee"
         tools:targetApi="31">
         <activity
-            android:name=".Adapters.LearningActivity.FillBlank"
+            android:name=".LearningActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LearningActivity.FillBlankActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
@@ -32,7 +35,7 @@
             android:name=".LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".Adapters.SplashScreen"
+            android:name=".SplashScreen"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>

@@ -19,10 +19,11 @@ import java.util.List;
 public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureViewHolder> {
     private Context context;
     private List<Lecture> lectureList;
+    private int sessionPosition;
     private OnLectureClickListener listener;
 
     public interface OnLectureClickListener {
-        void onLectureClick(Lecture lecture);
+        void onLectureClick(int sessionPosition , int lecturePosition);
     }
 
     public LectureAdapter(Context context, List<Lecture> lectureList, OnLectureClickListener listener) {
@@ -46,7 +47,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
         holder.tvLectureTitle.setText(lecture.getTitle());
         holder.imgLecture.setImageResource(lecture.getImageResId());
 
-        holder.itemView.setOnClickListener(v -> listener.onLectureClick(lecture));
+        holder.itemView.setOnClickListener(v -> listener.onLectureClick(sessionPosition,position));
     }
 
     @Override

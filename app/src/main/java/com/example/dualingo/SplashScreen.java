@@ -1,4 +1,4 @@
-package com.example.dualingo.Adapters;
+package com.example.dualingo;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
@@ -12,9 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
-import com.example.dualingo.MainActivity;
-import com.example.dualingo.R;
 
 public class SplashScreen extends AppCompatActivity {
 

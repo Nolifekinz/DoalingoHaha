@@ -1,19 +1,16 @@
 package com.example.dualingo.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dualingo.Adapters.LearningActivity.FillBlank;
 import com.example.dualingo.Models.Session;
 import com.example.dualingo.R;
 
@@ -23,10 +20,12 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
 
     private Context context;
     private List<Session> sessionList;
+    private LectureAdapter.OnLectureClickListener listener;
 
-    public SessionAdapter(Context context, List<Session> sessionList) {
+    public SessionAdapter(Context context, List<Session> sessionList,LectureAdapter.OnLectureClickListener listener) {
         this.context = context;
         this.sessionList = sessionList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -44,9 +43,7 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
         holder.image_session_title.setImageResource(session.getImgUrl());
 
         // Thiết lập RecyclerView con cho Lecture
-        LectureAdapter lectureAdapter = new LectureAdapter(context, session.getLectures(), view -> {
-
-        });
+        LectureAdapter lectureAdapter = new LectureAdapter(context, session.getLectures(), listener);
 
         // Kết nối adapter cho rv lecture
         holder.rvLectures.setLayoutManager(new GridLayoutManager(context, 1));
@@ -69,5 +66,6 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
             tvSessionTitle = itemView.findViewById(R.id.session_title);
             rvLectures = itemView.findViewById(R.id.rvLectures);
         }
+
     }
 }
