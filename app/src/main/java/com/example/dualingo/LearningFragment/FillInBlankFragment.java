@@ -8,12 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.example.dualingo.R;
 public class FillInBlankFragment extends Fragment {
 
 
-    Button btnback ;
+    ImageButton btnback ;
 
     public FillInBlankFragment() {
         // Required empty public constructor

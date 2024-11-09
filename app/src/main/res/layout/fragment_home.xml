@@ -1,41 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"
+        android:weightSum="4"
         tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp"
-        android:weightSum="4">
+        tools:layout_editor_absoluteY="1dp">
 
         <ImageView
             android:id="@+id/flag_language"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:src="@drawable/vietnam_flag"
             android:scaleX="0.8"
             android:scaleY="0.8"
-            android:layout_gravity="center"/>
+            android:src="@drawable/vietnam_flag" />
 
         <TextView
             android:id="@+id/streak"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="50"
-            android:paddingStart="20dp"
-            android:paddingEnd="10dp"
-            android:textSize="20sp"
             android:fontFamily="@font/duolingo_fontfamily"
             android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
+            android:text="50"
+            android:textSize="20sp"
             app:drawableStartCompat="@drawable/fire" />
 
         <TextView
@@ -43,29 +44,43 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="50"
-            android:paddingStart="20dp"
-            android:paddingEnd="10dp"
-            android:textSize="20sp"
             android:fontFamily="@font/duolingo_fontfamily"
             android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
+            android:text="50"
+            android:textSize="20sp"
             app:drawableStartCompat="@drawable/crown" />
+
         <ImageView
             android:id="@+id/notify"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:src="@drawable/notify"
             android:scaleX="0.8"
             android:scaleY="0.8"
-            android:layout_gravity="center"/>
-
-
+            android:src="@drawable/notify" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSession"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout2"/>
 
-</LinearLayout>
+    <ImageButton
+        android:id="@+id/fixedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="5dp"
+        android:elevation="8dp"
+        android:text=""
+        android:background="@drawable/arrow_down"/>
+
+
+</RelativeLayout>
