@@ -1,6 +1,7 @@
 package com.example.dualingo;
 
 import android.os.Bundle;
+import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +37,7 @@ public class LearningActivity extends AppCompatActivity {
     }
     private String getCurrentQuestionType() {
         // Lấy loại câu hỏi từ dữ liệu (ví dụ từ database hoặc danh sách câu hỏi)
-        return ""; // Chỉ là ví dụ
+        return "translate"; // Chỉ là ví dụ
     }
 
     private void switchFragment(String questionType) {
