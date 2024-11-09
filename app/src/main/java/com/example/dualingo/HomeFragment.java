@@ -24,11 +24,6 @@ import java.util.List;
 public class HomeFragment extends Fragment implements LectureAdapter.OnLectureClickListener {
 
     private FragmentHomeBinding binding;
-    private List<String> wordList = new ArrayList<>(Arrays.asList("Hello", "world", "this", "is", "a", "test"));
-
-    private List<String> selectedWords = new ArrayList<>();
-    private WordAdapter wordAdapter;
-    private WordAdapter resultAdapter;
 
     private List<Session> sessionList ;
 
@@ -58,67 +53,24 @@ public class HomeFragment extends Fragment implements LectureAdapter.OnLectureCl
 
         lectures = new ArrayList<Lecture>();
 
-        lectures.add(new Lecture("1","1",R.drawable.coin));
-        lectures.add(new Lecture("2","2",R.drawable.coin));
-        lectures.add(new Lecture("3","3",R.drawable.coin));
-        lectures.add(new Lecture("4","4",R.drawable.coin));
-        lectures.add(new Lecture("5","5",R.drawable.coin));
+        lectures.add(new Lecture("1","1","a"));
+        lectures.add(new Lecture("2","2","a"));
+        lectures.add(new Lecture("3","3","a"));
+        lectures.add(new Lecture("4","4","a"));
+        lectures.add(new Lecture("5","5","a"));
 
-        sessionList.add(new Session("1","1",R.drawable.fire,lectures));
-        sessionList.add(new Session("2","2",R.drawable.fire,lectures));
+        List<String> lecturesID1 = Arrays.asList("1", "2");
+        List<String> lecturesID2 = Arrays.asList("1", "1");
+
+        sessionList.add(new Session("1", "Session 1", "a", lecturesID1));
+        sessionList.add(new Session("2", "Session 2", "a", lecturesID2));
 
         sessionAdapter = new SessionAdapter(getContext(),sessionList,this);
 
         recyclerViewSession.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewSession.setAdapter(sessionAdapter);
     }
-//
-//    // Callback khi một từ được chọn từ danh sách ban đầu
-//    private void onWordClicked(String word) {
-//        wordList.remove(word);
-//        wordAdapter.notifyDataSetChanged();
-//
-//        selectedWords.add(word);
-//        resultAdapter.notifyDataSetChanged();
-//    }
-//
-//    // Callback khi một từ trong thanh kết quả bị nhấn
-//    private void onResultWordClicked(String word) {
-//        selectedWords.remove(word);
-//        resultAdapter.notifyDataSetChanged();
-//
-//        wordList.add(word);
-//        wordAdapter.notifyDataSetChanged();
-//    }
-//
-//    // ItemTouchHelper.Callback để xử lý kéo thả trong thanh kết quả
-//    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, 0) {
-//        @Override
-//        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//            int fromPosition = viewHolder.getAdapterPosition();
-//            int toPosition = target.getAdapterPosition();
-//
-//            // Thay đổi vị trí của từ trong thanh kết quả
-//            Collections.swap(selectedWords, fromPosition, toPosition);
-//            resultAdapter.notifyItemMoved(fromPosition, toPosition);
-//
-//            return true;
-//        }
-//
-//        @Override
-//        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-//            // Không xử lý vuốt
-//        }
-//    };
-//
-//    private void checkResult() {
-//        StringBuilder resultSentence = new StringBuilder();
-//        for (String word : selectedWords) {
-//            resultSentence.append(word).append(" ");
-//        }
-//        Intent intent= new Intent(getActivity(), IntroductionActivity.class);
-//        startActivity(intent);
-//    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
