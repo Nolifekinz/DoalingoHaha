@@ -1,12 +1,27 @@
 package com.example.dualingo.Models;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
 
+import com.example.dualingo.Converter.ListStringConverter;
+
+import java.util.List;
+@Entity(tableName = "session")
+@TypeConverters(ListStringConverter.class)
 public class Session {
+    @PrimaryKey
+    @NonNull
     private String idSession;
     private String sessionTitle;
-    private int imgUrl;
-    private List<Lecture> lectures;
+    private String imgUrl;
+
+    private List<String> lecturesId;
+
+    public Session() {
+
+    }
 
     public String getIdSession() {
         return idSession;
@@ -24,26 +39,25 @@ public class Session {
         this.sessionTitle = sessionTitle;
     }
 
-    public int getImgUrl() {
+    public String getImgUrl() {
         return imgUrl;
     }
 
-    public void setImgUrl(int imgUrl) {
+    public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
 
-    public List<Lecture> getLectures() {
-        return lectures;
+    public List<String> getLecturesId() {
+        return lecturesId;
     }
 
-    public void setLectures(List<Lecture> lectures) {
-        this.lectures = lectures;
+    public void setLecturesId(List<String> lecturesId) {
+        this.lecturesId = lecturesId;
     }
-
-    public Session(String idSession, String sessionTitle, int imgUrl, List<Lecture> lectures) {
+    public Session(String idSession, String sessionTitle, String imgUrl, List<String> lecturesId) {
         this.idSession = idSession;
         this.sessionTitle = sessionTitle;
         this.imgUrl = imgUrl;
-        this.lectures = lectures;
+        this.lecturesId = lecturesId;
     }
 }

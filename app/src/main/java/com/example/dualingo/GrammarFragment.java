@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.dualingo.Adapters.GrammarAdapter;
+import com.example.dualingo.Models.Formula;
 import com.example.dualingo.Models.Grammar;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class GrammarFragment extends Fragment {
                 "Present Simple",
                 "Dùng để diễn tả một thói quen hàng ngày hoặc một chân lý.",
                 "I go to school every day.",
-                new Grammar.Formula(
+                new Formula(
                         "Subject + V(s/es) + Object",
                         "Subject + do/does not + V + Object",
                         "Do/Does + Subject + V + Object?"
@@ -61,7 +62,7 @@ public class GrammarFragment extends Fragment {
                 "Present Continuous",
                 "Dùng để diễn tả hành động đang diễn ra ngay tại thời điểm nói.",
                 "I am reading a book.",
-                new Grammar.Formula(
+                new Formula(
                         "Subject + am/is/are + V-ing",
                         "Subject + am/is/are not + V-ing",
                         "Am/Is/Are + Subject + V-ing?"

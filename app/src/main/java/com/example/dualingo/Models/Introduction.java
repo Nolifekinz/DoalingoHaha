@@ -1,12 +1,28 @@
 package com.example.dualingo.Models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 
+@Entity(tableName = "introduction")
 public class Introduction {
+    @PrimaryKey
+    @NonNull
     private String idIntroduction;
-    private List<Vocabulary> vocabularys;
-    private List<Grammar> grammars;
+    private String title;
+    private List<String> vocabularyId;
+    private List<String> grammarId;
 
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
     public String getIdIntroduction() {
         return idIntroduction;
     }
@@ -15,25 +31,29 @@ public class Introduction {
         this.idIntroduction = idIntroduction;
     }
 
-    public List<Vocabulary> getVocabularys() {
-        return vocabularys;
+    public List<String> getVocabularyId() {
+        return vocabularyId;
     }
 
-    public void setVocabularys(List<Vocabulary> vocabularys) {
-        this.vocabularys = vocabularys;
+    public void setVocabularyId(List<String> vocabularys) {
+        this.vocabularyId = vocabularys;
     }
 
-    public List<Grammar> getGrammars() {
-        return grammars;
+    public List<String> getGrammarId() {
+        return grammarId;
     }
 
-    public void setGrammars(List<Grammar> grammars) {
-        this.grammars = grammars;
+    public void setGrammarId(List<String> grammars) {
+        this.grammarId = grammars;
     }
 
-    public Introduction(String idIntroduction, List<Vocabulary> vocabularys, List<Grammar> grammars) {
+    public Introduction(String idIntroduction, String title, List<String> vocabularyId, List<String> grammarId) {
         this.idIntroduction = idIntroduction;
-        this.vocabularys = vocabularys;
-        this.grammars = grammars;
+        this.title = title;
+        this.vocabularyId = vocabularyId;
+        this.grammarId = grammarId;
     }
+
+
+    public Introduction() { }
 }

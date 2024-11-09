@@ -2,10 +2,17 @@ package com.example.dualingo.Models;
 
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "lecture")
 public class Lecture {
+    @PrimaryKey
+    @NonNull
     private String idLecture;
     private String title;
-    private int imageResId;
+    private String imageResId;
 
     public String getIdLecture() {
         return idLecture;
@@ -23,15 +30,18 @@ public class Lecture {
         this.title = title;
     }
 
-    public int getImageResId() {
+    public String getImageResId() {
         return imageResId;
     }
 
-    public void setImageResId(int imageResId) {
+    public void setImageResId(String imageResId) {
         this.imageResId = imageResId;
     }
 
-    public Lecture(String idLecture, String title, int imageResId) {
+    public Lecture() {
+    }
+
+    public Lecture(String idLecture, String title, String imageResId) {
         this.idLecture = idLecture;
         this.title = title;
         this.imageResId = imageResId;

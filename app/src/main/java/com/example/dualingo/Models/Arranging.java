@@ -1,11 +1,17 @@
 package com.example.dualingo.Models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.ColumnInfo;
 import java.util.List;
 
+@Entity(tableName = "arranging")
 public class Arranging {
+    @PrimaryKey
+    @NonNull
     private String idArranging;
+
     private String idLecture;
     private String question;
     private String result;
@@ -49,6 +55,9 @@ public class Arranging {
 
     public void setWordList(List<String> wordList) {
         this.wordList = wordList;
+    }
+
+    public Arranging() {
     }
 
     public Arranging(String idArranging, String idLecture, String question, String result, List<String> wordList) {

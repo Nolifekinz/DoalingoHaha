@@ -1,9 +1,17 @@
 package com.example.dualingo.Models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 
+@Entity(tableName = "fill_blank")
 public class FillBlank {
+    @PrimaryKey
+    @NonNull
     private String idFillBlank;
+
     private String idLecture;
     private String question;
     private String result;

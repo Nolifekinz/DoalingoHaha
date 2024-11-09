@@ -26,6 +26,9 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
+            android:name=".ArrangingActivity"
+            android:exported="false" />
+        <activity
             android:name=".IntroductionActivity"
             android:exported="false" />
         <activity

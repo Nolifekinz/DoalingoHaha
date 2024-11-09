@@ -1,8 +1,15 @@
 package com.example.dualingo.Models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 
+@Entity(tableName = "listening")
 public class Listening {
+    @PrimaryKey
+    @NonNull
     private String idListening;
     private String idLecture;
     private String question;

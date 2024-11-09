@@ -1,6 +1,13 @@
 package com.example.dualingo.Models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "vocabulary")
 public class Vocabulary {
+    @PrimaryKey
+    @NonNull
     private String idVocabulary;
     private String englishWord;
     private String vietnameseMeaning;
