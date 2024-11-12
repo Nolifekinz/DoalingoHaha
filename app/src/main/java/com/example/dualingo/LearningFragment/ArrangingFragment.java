@@ -1,24 +1,28 @@
-package com.example.dualingo;
+package com.example.dualingo.LearningFragment;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.dualingo.Adapters.WordAdapter;
 import com.example.dualingo.Models.Arranging;
-import com.example.dualingo.databinding.ActivityArrangingBinding;
+import com.example.dualingo.databinding.FragmentArrangingBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ArrangingActivity extends AppCompatActivity {
+public class ArrangingFragment extends Fragment {
 
-    private ActivityArrangingBinding binding;
+    private FragmentArrangingBinding binding;
     private FirebaseFirestore db;
     private List<Arranging> arrangingList = new ArrayList<>();
     private int currentQuestionIndex = 0;
@@ -28,31 +32,31 @@ public class ArrangingActivity extends AppCompatActivity {
     private WordAdapter wordAdapter;
     private WordAdapter resultAdapter;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityArrangingBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        binding = FragmentArrangingBinding.inflate(inflater, container, false);
         db = FirebaseFirestore.getInstance();
         setupRecyclerViews();
         loadArrangingData();
 
         binding.submitButton.setOnClickListener(v -> checkResult());
+
+        return binding.getRoot();
     }
 
     private void setupRecyclerViews() {
-        // Thiết lập RecyclerView cho danh sách từ
-        binding.wordRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        wordAdapter = new WordAdapter(this, wordList, this::onWordClicked);
+        // Set up RecyclerView for word list
+        binding.wordRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        wordAdapter = new WordAdapter(getContext(), wordList, this::onWordClicked);
         binding.wordRecyclerView.setAdapter(wordAdapter);
 
-        // Thiết lập RecyclerView cho thanh kết quả
-        binding.resultRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
-        resultAdapter = new WordAdapter(this, selectedWords, this::onResultWordClicked);
+        // Set up RecyclerView for result bar
+        binding.resultRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        resultAdapter = new WordAdapter(getContext(), selectedWords, this::onResultWordClicked);
         binding.resultRecyclerView.setAdapter(resultAdapter);
 
-        // Thêm ItemTouchHelper để sắp xếp từ trong thanh kết quả
+        // Add ItemTouchHelper to rearrange words in the result bar
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(binding.resultRecyclerView);
     }
@@ -65,7 +69,7 @@ public class ArrangingActivity extends AppCompatActivity {
                     Arranging arranging = document.toObject(Arranging.class);
                     arrangingList.add(arranging);
                 }
-                showCurrentQuestion(); // Hiển thị câu hỏi đầu tiên sau khi tải dữ liệu
+                showCurrentQuestion(); // Display the first question after loading data
             }
         });
     }
@@ -123,16 +127,22 @@ public class ArrangingActivity extends AppCompatActivity {
 
         String correctAnswer = arrangingList.get(currentQuestionIndex).getResult();
         if (resultSentence.toString().trim().equals(correctAnswer)) {
-            Toast.makeText(this, "Correct!", Toast.LENGTH_SHORT).show();
-            currentQuestionIndex++; // Chuyển sang câu hỏi tiếp theo
+            Toast.makeText(getContext(), "Correct!", Toast.LENGTH_SHORT).show();
+            currentQuestionIndex++; // Move to the next question
             if (currentQuestionIndex < arrangingList.size()) {
                 showCurrentQuestion();
             } else {
-                Toast.makeText(this, "You've completed all questions!", Toast.LENGTH_LONG).show();
-                // Có thể thêm logic khi người dùng hoàn thành toàn bộ câu hỏi
+                Toast.makeText(getContext(), "You've completed all questions!", Toast.LENGTH_LONG).show();
+                // Logic for when the user completes all questions
             }
         } else {
-            Toast.makeText(this, "Incorrect! Try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Incorrect! Try again.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

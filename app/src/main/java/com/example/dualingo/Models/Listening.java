@@ -24,6 +24,9 @@ public class Listening {
         this.wordList = wordList;
     }
 
+    public Listening() {
+    }
+
     public String getIdListening() {
         return idListening;
     }
