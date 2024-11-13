@@ -1,5 +1,6 @@
 package com.example.dualingo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dualingo.Adapters.StringListAdapter;
 import com.example.dualingo.Adapters.VocabularyAdapter;
 import com.example.dualingo.Models.Vocabulary;
 
@@ -20,8 +22,11 @@ import java.util.List;
 public class VocabularyFragment extends Fragment {
 
     private RecyclerView rvVocabulary;
-    private VocabularyAdapter adapter;
+    //private VocabularyAdapter adapter;
+    private StringListAdapter adapter;
     private List<Vocabulary> vocabularyList;
+
+    private List<String> NameLessonList;
 
     @Nullable
     @Override
@@ -35,12 +40,39 @@ public class VocabularyFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rvVocabulary = view.findViewById(R.id.rvVocabulary);
-        vocabularyList = getVocabularyList(); // Hàm để tạo danh sách từ vựng
+        NameLessonList = getLessonList();
+//        vocabularyList = getLessonList(); // Hàm để tạo danh sách từ vựng
+//
+//        adapter = new VocabularyAdapter(vocabularyList, getContext());
+//        rvVocabulary.setLayoutManager(new LinearLayoutManager(getContext()));
+//        rvVocabulary.setAdapter(adapter);
 
-        adapter = new VocabularyAdapter(vocabularyList, getContext());
+        adapter = new StringListAdapter(NameLessonList, new StringListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                String item = NameLessonList.get(position);
+                Intent intent = new Intent(getContext(),VocabActivity.class);
+                intent.putExtra("lessname",item);
+                startActivity(intent);
+            }
+        });
         rvVocabulary.setLayoutManager(new LinearLayoutManager(getContext()));
         rvVocabulary.setAdapter(adapter);
     }
+
+    private List<String> getLessonList() {
+        List<String> list = new ArrayList<>();
+        list.add("Lesson 1"); // Thêm cách phát âm
+        list.add("Lesson 2"); // Thêm cách phát âm
+        list.add("Lesson 3");
+        list.add("Lesson 4");
+        list.add("Lesson 5");
+        list.add("Lesson 6");
+        list.add("Lesson 7");
+        // Thêm nhiều từ vựng khác...
+        return list;
+    }
+
 
     private List<Vocabulary> getVocabularyList() {
         List<Vocabulary> list = new ArrayList<>();
@@ -50,11 +82,11 @@ public class VocabularyFragment extends Fragment {
         return list;
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (adapter != null) {
-            adapter.shutdown(); // Giải phóng tài nguyên
-        }
-    }
+//    @Override
+//    public void onDestroyView() {
+//        super.onDestroyView();
+//        if (adapter != null) {
+//            adapter.shutdown(); // Giải phóng tài nguyên
+//        }
+//    }
 }

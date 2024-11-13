@@ -18,6 +18,12 @@
         android:theme="@style/Theme.Dualingonee"
         tools:targetApi="31">
         <activity
+            android:name=".VocabLearning"
+            android:exported="false" />
+        <activity
+            android:name=".VocabActivity"
+            android:exported="false" />
+        <activity
             android:name=".SetTimeActivity"
             android:exported="false" />
         <activity
