@@ -1,12 +1,11 @@
 package com.example.dualingo;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,16 +47,15 @@ public class AddFriendDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_friend_dialog, container, false);
 
+        db = FirebaseFirestore.getInstance(); // Khởi tạo Firestore
         etSearch = view.findViewById(R.id.etSearch);
         rvFriends = view.findViewById(R.id.rvFriends);
 
-        // Lấy tham số showSearchBar từ arguments
         if (getArguments() != null) {
             showSearchBar = getArguments().getBoolean("showSearchBar");
             userList = (List<User>) getArguments().getSerializable("userList");
         }
 
-        // Ẩn hoặc hiển thị thanh tìm kiếm tùy thuộc vào showSearchBar
         if (!showSearchBar) {
             etSearch.setVisibility(View.GONE);
         } else {
@@ -75,25 +73,42 @@ public class AddFriendDialogFragment extends DialogFragment {
             });
         }
 
-        // Khởi tạo danh sách user
-        friendAdapter = new FriendAdapter(userList);
+        // Set up FriendAdapter with OnClickListener
+        friendAdapter = new FriendAdapter(userList, user -> {
+            // Khi người dùng nhấn vào một người bạn, mở trang cá nhân của người đó
+            openUserProfile(user);
+        });
+
         rvFriends.setAdapter(friendAdapter);
         rvFriends.setLayoutManager(new LinearLayoutManager(getContext()));
 
         return view;
     }
 
+    private void openUserProfile(User user) {
+        // Tạo Intent để mở UserProfileActivity
+        Intent intent = new Intent(getContext(), UserProfileActivity.class);
+
+        // Gửi thông tin của user qua Intent
+        intent.putExtra("user_id", user.getId());
+        intent.putExtra("username", user.getUsername());
+        intent.putExtra("email", user.getEmail()); // Nếu có thêm thông tin cần truyền
+        startActivity(intent);
+    }
+
+
     private void searchFriends(String query) {
-        db = FirebaseFirestore.getInstance();
         db.collection("users")
                 .whereGreaterThanOrEqualTo("username", query)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
+                    if (task.isSuccessful() && task.getResult() != null) {
                         List<User> users = new ArrayList<>();
                         for (DocumentSnapshot document : task.getResult()) {
                             User user = document.toObject(User.class);
-                            users.add(user);
+                            if (user != null) {
+                                users.add(user);
+                            }
                         }
                         friendAdapter.updateFriends(users);
                     }

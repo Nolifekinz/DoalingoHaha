@@ -1,5 +1,10 @@
 package com.example.dualingo.Models;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+
 public class Formula {
     private String affirmative;
     private String negative;

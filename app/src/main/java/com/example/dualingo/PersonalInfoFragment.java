@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.dualingo.Models.User;
-import com.example.dualingo.databinding.FragmentHomeBinding;
 import com.example.dualingo.databinding.FragmentPersonalInfoBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,77 +32,33 @@ import com.google.firebase.storage.UploadTask;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PersonalInfoFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class PersonalInfoFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public PersonalInfoFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PersonalInfoFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PersonalInfoFragment newInstance(String param1, String param2) {
-        PersonalInfoFragment fragment = new PersonalInfoFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-    String currentUserId;
+    private String currentUserId;
     private Uri imageUri;
     private List<String> followerList = new ArrayList<>();
     private List<String> followingList = new ArrayList<>();
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private FragmentPersonalInfoBinding binding;
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentPersonalInfoBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        setupImagePicker();  // Đảm bảo setup launcher ngay khi khởi tạo view
+        setupImagePicker(); // Set up the image picker launcher
 
         binding.btnDeleteAccount.setOnClickListener(view1 -> logout());
-        //currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         getProfileDataFromFirebase(currentUserId);
 
-        // Đăng ký sự kiện khi nhấn vào ảnh đại diện
+        // Click listener for profile image to open image picker
         binding.ivAvatar.setOnClickListener(v -> checkPermissionAndOpenImagePicker());
+
         binding.btnAddFriend.setOnClickListener(v -> {
             AddFriendDialogFragment dialog = AddFriendDialogFragment.newInstance(true, new ArrayList<>());
             dialog.show(getParentFragmentManager(), "AddFriendDialog");
@@ -130,24 +85,17 @@ public class PersonalInfoFragment extends Fragment {
                 result -> {
                     if (result.getResultCode() == getActivity().RESULT_OK && result.getData() != null) {
                         imageUri = result.getData().getData();
-                        // Sử dụng Glide để tải hình ảnh vào profileImg
-                        Glide.with(this)
-                                .load(imageUri)
-                                .into(binding.ivAvatar);
+                        Glide.with(this).load(imageUri).into(binding.ivAvatar);
                         uploadImage();
                     }
                 }
         );
     }
 
-
     private void checkPermissionAndOpenImagePicker() {
-        String permission;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permission = android.Manifest.permission.READ_MEDIA_IMAGES;
-        } else {
-            permission = Manifest.permission.READ_EXTERNAL_STORAGE;
-        }
+        String permission = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) ?
+                android.Manifest.permission.READ_MEDIA_IMAGES :
+                Manifest.permission.READ_EXTERNAL_STORAGE;
 
         if (ContextCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
             openImagePicker();
@@ -160,7 +108,6 @@ public class PersonalInfoFragment extends Fragment {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         imagePickerLauncher.launch(intent);
     }
-
 
     private void uploadImage() {
         if (imageUri != null) {
@@ -177,14 +124,14 @@ public class PersonalInfoFragment extends Fragment {
                 }
             });
 
-            uploadTask.addOnSuccessListener(taskSnapshot ->
-                    taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
-                        String downloadUrl = uri.toString();
-                        updateProfilePicture(downloadUrl);
-                    })
-            ).addOnFailureListener(e ->
-                    Toast.makeText(getContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-            );
+            uploadTask.addOnSuccessListener(taskSnapshot -> {
+                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(uri -> {
+                    String downloadUrl = uri.toString();
+                    updateProfilePicture(downloadUrl);
+                });
+            }).addOnFailureListener(e -> {
+                Toast.makeText(getContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            });
         } else {
             Toast.makeText(getContext(), "No image selected", Toast.LENGTH_SHORT).show();
         }
@@ -194,12 +141,12 @@ public class PersonalInfoFragment extends Fragment {
         FirebaseFirestore.getInstance().collection("users")
                 .document(currentUserId)
                 .update("profilePic", downloadUrl)
-                .addOnSuccessListener(unused ->
-                        Toast.makeText(getContext(), "Profile picture updated successfully", Toast.LENGTH_SHORT).show()
-                )
-                .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Failed to update profile picture", Toast.LENGTH_SHORT).show()
-                );
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(getContext(), "Profile picture updated successfully", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to update profile picture", Toast.LENGTH_SHORT).show();
+                });
     }
 
     private void logout() {
@@ -220,7 +167,7 @@ public class PersonalInfoFragment extends Fragment {
                         followerList = (List<String>) documentSnapshot.get("followerList");
                         followingList = (List<String>) documentSnapshot.get("followingList");
 
-                        Long exp =(Long) documentSnapshot.get("exp");
+                        Long exp = (Long) documentSnapshot.get("exp");
                         binding.tvXP.setText(String.valueOf(exp));
 
                         Long rankId = (Long) documentSnapshot.get("rank");
@@ -242,25 +189,28 @@ public class PersonalInfoFragment extends Fragment {
                                     });
                         }
 
+                        // Lấy thông tin streak
+                        Long streak = (Long) documentSnapshot.get("streak");
+                        binding.tvStreak.setText("Streak: #" + streak);
+
+                        // Lấy thông tin progress
+                        User.Progress progress = documentSnapshot.get("progress", User.Progress.class); // Sử dụng đối tượng Progress
+                        if (progress != null) {
+                            // Hiển thị thông tin progress
+                            binding.tvProgress.setText("Session: " + progress.getSessionId() + ", Lecture: " + progress.getLectureId());
+                        }
+
                         String followerCount = followerList != null ? String.valueOf("FOLLOWER: #"+followerList.size()) : "FOLLOWER: #0";
                         String followingCount = followingList != null ? String.valueOf("FOLLOWS: #"+followingList.size()) : "FOLLOWS: #0";
 
                         binding.tvUsername.setText(username);
 
-                        String profilePicUrl = (String)documentSnapshot.get("profilePic");
+                        String profilePicUrl = (String) documentSnapshot.get("profilePic");
                         Glide.with(this)
                                 .load(profilePicUrl)
                                 .into(binding.ivAvatar);
                         binding.btnFollowers.setText(followerCount);
                         binding.btnFollows.setText(followingCount);
-
-//                        if (!profileUserId.equals(currentUserId)) {
-//                            if (followerList != null && followerList.contains(currentUserId)) {
-//                                btnLogout.setText("Unfollow");
-//                            } else {
-//                                btnLogout.setText("Follow");
-//                            }
-//                        }
                     }
                 })
                 .addOnFailureListener(e -> e.printStackTrace());
@@ -268,17 +218,14 @@ public class PersonalInfoFragment extends Fragment {
 
     private void getUsersFromList(List<String> list) {
         List<User> listUsers = new ArrayList<>();
-
-        // Duyệt qua từng id trong followerList
         for (String userId : list) {
             db.collection("users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
                 if (documentSnapshot.exists()) {
                     User user = documentSnapshot.toObject(User.class);
                     listUsers.add(user);
 
-                    // Kiểm tra xem tất cả user đã được thêm vào followerUsers hay chưa
+                    // Display dialog once all users are loaded
                     if (listUsers.size() == list.size()) {
-                        // Gọi hàm hiển thị AddFriendDialogFragment sau khi đã load xong tất cả user
                         showDialog(listUsers);
                     }
                 }
@@ -292,8 +239,6 @@ public class PersonalInfoFragment extends Fragment {
         AddFriendDialogFragment dialog = AddFriendDialogFragment.newInstance(false, followerUsers);
         dialog.show(getParentFragmentManager(), "AddFriendDialog");
     }
-
-
 
     @Override
     public void onDestroyView() {

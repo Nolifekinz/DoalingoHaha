@@ -18,9 +18,28 @@ public class Session {
     private String imgUrl;
 
     private List<String> lecturesId;
+    private boolean isUnlocked; // Trạng thái mở khóa Session
 
+    // Constructor mặc định
     public Session() {
+    }
 
+    // Constructor đầy đủ
+    public Session(String idSession, String sessionTitle, String imgUrl, List<String> lecturesId, boolean isUnlocked) {
+        this.idSession = idSession;
+        this.sessionTitle = sessionTitle;
+        this.imgUrl = imgUrl;
+        this.lecturesId = lecturesId;
+        this.isUnlocked = isUnlocked;
+    }
+
+    // Getters và Setters
+    public boolean isUnlocked() {
+        return isUnlocked;
+    }
+
+    public void setUnlocked(boolean unlocked) {
+        isUnlocked = unlocked;
     }
 
     public String getIdSession() {
@@ -54,10 +73,5 @@ public class Session {
     public void setLecturesId(List<String> lecturesId) {
         this.lecturesId = lecturesId;
     }
-    public Session(String idSession, String sessionTitle, String imgUrl, List<String> lecturesId) {
-        this.idSession = idSession;
-        this.sessionTitle = sessionTitle;
-        this.imgUrl = imgUrl;
-        this.lecturesId = lecturesId;
-    }
+
 }

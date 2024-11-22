@@ -57,7 +57,7 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    AppDatabase.class, "dualingo_database")
+                                    AppDatabase.class, "dualingo_db")
                             .fallbackToDestructiveMigration()
                             .build();
                 }

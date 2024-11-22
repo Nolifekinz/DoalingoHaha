@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
 
         setInitialFragment(homeFragment);
 
+        DataSyncManager dataSyncManager = new DataSyncManager(this);
+        dataSyncManager.syncData(this);
+
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 

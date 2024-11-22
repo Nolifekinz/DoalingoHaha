@@ -1,6 +1,7 @@
 package com.example.dualingo.Models;
 
 import androidx.annotation.NonNull;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -14,6 +15,7 @@ public class Grammar {
     private String title;
     private String description;
     private String example;
+    @Embedded
     private Formula formula;
     private List<String> keyPoints;
     private List<String> detailedExamples;

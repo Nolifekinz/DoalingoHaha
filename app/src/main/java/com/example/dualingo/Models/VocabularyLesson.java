@@ -73,4 +73,7 @@ public class VocabularyLesson {
         this.result = result;
         this.wordList = wordList;
     }
+
+    public VocabularyLesson() {
+    }
 }

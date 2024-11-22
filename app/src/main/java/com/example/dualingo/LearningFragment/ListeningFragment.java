@@ -7,17 +7,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.dualingo.Adapters.WordAdapter;
+import com.example.dualingo.AppDatabase;
 import com.example.dualingo.Models.Listening;
 import com.example.dualingo.R;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +27,7 @@ import java.util.Locale;
 
 public class ListeningFragment extends Fragment {
 
-    private FirebaseFirestore db;
+    private AppDatabase appDatabase;
     private List<Listening> listeningList = new ArrayList<>();
     private int currentQuestionIndex = 0;
 
@@ -51,7 +53,8 @@ public class ListeningFragment extends Fragment {
             }
         });
 
-        db = FirebaseFirestore.getInstance();
+        // Initialize Room Database
+        appDatabase = AppDatabase.getDatabase(requireContext());
         setupRecyclerViews(view);
         loadListeningData();
 
@@ -78,16 +81,13 @@ public class ListeningFragment extends Fragment {
     }
 
     private void loadListeningData() {
-        db.collection("Listening").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                listeningList.clear();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Listening listening = document.toObject(Listening.class);
-                    listeningList.add(listening);
-                }
-                showCurrentQuestion();
-            }
-        });
+        new Thread(() -> {
+            // Lấy dữ liệu từ Room Database
+            listeningList = appDatabase.listeningDAO().getAllListenings();
+
+            // Hiển thị câu hỏi đầu tiên trên giao diện
+            requireActivity().runOnUiThread(this::showCurrentQuestion);
+        }).start();
     }
 
     private void showCurrentQuestion() {

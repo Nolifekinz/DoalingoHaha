@@ -27,6 +27,9 @@ public class Vocabulary {
         this.isExpanded = false;
     }
 
+    public Vocabulary() {
+    }
+
     // Getters và Setters
     public String getIdVocabulary() { return idVocabulary; }
     public String getEnglishWord() { return englishWord; }
@@ -36,6 +39,24 @@ public class Vocabulary {
     public String getPronunciation() { return pronunciation; } // Getter cho pronunciation
     public boolean isExpanded() { return isExpanded; }
     public void setExpanded(boolean expanded) { isExpanded = expanded; }
+    public void setIdVocabulary(@NonNull String idVocabulary) {
+        this.idVocabulary = idVocabulary;
+    }
 
+    public void setEnglishWord(String englishWord) {
+        this.englishWord = englishWord;
+    }
+
+    public void setVietnameseMeaning(String vietnameseMeaning) {
+        this.vietnameseMeaning = vietnameseMeaning;
+    }
+
+    public void setWordType(String wordType) {
+        this.wordType = wordType;
+    }
+
+    public void setExample(String example) {
+        this.example = example;
+    }
     public void setPronunciation(String pronunciation) { this.pronunciation = pronunciation; } // Setter cho pronunciation
 }

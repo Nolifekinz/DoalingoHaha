@@ -127,8 +127,8 @@ public class HomeFragment extends Fragment implements LectureAdapter.OnLectureCl
         List<String> lecturesID1 = Arrays.asList("1", "2");
         List<String> lecturesID2 = Arrays.asList("1", "1");
 
-        sessionList.add(new Session("1", "Session 1", "a", lecturesID1));
-        sessionList.add(new Session("2", "Session 2", "a", lecturesID2));
+        sessionList.add(new Session("1", "Session 1", "a", lecturesID1,true));
+        sessionList.add(new Session("2", "Session 2", "a", lecturesID2,false));
 
         sessionAdapter = new SessionAdapter(getContext(),sessionList,this);
 
@@ -144,7 +144,7 @@ public class HomeFragment extends Fragment implements LectureAdapter.OnLectureCl
 
     @Override
     public void onLectureClick(int sessionPosition, int lecturePosition) {
-        Intent intent = new Intent(getContext(), LearningActivity.class);
+        Intent intent = new Intent(getContext(), SetTimeActivity.class);
         String idLecture = lectures.get(lecturePosition).getIdLecture();
 
         intent.putExtra("idLecture",idLecture);

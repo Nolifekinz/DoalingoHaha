@@ -11,11 +11,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.dualingo.Adapters.WordAdapter;
 import com.example.dualingo.Models.Arranging;
+import com.example.dualingo.AppDatabase;
 import com.example.dualingo.databinding.FragmentArrangingBinding;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
 public class ArrangingFragment extends Fragment {
 
     private FragmentArrangingBinding binding;
-    private FirebaseFirestore db;
+    private AppDatabase database; // Room database instance
     private List<Arranging> arrangingList = new ArrayList<>();
     private int currentQuestionIndex = 0;
 
@@ -36,9 +37,9 @@ public class ArrangingFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentArrangingBinding.inflate(inflater, container, false);
-        db = FirebaseFirestore.getInstance();
+        database = AppDatabase.getDatabase(getContext()); // Initialize Room database
         setupRecyclerViews();
-        loadArrangingData();
+        loadArrangingDataFromRoom();
 
         binding.submitButton.setOnClickListener(v -> checkResult());
 
@@ -61,17 +62,15 @@ public class ArrangingFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(binding.resultRecyclerView);
     }
 
-    private void loadArrangingData() {
-        db.collection("Arranging").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                arrangingList.clear();
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    Arranging arranging = document.toObject(Arranging.class);
-                    arrangingList.add(arranging);
-                }
-                showCurrentQuestion(); // Display the first question after loading data
+    private void loadArrangingDataFromRoom() {
+        // Fetch data from Room in a background thread
+        new Thread(() -> {
+            arrangingList.clear();
+            arrangingList.addAll(database.arrangingDAO().getAllArranging()); // Retrieve all Arranging data
+            if (!arrangingList.isEmpty()) {
+                getActivity().runOnUiThread(this::showCurrentQuestion); // Update UI on the main thread
             }
-        });
+        }).start();
     }
 
     private void showCurrentQuestion() {

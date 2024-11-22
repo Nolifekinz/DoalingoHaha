@@ -13,6 +13,24 @@ public class Lecture {
     private String idLecture;
     private String title;
     private String imageResId;
+    private boolean isUnlocked;
+
+    // Constructor đầy đủ
+    public Lecture(String idLecture, String title, String imageResId, boolean isUnlocked) {
+        this.idLecture = idLecture;
+        this.title = title;
+        this.imageResId = imageResId;
+        this.isUnlocked = isUnlocked;
+    }
+
+    // Getters và Setters
+    public boolean isUnlocked() {
+        return isUnlocked;
+    }
+
+    public void setUnlocked(boolean unlocked) {
+        isUnlocked = unlocked;
+    }
 
     public String getIdLecture() {
         return idLecture;

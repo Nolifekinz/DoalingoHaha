@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,14 +19,19 @@ import java.util.List;
 
 public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendViewHolder> {
 
-    private List<User> friendList;
-    String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-    public FriendAdapter(List<User> friendList) {
-        this.friendList = friendList;
+    public interface OnFriendClickListener {
+        void onFriendClick(User user);
     }
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private List<User> friendList;
+    private OnFriendClickListener onFriendClickListener;
+    private String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    public FriendAdapter(List<User> friendList, OnFriendClickListener onFriendClickListener) {
+        this.friendList = friendList;
+        this.onFriendClickListener = onFriendClickListener;
+    }
 
     @NonNull
     @Override
@@ -61,6 +65,14 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
             super(itemView);
             tvUsername = itemView.findViewById(R.id.tvUsername);
             btnFollow = itemView.findViewById(R.id.btnFollow);
+
+            // Xử lý sự kiện nhấn vào item
+            itemView.setOnClickListener(v -> {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION && onFriendClickListener != null) {
+                    onFriendClickListener.onFriendClick(friendList.get(position));
+                }
+            });
         }
 
         public void bind(User friend) {
@@ -103,49 +115,25 @@ public class FriendAdapter extends RecyclerView.Adapter<FriendAdapter.FriendView
         private void addFollower(String userId, String followeeId) {
             db.collection("users")
                     .document(followeeId)
-                    .update("followerList", FieldValue.arrayUnion(userId))
-                    .addOnSuccessListener(aVoid ->
-                            Toast.makeText(itemView.getContext(), "Follower added successfully", Toast.LENGTH_SHORT).show()
-                    )
-                    .addOnFailureListener(e ->
-                            Toast.makeText(itemView.getContext(), "Failed to add follower: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
+                    .update("followerList", FieldValue.arrayUnion(userId));
         }
 
         private void removeFollower(String userId, String followeeId) {
             db.collection("users")
                     .document(followeeId)
-                    .update("followerList", FieldValue.arrayRemove(userId))
-                    .addOnSuccessListener(aVoid ->
-                            Toast.makeText(itemView.getContext(), "Follower removed successfully", Toast.LENGTH_SHORT).show()
-                    )
-                    .addOnFailureListener(e ->
-                            Toast.makeText(itemView.getContext(), "Failed to remove follower: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
+                    .update("followerList", FieldValue.arrayRemove(userId));
         }
 
         private void addFollowing(String userId, String followingId) {
             db.collection("users")
                     .document(userId)
-                    .update("followingList", FieldValue.arrayUnion(followingId))
-                    .addOnSuccessListener(aVoid ->
-                            Toast.makeText(itemView.getContext(), "Following added successfully", Toast.LENGTH_SHORT).show()
-                    )
-                    .addOnFailureListener(e ->
-                            Toast.makeText(itemView.getContext(), "Failed to add following: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
+                    .update("followingList", FieldValue.arrayUnion(followingId));
         }
 
         private void removeFollowing(String userId, String followingId) {
             db.collection("users")
                     .document(userId)
-                    .update("followingList", FieldValue.arrayRemove(followingId))
-                    .addOnSuccessListener(aVoid ->
-                            Toast.makeText(itemView.getContext(), "Following removed successfully", Toast.LENGTH_SHORT).show()
-                    )
-                    .addOnFailureListener(e ->
-                            Toast.makeText(itemView.getContext(), "Failed to remove following: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
+                    .update("followingList", FieldValue.arrayRemove(followingId));
         }
     }
 }

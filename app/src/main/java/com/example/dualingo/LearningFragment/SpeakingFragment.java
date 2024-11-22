@@ -30,10 +30,9 @@ import java.util.Locale;
 
 public class SpeakingFragment extends Fragment {
 
-    private TextView questionTextView;
+    private TextView questionTextView, resultTextView;
     private ProgressBar recordingIndicator;
     private Button recordButton, checkAnswerButton;
-    private TextView resultTextView;
 
     private TextToSpeech tts;
     private SpeechRecognizer speechRecognizer;
@@ -44,78 +43,77 @@ public class SpeakingFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate layout manually
         View view = inflater.inflate(R.layout.fragment_speaking, container, false);
 
-        // Khởi tạo các view bằng findViewById
+        // Initialize views
         questionTextView = view.findViewById(R.id.questionTextView);
+        resultTextView = view.findViewById(R.id.resultTextView);
         recordingIndicator = view.findViewById(R.id.recordingIndicator);
         recordButton = view.findViewById(R.id.recordButton);
         checkAnswerButton = view.findViewById(R.id.checkAnswerButton);
-        resultTextView = view.findViewById(R.id.resultTextView);
 
-        // Set câu hỏi cho TextView
+        // Set question text
         questionTextView.setText(currentSpeaking.getQuestion());
-        recordingIndicator.setVisibility(View.GONE); // Ẩn lúc đầu
+        recordingIndicator.setVisibility(View.GONE);
 
-        // Khởi tạo TextToSpeech
+        // Initialize Text-to-Speech
         tts = new TextToSpeech(getContext(), status -> {
             if (status == TextToSpeech.SUCCESS) {
                 tts.setLanguage(Locale.ENGLISH);
             }
         });
 
-        // Khởi tạo SpeechRecognizer
+        // Initialize SpeechRecognizer
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getContext());
 
-        // Thiết lập click listener cho các nút
+        // Setup button listeners
         recordButton.setOnClickListener(v -> startRecording());
         checkAnswerButton.setOnClickListener(v -> checkAnswer());
 
-        // Yêu cầu quyền ghi âm nếu chưa được cấp
+        // Request microphone permission
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 1);
         }
 
-        return view; // Trả về view thay vì binding.getRoot()
+        return view;
     }
 
     private void startRecording() {
-        // Hiển thị dấu hiệu ghi âm
+        // Show recording indicator and disable record button
         recordingIndicator.setVisibility(View.VISIBLE);
-        recordButton.setEnabled(false); // Vô hiệu nút khi đang ghi âm
+        recordButton.setEnabled(false);
 
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
 
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
             @Override
             public void onResults(Bundle results) {
                 ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 if (matches != null && !matches.isEmpty()) {
-                    recordedAnswer = matches.get(0);
-                    Toast.makeText(getContext(), "Recorded: " + recordedAnswer, Toast.LENGTH_SHORT).show();
+                    recordedAnswer = matches.get(0).trim();
                 }
+                Toast.makeText(getContext(), "Recorded: " + recordedAnswer, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onEndOfSpeech() {
-                // Ẩn dấu hiệu ghi âm và kiểm tra câu trả lời tự động
+                // Hide recording indicator and re-enable record button
                 recordingIndicator.setVisibility(View.GONE);
                 recordButton.setEnabled(true);
-                checkAnswer();
+                checkAnswer(); // Automatically check answer
             }
 
-            // Ghi đè trống cho các phương thức không sử dụng
+            // Empty overrides for unused methods
             @Override public void onReadyForSpeech(Bundle params) {}
             @Override public void onBeginningOfSpeech() {}
             @Override public void onRmsChanged(float rmsdB) {}
             @Override public void onBufferReceived(byte[] buffer) {}
             @Override public void onError(int error) {
-                // Ẩn dấu hiệu trong trường hợp lỗi
                 recordingIndicator.setVisibility(View.GONE);
                 recordButton.setEnabled(true);
+                Toast.makeText(getContext(), "Recording error. Please try again.", Toast.LENGTH_SHORT).show();
             }
             @Override public void onPartialResults(Bundle partialResults) {}
             @Override public void onEvent(int eventType, Bundle params) {}
@@ -125,14 +123,19 @@ public class SpeakingFragment extends Fragment {
     }
 
     private void checkAnswer() {
-        String correctAnswer = currentSpeaking.getQuestion().toLowerCase();
+        if (recordedAnswer.isEmpty()) {
+            Toast.makeText(getContext(), "Please record your answer first!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String correctAnswer = currentSpeaking.getQuestion().trim().toLowerCase();
         String userAnswer = recordedAnswer.toLowerCase();
 
         if (userAnswer.equals(correctAnswer)) {
             resultTextView.setText("Correct!");
             resultTextView.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
         } else {
-            resultTextView.setText("Incorrect, try again.");
+            resultTextView.setText("Incorrect. Try again!");
             resultTextView.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
         }
     }
@@ -153,7 +156,7 @@ public class SpeakingFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1 && grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getContext(), "Microphone permission is required for recording", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Microphone permission is required for recording.", Toast.LENGTH_SHORT).show();
         }
     }
 }

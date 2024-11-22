@@ -19,6 +19,7 @@ public class Speaking {
         this.idLecture = idLecture;
         this.question = question;
     }
+    public Speaking() {}
 
     public String getIdSpeaking() {
         return idSpeaking;
