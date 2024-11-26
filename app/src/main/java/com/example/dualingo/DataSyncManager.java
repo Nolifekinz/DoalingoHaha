@@ -24,6 +24,7 @@ public class DataSyncManager {
     private static final long SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 giờ
 
     public DataSyncManager(Context context) {
+//        context.deleteDatabase("dualingo_db");
         database = Room.databaseBuilder(context, AppDatabase.class, "dualingo_db").build();
         firestore = FirebaseFirestore.getInstance();
         executor = Executors.newSingleThreadExecutor();
@@ -59,10 +60,9 @@ public class DataSyncManager {
             return;
         }
 
-        if (!shouldSync()) {
-            // Không cần đồng bộ, thoát
-            return;
-        }
+//        if (!shouldSync()) {
+//            return;
+//        }
 
         executor.execute(() -> {
             // Đồng bộ từng collection
@@ -72,10 +72,10 @@ public class DataSyncManager {
             syncCollection("Grammar", Grammar.class, data -> database.grammarDAO().insertGrammar((Grammar) data));
             syncCollection("Introduction", Introduction.class, data -> database.introductionDAO().insertIntroduction((Introduction) data));
             syncCollection("Listening", Listening.class, data -> database.listeningDAO().insertListening((Listening) data));
-            syncCollection("Session", Session.class, data -> database.sessionDAO().insert((Session) data));
             syncCollection("Speaking", Speaking.class, data -> database.speakingDAO().insertSpeaking((Speaking) data));
             syncCollection("Vocabulary", Vocabulary.class, data -> database.vocabularyDAO().insertVocabulary((Vocabulary) data));
             syncCollection("VocabularyLesson", VocabularyLesson.class, data -> database.vocabularyLessonDAO().insertVocabularyLesson((VocabularyLesson) data));
+            syncCollection("Session", Session.class, data -> database.sessionDAO().insert((Session) data));
 
             // Lưu timestamp sau khi hoàn tất
             saveLastSyncTime();

@@ -26,19 +26,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     void login() {
-          finish();
-//        String email = binding.etUsername.getText().toString();
-//        String password = binding.etPassword.getText().toString();
-//        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-//            Toast.makeText(getApplicationContext(), "Sai định dạng email", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        if (password.length() < 6) {
-//            Toast.makeText(getApplicationContext(), "Mật khẩu phải ít nhất 6 kí tự", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        loginWithFirebase(email, password);
+        String email = binding.etUsername.getText().toString();
+        String password = binding.etPassword.getText().toString();
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(getApplicationContext(), "Sai định dạng email", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (password.length() < 6) {
+            Toast.makeText(getApplicationContext(), "Mật khẩu phải ít nhất 6 kí tự", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        loginWithFirebase(email, password);
     }
 
     void loginWithFirebase(String email, String password) {
@@ -46,7 +45,9 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                    setInProgress(false);
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                     finish();
                 })
                 .addOnFailureListener(e -> {

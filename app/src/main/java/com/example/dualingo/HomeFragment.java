@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,30 +19,24 @@ import android.widget.TextView;
 
 import com.example.dualingo.Adapters.LectureAdapter;
 import com.example.dualingo.Adapters.SessionAdapter;
-import com.example.dualingo.Adapters.WordAdapter;
 import com.example.dualingo.Models.Lecture;
 import com.example.dualingo.Models.Session;
 import com.example.dualingo.databinding.FragmentHomeBinding;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements LectureAdapter.OnLectureClickListener {
 
     private FragmentHomeBinding binding;
-    private List<Session> sessionList ;
-
-    private List<Lecture> lectures;
-
+    private List<Session> sessionList = new ArrayList<>();
+    private List<Lecture> lectures = new ArrayList<>();
     private SessionAdapter sessionAdapter;
-
     private RecyclerView recyclerViewSession;
+    private TextView level, streak;
+    private ImageView flag, notify;
 
-    private TextView level , streak;
-
-    private ImageView flag , notify;
-
+    private AppDatabase database;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,45 +45,26 @@ public class HomeFragment extends Fragment implements LectureAdapter.OnLectureCl
         View view = binding.getRoot();
 
         recyclerViewSession = view.findViewById(R.id.rvSession);
-
         level = view.findViewById(R.id.level);
         streak = view.findViewById(R.id.streak);
         flag = view.findViewById(R.id.flag_language);
         notify = view.findViewById(R.id.notify);
 
-        level.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopup(R.id.level,v);
-            }
-        });
-        streak.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopup(R.id.streak,v);
-            }
-        });
-        flag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopup(R.id.flag_language,v);
-            }
-        });
-        notify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopup(R.id.notify,v);
-            }
-        });
+        // Khởi tạo database
+        database = AppDatabase.getDatabase(requireContext());
+
+        level.setOnClickListener(v -> showPopup(R.id.level, v));
+        streak.setOnClickListener(v -> showPopup(R.id.streak, v));
+        flag.setOnClickListener(v -> showPopup(R.id.flag_language, v));
+        notify.setOnClickListener(v -> showPopup(R.id.notify, v));
 
         setupRecyclerViews();
+        loadDataFromDatabase();
 
         return view;
     }
 
-    private void showPopup(int id , View anchorView) {
-
-        // Sử dụng LayoutInflater để chuyển đổi layout thành view
+    private void showPopup(int id, View anchorView) {
         LayoutInflater inflater = getLayoutInflater();
         View popupView;
         if (id == R.id.level) {
@@ -100,7 +77,6 @@ public class HomeFragment extends Fragment implements LectureAdapter.OnLectureCl
             popupView = inflater.inflate(R.layout.popup_notify, null);
         }
 
-        // Đặt background cho PopupWindow
         final PopupWindow popupWindow = new PopupWindow(
                 popupView,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -108,32 +84,41 @@ public class HomeFragment extends Fragment implements LectureAdapter.OnLectureCl
                 true
         );
         popupWindow.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.popup_background));
-        popupWindow.setElevation(10); // Đặt độ nổi cho popup để trông rõ hơn
+        popupWindow.setElevation(10);
         popupWindow.showAsDropDown(anchorView, 0, 10);
     }
 
     private void setupRecyclerViews() {
-
-        sessionList = new ArrayList<Session>();
-
-        lectures = new ArrayList<Lecture>();
-
-        lectures.add(new Lecture("1","1","a"));
-        lectures.add(new Lecture("2","2","a"));
-        lectures.add(new Lecture("3","3","a"));
-        lectures.add(new Lecture("4","4","a"));
-        lectures.add(new Lecture("5","5","a"));
-
-        List<String> lecturesID1 = Arrays.asList("1", "2");
-        List<String> lecturesID2 = Arrays.asList("1", "1");
-
-        sessionList.add(new Session("1", "Session 1", "a", lecturesID1,true));
-        sessionList.add(new Session("2", "Session 2", "a", lecturesID2,false));
-
-        sessionAdapter = new SessionAdapter(getContext(),sessionList,this);
-
+        sessionAdapter = new SessionAdapter(getContext(), sessionList, this);
         recyclerViewSession.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewSession.setAdapter(sessionAdapter);
+    }
+
+    private void loadDataFromDatabase() {
+        // Quan sát LiveData từ Room Database
+        LiveData<List<Session>> liveSessionList = database.sessionDAO().getAllSessionsLive();
+        liveSessionList.observe(getViewLifecycleOwner(), new Observer<List<Session>>() {
+            @Override
+            public void onChanged(List<Session> sessions) {
+                if (sessions != null) {
+                    sessionList.clear();
+                    sessionList.addAll(sessions);
+                    sessionAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+
+        // Quan sát LiveData cho Lectures
+        LiveData<List<Lecture>> liveLectures = database.lectureDAO().getAllLecturesLive();
+        liveLectures.observe(getViewLifecycleOwner(), new Observer<List<Lecture>>() {
+            @Override
+            public void onChanged(List<Lecture> lecturesList) {
+                if (lecturesList != null) {
+                    lectures.clear();
+                    lectures.addAll(lecturesList);
+                }
+            }
+        });
     }
 
     @Override
@@ -147,8 +132,7 @@ public class HomeFragment extends Fragment implements LectureAdapter.OnLectureCl
         Intent intent = new Intent(getContext(), SetTimeActivity.class);
         String idLecture = lectures.get(lecturePosition).getIdLecture();
 
-        intent.putExtra("idLecture",idLecture);
-
+        intent.putExtra("idLecture", idLecture);
         startActivity(intent);
     }
 }

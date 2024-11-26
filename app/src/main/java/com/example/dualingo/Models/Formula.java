@@ -16,6 +16,9 @@ public class Formula {
         this.question = question;
     }
 
+    public Formula() {
+    }
+
     // Getter và setter
     public String getAffirmative() {
         return affirmative;

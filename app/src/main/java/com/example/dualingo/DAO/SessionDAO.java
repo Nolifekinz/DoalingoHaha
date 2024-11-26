@@ -1,5 +1,6 @@
 package com.example.dualingo.DAO;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
@@ -28,6 +29,9 @@ public interface SessionDAO {
     // Lấy tất cả session
     @Query("SELECT * FROM session")
     List<Session> getAllSessions();
+
+    @Query("SELECT * FROM session")
+    LiveData<List<Session>> getAllSessionsLive();
 
     // Lấy một session theo ID
     @Query("SELECT * FROM session WHERE idSession = :id")

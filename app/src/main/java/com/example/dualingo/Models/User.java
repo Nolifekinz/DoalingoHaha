@@ -30,7 +30,6 @@ public class User implements Parcelable {
 
     // Constructor mặc định
     public User() {
-        this.progress = new Progress(); // Khởi tạo mặc định
     }
 
     // Getters và Setters

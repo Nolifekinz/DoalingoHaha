@@ -64,4 +64,6 @@ public class FillBlank {
         this.result = result;
         this.wordList = wordList;
     }
+    public FillBlank() {
+    }
 }

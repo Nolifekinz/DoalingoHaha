@@ -44,12 +44,14 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(binding.getRoot());
 
-//        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-//            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-//            startActivity(intent);
-//            return;
-//        }
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+            return;
+        }
 
+        DataSyncManager dataSyncManager = new DataSyncManager(this);
+        dataSyncManager.syncData(this);
         // Khởi tạo các fragment
         homeFragment = new HomeFragment();
         rankFragment = new RankFragment();
@@ -58,9 +60,6 @@ public class MainActivity extends AppCompatActivity {
         vocabularyFragment = new VocabularyFragment();
 
         setInitialFragment(homeFragment);
-
-        DataSyncManager dataSyncManager = new DataSyncManager(this);
-        dataSyncManager.syncData(this);
 
         binding.bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();

@@ -8,8 +8,8 @@ import androidx.room.TypeConverters;
 import com.example.dualingo.Converter.ListStringConverter;
 
 import java.util.List;
+
 @Entity(tableName = "session")
-@TypeConverters(ListStringConverter.class)
 public class Session {
     @PrimaryKey
     @NonNull
@@ -18,14 +18,14 @@ public class Session {
     private String imgUrl;
 
     private List<String> lecturesId;
-    private boolean isUnlocked; // Trạng thái mở khóa Session
+    private int isUnlocked; // Trạng thái mở khóa Session, sử dụng 0 và 1
 
     // Constructor mặc định
     public Session() {
     }
 
     // Constructor đầy đủ
-    public Session(String idSession, String sessionTitle, String imgUrl, List<String> lecturesId, boolean isUnlocked) {
+    public Session(String idSession, String sessionTitle, String imgUrl, List<String> lecturesId, int isUnlocked) {
         this.idSession = idSession;
         this.sessionTitle = sessionTitle;
         this.imgUrl = imgUrl;
@@ -34,12 +34,12 @@ public class Session {
     }
 
     // Getters và Setters
-    public boolean isUnlocked() {
+    public int getIsUnlocked() {
         return isUnlocked;
     }
 
-    public void setUnlocked(boolean unlocked) {
-        isUnlocked = unlocked;
+    public void setIsUnlocked(int isUnlocked) {
+        this.isUnlocked = isUnlocked;
     }
 
     public String getIdSession() {
@@ -73,5 +73,4 @@ public class Session {
     public void setLecturesId(List<String> lecturesId) {
         this.lecturesId = lecturesId;
     }
-
 }

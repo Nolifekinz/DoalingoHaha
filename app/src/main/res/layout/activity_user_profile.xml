@@ -52,16 +52,6 @@
                             tools:src="@drawable/username_icon" />
                     </androidx.cardview.widget.CardView>
 
-                </LinearLayout>
-
-                <!-- Information Section -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <!-- Username Card -->
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
@@ -93,6 +83,17 @@
                                 android:textAlignment="viewStart" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+                <!-- Information Section -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <!-- Username Card -->
 
                     <!-- XP Card -->
                     <androidx.cardview.widget.CardView
@@ -156,6 +157,73 @@
                                 android:layout_marginStart="5dp"
                                 android:gravity="center_vertical|start"
                                 android:text="#RANKING"
+                                android:textAlignment="viewStart" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="15dp"
+                        app:cardBackgroundColor="#1C142E"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp"
+                        app:contentPadding="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="left"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imageViewProgress"
+                                android:layout_width="30dp"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/arrow_down" />
+
+                            <TextView
+                                android:id="@+id/tvProgress"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="5dp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/duolingo_medium"
+                                android:gravity="start|center_vertical"
+                                android:text="#PROGRESS"
+                                android:textAlignment="viewStart" />
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="15dp"
+                        app:cardBackgroundColor="#1C142E"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp"
+                        app:contentPadding="5dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="left"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imageViewStreak"
+                                android:layout_width="30dp"
+                                android:layout_height="match_parent"
+                                android:src="@drawable/arrow_down" />
+
+                            <TextView
+                                android:id="@+id/tvStreak"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="5dp"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/duolingo_medium"
+                                android:gravity="start|center_vertical"
+                                android:text="#STREAK"
                                 android:textAlignment="viewStart" />
                         </LinearLayout>
                     </androidx.cardview.widget.CardView>

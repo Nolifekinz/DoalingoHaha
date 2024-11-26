@@ -1,5 +1,6 @@
 package com.example.dualingo.DAO;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -19,7 +20,13 @@ public interface LectureDAO {
     Lecture getLectureById(String id);
 
     @Query("SELECT * FROM lecture")
-    List<Lecture> getAllLectures();
+    List<Lecture> getAllLectures();  // Phương thức cũ
+
+    @Query("SELECT * FROM lecture")
+    LiveData<List<Lecture>> getAllLecturesLive();  // Phương thức mới trả về LiveData
+
+    @Query("SELECT * FROM lecture WHERE idLecture IN (:lectureIds)")
+    LiveData<List<Lecture>> getLectureByIds(List<String> lectureIds);
 
     @Delete
     void deleteLecture(Lecture lecture);
