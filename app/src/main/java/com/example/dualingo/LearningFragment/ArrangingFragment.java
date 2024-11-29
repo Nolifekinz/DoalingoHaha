@@ -63,15 +63,24 @@ public class ArrangingFragment extends Fragment {
     }
 
     private void loadArrangingDataFromRoom() {
-        // Fetch data from Room in a background thread
         new Thread(() -> {
+            String lectureId = getArguments() != null ? getArguments().getString("lectureId") : null;
+
             arrangingList.clear();
-            arrangingList.addAll(database.arrangingDAO().getAllArranging()); // Retrieve all Arranging data
+            if (lectureId != null) {
+                arrangingList.addAll(database.arrangingDAO().getArrangingByLectureId(lectureId)); // Truy vấn dựa trên idLecture
+            }
+
             if (!arrangingList.isEmpty()) {
-                getActivity().runOnUiThread(this::showCurrentQuestion); // Update UI on the main thread
+                getActivity().runOnUiThread(this::showCurrentQuestion); // Update UI trên luồng chính
+            } else {
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "No questions found for this lecture!", Toast.LENGTH_SHORT).show();
+                });
             }
         }).start();
     }
+
 
     private void showCurrentQuestion() {
         if (currentQuestionIndex < arrangingList.size()) {

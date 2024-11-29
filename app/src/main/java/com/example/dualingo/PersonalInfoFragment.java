@@ -197,7 +197,7 @@ public class PersonalInfoFragment extends Fragment {
                         User.Progress progress = documentSnapshot.get("progress", User.Progress.class); // Sử dụng đối tượng Progress
                         if (progress != null) {
                             // Hiển thị thông tin progress
-                            binding.tvProgress.setText("Session: " + progress.getSessionId() + ", Lecture: " + progress.getLectureId());
+                            binding.tvProgress.setText("Session: " + progress.getSessionIndex() + ", Lecture: " + progress.getLectureIndex());
                         }
 
                         String followerCount = followerList != null ? String.valueOf("FOLLOWER: #"+followerList.size()) : "FOLLOWER: #0";

@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import androidx.room.Room;
 
 import com.example.dualingo.Models.*;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.concurrent.Executor;
@@ -76,7 +77,8 @@ public class DataSyncManager {
             syncCollection("Vocabulary", Vocabulary.class, data -> database.vocabularyDAO().insertVocabulary((Vocabulary) data));
             syncCollection("VocabularyLesson", VocabularyLesson.class, data -> database.vocabularyLessonDAO().insertVocabularyLesson((VocabularyLesson) data));
             syncCollection("Session", Session.class, data -> database.sessionDAO().insert((Session) data));
-
+            syncCollection("WrongQuestion", WrongQuestion.class, data -> database.wrongQuestionDAO().insertWrongQuestion((WrongQuestion) data));
+            syncUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
             // Lưu timestamp sau khi hoàn tất
             saveLastSyncTime();
         });
@@ -95,6 +97,27 @@ public class DataSyncManager {
             }
         });
     }
+
+    // Thêm hàm syncUser trong DataSyncManager
+    public void syncUser(String currentUserId) {
+        executor.execute(() -> {
+            firestore.collection("users")
+                    .whereEqualTo("id", currentUserId)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            for (com.google.firebase.firestore.DocumentSnapshot doc : task.getResult().getDocuments()) {
+                                User user = doc.toObject(User.class);
+                                if (user != null) {
+                                    executor.execute(() -> database.userDAO().insertUser(user));
+                                }
+                            }
+                            saveLastSyncTime(); // Cập nhật thời gian đồng bộ
+                        }
+                    });
+        });
+    }
+
 
     // Giao diện callback để xử lý dữ liệu
     public interface DataCallback<T> {

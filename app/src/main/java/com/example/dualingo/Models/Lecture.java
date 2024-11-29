@@ -1,7 +1,5 @@
 package com.example.dualingo.Models;
 
-import android.content.Intent;
-
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -13,25 +11,21 @@ public class Lecture {
     private String idLecture;
     private String title;
     private String imageResId;
-    private boolean isUnlocked;
+    private int orderIndex; // Thứ tự của Lecture trong danh sách
+
+    // Constructor mặc định
+    public Lecture() {
+    }
 
     // Constructor đầy đủ
-    public Lecture(String idLecture, String title, String imageResId, boolean isUnlocked) {
+    public Lecture(String idLecture, String title, String imageResId, int orderIndex) {
         this.idLecture = idLecture;
         this.title = title;
         this.imageResId = imageResId;
-        this.isUnlocked = isUnlocked;
+        this.orderIndex = orderIndex;
     }
 
     // Getters và Setters
-    public boolean isUnlocked() {
-        return isUnlocked;
-    }
-
-    public void setUnlocked(boolean unlocked) {
-        isUnlocked = unlocked;
-    }
-
     public String getIdLecture() {
         return idLecture;
     }
@@ -56,12 +50,11 @@ public class Lecture {
         this.imageResId = imageResId;
     }
 
-    public Lecture() {
+    public int getOrderIndex() {
+        return orderIndex;
     }
 
-    public Lecture(String idLecture, String title, String imageResId) {
-        this.idLecture = idLecture;
-        this.title = title;
-        this.imageResId = imageResId;
+    public void setOrderIndex(int orderIndex) {
+        this.orderIndex = orderIndex;
     }
 }

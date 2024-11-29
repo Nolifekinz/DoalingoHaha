@@ -21,6 +21,9 @@ public interface ArrangingDAO {
     @Query("SELECT * FROM arranging")
     List<Arranging> getAllArranging();
 
+    @Query("SELECT * FROM Arranging WHERE idLecture = :lectureId")
+    List<Arranging> getArrangingByLectureId(String lectureId);
+
     @Delete
     void deleteArranging(Arranging arranging);
 }

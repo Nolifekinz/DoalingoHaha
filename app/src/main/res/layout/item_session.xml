@@ -4,19 +4,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <View
-        android:id="@+id/overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/semi_transparent_black"
-        android:visibility="gone" />
-
+    <!-- Tiêu đề session -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:orientation="horizontal"
         android:weightSum="5"
         android:background="@color/aqua">
+
         <ImageView
             android:id="@+id/image_session_title"
             android:layout_width="0dp"
@@ -25,7 +20,7 @@
             android:src="@drawable/points"
             android:scaleX="0.8"
             android:scaleY="0.8"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
 
         <TextView
             android:id="@+id/session_title"
@@ -35,15 +30,27 @@
             android:gravity="center"
             android:text=""
             android:textSize="40sp"
-            android:fontFamily="@font/duolingo_fontfamily"/>
+            android:fontFamily="@font/duolingo_fontfamily" />
     </LinearLayout>
 
     <!-- RecyclerView chứa các bài học -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvLectures"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <!-- Lớp phủ khi session bị khóa -->
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvLectures"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
+        <!-- Lớp phủ -->
+        <View
+            android:id="@+id/overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/semi_transparent_black"
+            android:visibility="gone" />
+    </FrameLayout>
 </LinearLayout>

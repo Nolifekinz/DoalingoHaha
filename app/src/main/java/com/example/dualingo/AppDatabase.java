@@ -17,9 +17,11 @@ import com.example.dualingo.DAO.LectureDAO;
 import com.example.dualingo.DAO.ListeningDAO;
 import com.example.dualingo.DAO.SessionDAO;
 import com.example.dualingo.DAO.SpeakingDAO;
+import com.example.dualingo.DAO.UserDAO;
 import com.example.dualingo.DAO.VocabularyDAO;
 import com.example.dualingo.DAO.VocabularyLessonDAO;
 
+import com.example.dualingo.DAO.WrongQuestionDAO;
 import com.example.dualingo.Models.Arranging;
 import com.example.dualingo.Models.FillBlank;
 import com.example.dualingo.Models.Grammar;
@@ -28,17 +30,21 @@ import com.example.dualingo.Models.Lecture;
 import com.example.dualingo.Models.Listening;
 import com.example.dualingo.Models.Session;
 import com.example.dualingo.Models.Speaking;
+import com.example.dualingo.Models.User;
 import com.example.dualingo.Models.Vocabulary;
 import com.example.dualingo.Models.VocabularyLesson;
+import com.example.dualingo.Models.WrongQuestion;
 
 @Database(
         entities = {Arranging.class, FillBlank.class, Grammar.class, Introduction.class,
                 Lecture.class, Listening.class, Session.class, Speaking.class,
-                Vocabulary.class, VocabularyLesson.class},
+                Vocabulary.class, VocabularyLesson.class, User.class, WrongQuestion.class},
         version = 1
 )
+
 @TypeConverters({ListStringConverter.class, FormulaConverter.class})
 public abstract class AppDatabase extends RoomDatabase {
+    public abstract UserDAO userDAO();
     public abstract ArrangingDAO arrangingDAO();
     public abstract FillBlankDAO fillBlankDAO();
     public abstract GrammarDAO grammarDAO();
@@ -49,6 +55,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract SpeakingDAO speakingDAO();
     public abstract VocabularyDAO vocabularyDAO();
     public abstract VocabularyLessonDAO vocabularyLessonDAO();
+    public abstract WrongQuestionDAO wrongQuestionDAO();
 
     private static volatile AppDatabase INSTANCE;
 

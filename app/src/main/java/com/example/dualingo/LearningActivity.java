@@ -1,7 +1,6 @@
 package com.example.dualingo;
 
 import android.os.Bundle;
-import android.widget.ImageButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,8 +10,10 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.dualingo.LearningFragment.ArrangingFragment;
 import com.example.dualingo.LearningFragment.FillInBlankFragment;
-import com.example.dualingo.LearningFragment.TranslateFragment;
+import com.example.dualingo.LearningFragment.ListeningFragment;
+import com.example.dualingo.LearningFragment.SpeakingFragment;
 
 public class LearningActivity extends AppCompatActivity {
 
@@ -29,23 +30,34 @@ public class LearningActivity extends AppCompatActivity {
         });
 
         String questionType = getCurrentQuestionType();
-
-        // Chuyển đổi giữa các Fragment dựa trên loại câu hỏi
         switchFragment(questionType);
 
 
     }
     private String getCurrentQuestionType() {
-        // Lấy loại câu hỏi từ dữ liệu (ví dụ từ database hoặc danh sách câu hỏi)
-        return "translate"; // Chỉ là ví dụ
+        return "translate";
     }
 
     private void switchFragment(String questionType) {
         Fragment fragment;
-        if ("translate".equals(questionType)) {
-            fragment = new TranslateFragment();
-        } else {
+        String lectureId = getIntent().getStringExtra("lectureId");
+        Bundle bundle = new Bundle();
+        bundle.putString("lectureId", lectureId);
+        if ("arranging".equals(questionType)) {
+            fragment = new ArrangingFragment();
+            fragment.setArguments(bundle);
+        }
+        else if("fillBlank".equals(questionType)) {
             fragment = new FillInBlankFragment();
+        }
+        else if("listening".equals(questionType)) {
+            fragment = new ListeningFragment();
+        }
+        else if("speaking".equals(questionType)) {
+            fragment = new SpeakingFragment();
+        }
+        else {
+            fragment = new ArrangingFragment();
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -53,4 +65,5 @@ public class LearningActivity extends AppCompatActivity {
                 .replace(R.id.LearningFragment, fragment)
                 .commit();
     }
+
 }

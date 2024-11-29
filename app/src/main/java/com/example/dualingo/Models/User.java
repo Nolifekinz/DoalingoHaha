@@ -3,22 +3,32 @@ package com.example.dualingo.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity(tableName = "users")
 public class User implements Parcelable {
-    private String id = "", username = "", email = "", profilePic = "";
+    @PrimaryKey
+    @NonNull
+    private String id = "";
+    private String username = "", email = "", profilePic = "";
     private List<String> followerList = new ArrayList<>();
     private List<String> followingList = new ArrayList<>();
-    private List<String> opponentList = new ArrayList<>();
     private Long exp = 0L;
     private Long rank = 0L;
+    private int streak = 0;
+    @Embedded
+    private Progress progress;
+    private String idBattle;
+    private String idWrongQuestion;
+    private Long lastStudyDate = 0L;
 
-    private int streak = 0; // Chuỗi học liên tiếp
-    private Progress progress; // Tiến trình học tập
-
-    // Constructor đầy đủ
-    public User(String id, String email, String username, Long exp, Long rank, int streak, Progress progress) {
+    public User(String id, String email, String username, Long exp, Long rank, int streak, Progress progress, String idBattle, String idWrongQuestion, Long lastStudyDate) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -26,13 +36,30 @@ public class User implements Parcelable {
         this.rank = rank;
         this.streak = streak;
         this.progress = progress;
+        this.idBattle = idBattle;
+        this.idWrongQuestion = idWrongQuestion;
+        this.lastStudyDate = lastStudyDate;
     }
 
-    // Constructor mặc định
     public User() {
     }
 
-    // Getters và Setters
+    public String getIdBattle() {
+        return idBattle;
+    }
+
+    public void setIdBattle(String idBattle) {
+        this.idBattle = idBattle;
+    }
+
+    public String getIdWrongQuestion() {
+        return idWrongQuestion;
+    }
+
+    public void setIdWrongQuestion(String idWrongQuestion) {
+        this.idWrongQuestion = idWrongQuestion;
+    }
+
     public int getStreak() {
         return streak;
     }
@@ -113,15 +140,36 @@ public class User implements Parcelable {
         this.rank = rank;
     }
 
-    public List<String> getOpponentList() {
-        return opponentList;
+    public Long getLastStudyDate() {
+        return lastStudyDate;
     }
 
-    public void setOpponentList(List<String> opponentList) {
-        this.opponentList = opponentList;
+    public void setLastStudyDate(Long lastStudyDate) {
+        this.lastStudyDate = lastStudyDate;
     }
 
-    // Parcelable implementation
+    public void updateStreak() {
+        long currentTime = System.currentTimeMillis();
+        long oneDayInMillis = 86400000;
+        long currentDay = currentTime / oneDayInMillis;
+        long lastStudyDay = lastStudyDate / oneDayInMillis;
+
+        if (currentDay == lastStudyDay) {
+            return;
+        }
+
+        long daysDifference = currentDay - lastStudyDay;
+        if (daysDifference == 1) {
+            streak++;
+        } else {
+            streak = 1;
+        }
+
+        lastStudyDate = currentTime;
+    }
+
+
+
     protected User(Parcel in) {
         id = in.readString();
         username = in.readString();
@@ -129,7 +177,6 @@ public class User implements Parcelable {
         profilePic = in.readString();
         followerList = in.createStringArrayList();
         followingList = in.createStringArrayList();
-        opponentList = in.createStringArrayList();
         if (in.readByte() == 0) {
             exp = null;
         } else {
@@ -142,6 +189,9 @@ public class User implements Parcelable {
         }
         streak = in.readInt();
         progress = in.readParcelable(Progress.class.getClassLoader());
+        idBattle = in.readString();
+        idWrongQuestion = in.readString();
+        lastStudyDate = in.readLong();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -169,7 +219,6 @@ public class User implements Parcelable {
         dest.writeString(profilePic);
         dest.writeStringList(followerList);
         dest.writeStringList(followingList);
-        dest.writeStringList(opponentList);
         if (exp == null) {
             dest.writeByte((byte) 0);
         } else {
@@ -184,40 +233,42 @@ public class User implements Parcelable {
         }
         dest.writeInt(streak);
         dest.writeParcelable(progress, flags);
+        dest.writeString(idBattle);
+        dest.writeString(idWrongQuestion);
+        dest.writeLong(lastStudyDate);
     }
 
-    // Lớp Progress
     public static class Progress implements Parcelable {
-        private String sessionId = "";
-        private String lectureId = "";
+        private int sessionIndex = 1;
+        private int lectureIndex = 1;
 
         public Progress() {
         }
 
-        public Progress(String sessionIndex, String lectureIndex) {
-            this.sessionId = sessionIndex;
-            this.lectureId = lectureIndex;
+        public Progress(int sessionIndex, int lectureIndex) {
+            this.sessionIndex = sessionIndex;
+            this.lectureIndex = lectureIndex;
         }
 
-        public String getSessionId() {
-            return sessionId;
+        public int getSessionIndex() {
+            return sessionIndex;
         }
 
-        public void setSessionId(String sessionIndex) {
-            this.sessionId = sessionIndex;
+        public void setSessionIndex(int sessionIndex) {
+            this.sessionIndex = sessionIndex;
         }
 
-        public String getLectureId() {
-            return lectureId;
+        public int getLectureIndex() {
+            return lectureIndex;
         }
 
-        public void setLectureId(String lectureIndex) {
-            this.lectureId = lectureIndex;
+        public void setLectureIndex(int lectureIndex) {
+            this.lectureIndex = lectureIndex;
         }
 
         protected Progress(Parcel in) {
-            sessionId = in.readString();
-            lectureId = in.readString();
+            sessionIndex = in.readInt();
+            lectureIndex = in.readInt();
         }
 
         public static final Creator<Progress> CREATOR = new Creator<Progress>() {
@@ -234,8 +285,8 @@ public class User implements Parcelable {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(sessionId);
-            dest.writeString(lectureId);
+            dest.writeInt(sessionIndex);
+            dest.writeInt(lectureIndex);
         }
 
         @Override
@@ -243,4 +294,5 @@ public class User implements Parcelable {
             return 0;
         }
     }
+
 }

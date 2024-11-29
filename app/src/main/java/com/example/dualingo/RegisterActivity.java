@@ -75,7 +75,10 @@ public class RegisterActivity extends AppCompatActivity {
                                 0L, // exp
                                 0L, // rank
                                 0,  // streak
-                                new User.Progress("", "") // progress (sessionIndex = 0, lectureIndex = 0)
+                                new User.Progress(1, 1),
+                                "",
+                                "",
+                                0L
                         );
                         FirebaseFirestore.getInstance().collection("users")
                                 .document(user.getUid())

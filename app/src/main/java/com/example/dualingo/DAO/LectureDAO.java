@@ -28,6 +28,9 @@ public interface LectureDAO {
     @Query("SELECT * FROM lecture WHERE idLecture IN (:lectureIds)")
     LiveData<List<Lecture>> getLectureByIds(List<String> lectureIds);
 
+    @Query("SELECT * FROM lecture WHERE idLecture IN (:lectureIds) ORDER BY orderIndex ASC")
+    LiveData<List<Lecture>> getLectureByIdsOrdered(List<String> lectureIds);
+
     @Delete
     void deleteLecture(Lecture lecture);
 }

@@ -14,7 +14,7 @@ public class Introduction {
     private String title;
     private List<String> vocabularyId;
     private List<String> grammarId;
-
+    private String idLecture;  // Thêm idLecture vào đây
 
     public String getTitle() {
         return title;
@@ -23,6 +23,7 @@ public class Introduction {
     public void setTitle(String title) {
         this.title = title;
     }
+
     public String getIdIntroduction() {
         return idIntroduction;
     }
@@ -35,25 +36,35 @@ public class Introduction {
         return vocabularyId;
     }
 
-    public void setVocabularyId(List<String> vocabularys) {
-        this.vocabularyId = vocabularys;
+    public void setVocabularyId(List<String> vocabularyId) {
+        this.vocabularyId = vocabularyId;
     }
 
     public List<String> getGrammarId() {
         return grammarId;
     }
 
-    public void setGrammarId(List<String> grammars) {
-        this.grammarId = grammars;
+    public void setGrammarId(List<String> grammarId) {
+        this.grammarId = grammarId;
     }
 
-    public Introduction(String idIntroduction, String title, List<String> vocabularyId, List<String> grammarId) {
+    public String getIdLecture() {
+        return idLecture;
+    }
+
+    public void setIdLecture(String idLecture) {
+        this.idLecture = idLecture;
+    }
+
+    // Constructor có thêm idLecture
+    public Introduction(String idIntroduction, String title, List<String> vocabularyId, List<String> grammarId, String idLecture) {
         this.idIntroduction = idIntroduction;
         this.title = title;
         this.vocabularyId = vocabularyId;
         this.grammarId = grammarId;
+        this.idLecture = idLecture;
     }
 
-
+    // Constructor mặc định
     public Introduction() { }
 }

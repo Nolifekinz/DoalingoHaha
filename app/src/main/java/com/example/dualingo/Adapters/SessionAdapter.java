@@ -1,5 +1,4 @@
 package com.example.dualingo.Adapters;
-import com.example.dualingo.DAO.LectureDAO;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,23 +12,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.dualingo.Models.Lecture;
 import com.example.dualingo.Models.Session;
 import com.example.dualingo.R;
 import com.example.dualingo.AppDatabase;
+import com.example.dualingo.DAO.LectureDAO;
+import com.example.dualingo.Models.User;
+import com.google.firebase.auth.FirebaseAuth;
 
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 
 public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionViewHolder> {
 
@@ -37,14 +34,19 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
     private List<Session> sessionList;
     private LectureAdapter.OnLectureClickListener listener;
     private AppDatabase appDatabase;
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    private User currentUser; // Lưu trữ người dùng hiện tại
 
     public SessionAdapter(Context context, List<Session> sessionList, LectureAdapter.OnLectureClickListener listener) {
         this.context = context;
         this.sessionList = sessionList;
         this.listener = listener;
         this.appDatabase = AppDatabase.getDatabase(context);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            currentUser = appDatabase.userDAO().getCurrentUser();
+
+        });
     }
+
 
     @NonNull
     @Override
@@ -58,56 +60,39 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
     public void onBindViewHolder(@NonNull SessionViewHolder holder, int position) {
         Session session = sessionList.get(position);
 
-        // Set session title text
-        holder.tvSessionTitle.setText(session.getSessionTitle());
+        if (currentUser.getProgress().getSessionIndex() >= position+1) {
+            holder.overlay.setVisibility(View.GONE); // Session được mở
+        } else {
+            holder.overlay.setVisibility(View.VISIBLE); // Session bị khóa
+        }
 
-        // Set image for session
+        holder.tvSessionTitle.setText(session.getSessionTitle());
         holder.image_session_title.setImageResource(R.drawable.fire);
 
-        // Fetch lectures from Room Database
-        fetchLecturesFromRoom(session.getLecturesId(), holder);
-
-        // Check if session is unlocked
-        if (session.getIsUnlocked() == 0) {
-            // Show overlay if session is locked
-            holder.overlay.setVisibility(View.VISIBLE);
-            holder.itemView.setEnabled(false); // Disable click
-
-            // Handle session click to show unlock dialog
-            holder.overlay.setOnClickListener(v -> showUnlockDialog(session));
-        } else {
-            // Hide overlay if session is unlocked
-            holder.overlay.setVisibility(View.GONE);
-            holder.itemView.setEnabled(true); // Enable click
-        }
+        fetchLecturesFromRoom(session.getLecturesId(), holder, position);
     }
+
+
 
     @Override
     public int getItemCount() {
         return sessionList.size();
     }
 
-    private void fetchLecturesFromRoom(List<String> lecturesId, SessionViewHolder holder) {
-        // Use LiveData to fetch data asynchronously from Room
+    private void fetchLecturesFromRoom(List<String> lecturesId, SessionViewHolder holder, int sessionPosition) {
         LectureDAO lectureDao = appDatabase.lectureDAO();
 
-        LiveData<List<Lecture>> lecturesLiveData = lectureDao.getLectureByIds(lecturesId);
+        LiveData<List<Lecture>> lecturesLiveData = lectureDao.getLectureByIdsOrdered(lecturesId);
 
-        // Observer to update UI when data is fetched from Room
-        lecturesLiveData.observeForever(new Observer<List<Lecture>>() {
-            @Override
-            public void onChanged(List<Lecture> lectures) {
-                if (lectures != null && !lectures.isEmpty()) {
-                    // Set up RecyclerView with LectureAdapter
-                    LectureAdapter lectureAdapter = new LectureAdapter(context, lectures, listener);
-                    holder.rvLectures.setLayoutManager(new GridLayoutManager(context, 1));
-                    holder.rvLectures.setAdapter(lectureAdapter);
-                } else {
-                    Toast.makeText(context, "No lectures found", Toast.LENGTH_SHORT).show();
-                }
+        lecturesLiveData.observeForever(lectures -> {
+            if (lectures != null && !lectures.isEmpty()) {
+                LectureAdapter lectureAdapter = new LectureAdapter(context, lectures, sessionPosition, listener, currentUser);
+                holder.rvLectures.setLayoutManager(new GridLayoutManager(context, 1));
+                holder.rvLectures.setAdapter(lectureAdapter);
             }
         });
     }
+
 
     // Show dialog to unlock session
     private void showUnlockDialog(Session session) {
@@ -121,29 +106,31 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
 
     // Unlock the session and update its state in the database
     private void unlockSession(Session session) {
-        session.setIsUnlocked(1); // Update the session state to unlocked
+        Executors.newSingleThreadExecutor().execute(() -> {
+            int currentSessionIndex = sessionList.indexOf(session);
+            if (currentUser.getProgress().getSessionIndex() < currentSessionIndex) {
+                currentUser.getProgress().setSessionIndex(currentSessionIndex);
+                appDatabase.userDAO().updateUser(currentUser);
 
-        // Update session in the database
-        executor.execute(() -> {
-            appDatabase.sessionDAO().update(session);
-
-            // Refresh UI after unlocking the session
-            ((Activity) context).runOnUiThread(() -> notifyDataSetChanged());
+                // Refresh RecyclerView để cập nhật giao diện
+                ((Activity) context).runOnUiThread(this::notifyDataSetChanged);
+            }
         });
     }
+
 
     public static class SessionViewHolder extends RecyclerView.ViewHolder {
         TextView tvSessionTitle;
         RecyclerView rvLectures;
         ImageView image_session_title;
-        View overlay; // Overlay view
+        View overlay;
 
         public SessionViewHolder(@NonNull View itemView) {
             super(itemView);
             image_session_title = itemView.findViewById(R.id.image_session_title);
             tvSessionTitle = itemView.findViewById(R.id.session_title);
             rvLectures = itemView.findViewById(R.id.rvLectures);
-            overlay = itemView.findViewById(R.id.overlay); // Initialize overlay
+            overlay = itemView.findViewById(R.id.overlay);
         }
     }
 }

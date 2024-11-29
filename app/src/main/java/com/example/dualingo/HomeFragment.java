@@ -26,7 +26,7 @@ import com.example.dualingo.databinding.FragmentHomeBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeFragment extends Fragment implements LectureAdapter.OnLectureClickListener {
+public class HomeFragment extends Fragment  {
 
     private FragmentHomeBinding binding;
     private List<Session> sessionList = new ArrayList<>();
@@ -89,14 +89,21 @@ public class HomeFragment extends Fragment implements LectureAdapter.OnLectureCl
     }
 
     private void setupRecyclerViews() {
-        sessionAdapter = new SessionAdapter(getContext(), sessionList, this);
+        sessionAdapter = new SessionAdapter(getContext(), sessionList, (sessionPos, lecturePos) -> {
+            // Xử lý sự kiện khi người dùng click vào Lecture
+            Intent intent = new Intent(getContext(), LearningActivity.class);
+            intent.putExtra("sessionPosition", sessionPos);
+            intent.putExtra("lecturePosition", lecturePos);
+            startActivity(intent);
+        });
         recyclerViewSession.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewSession.setAdapter(sessionAdapter);
+
     }
 
     private void loadDataFromDatabase() {
         // Quan sát LiveData từ Room Database
-        LiveData<List<Session>> liveSessionList = database.sessionDAO().getAllSessionsLive();
+        LiveData<List<Session>> liveSessionList = database.sessionDAO().getAllSessionsOrdered();
         liveSessionList.observe(getViewLifecycleOwner(), new Observer<List<Session>>() {
             @Override
             public void onChanged(List<Session> sessions) {
@@ -127,12 +134,4 @@ public class HomeFragment extends Fragment implements LectureAdapter.OnLectureCl
         binding = null;
     }
 
-    @Override
-    public void onLectureClick(int sessionPosition, int lecturePosition) {
-        Intent intent = new Intent(getContext(), SetTimeActivity.class);
-        String idLecture = lectures.get(lecturePosition).getIdLecture();
-
-        intent.putExtra("idLecture", idLecture);
-        startActivity(intent);
-    }
 }

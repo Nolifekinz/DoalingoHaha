@@ -89,22 +89,22 @@ public class RankFragment extends Fragment {
         }
 
         // Lấy thông tin người dùng từ Firestore
-        db.collection("users").document(firebaseUser.getUid()).get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        User currentUser = documentSnapshot.toObject(User.class);
-
-                        // Kiểm tra xem opponentList có giá trị hay không
-                        if (currentUser.getOpponentList() == null || currentUser.getOpponentList().isEmpty()) {
-                            fetchUsersByRank(currentUser.getRank()); // Gọi hàm lấy người dùng theo rank
-                        } else {
-                            fetchUsersByIds(currentUser.getOpponentList()); // Gọi hàm load opponents
-                        }
-                    } else {
-                        Toast.makeText(getContext(), "User document does not exist", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to load user data", Toast.LENGTH_SHORT).show());
+//        db.collection("users").document(firebaseUser.getUid()).get()
+//                .addOnSuccessListener(documentSnapshot -> {
+//                    if (documentSnapshot.exists()) {
+//                        User currentUser = documentSnapshot.toObject(User.class);
+//
+//                        // Kiểm tra xem opponentList có giá trị hay không
+//                        if (currentUser.getOpponentList() == null || currentUser.getOpponentList().isEmpty()) {
+//                            fetchUsersByRank(currentUser.getRank()); // Gọi hàm lấy người dùng theo rank
+//                        } else {
+//                            fetchUsersByIds(currentUser.getOpponentList()); // Gọi hàm load opponents
+//                        }
+//                    } else {
+//                        Toast.makeText(getContext(), "User document does not exist", Toast.LENGTH_SHORT).show();
+//                    }
+//                })
+//                .addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to load user data", Toast.LENGTH_SHORT).show());
     }
 
 
@@ -137,9 +137,9 @@ public class RankFragment extends Fragment {
                         if (documentSnapshot.exists()) {
                             User currentUserObj = documentSnapshot.toObject(User.class);
                             if (currentUserObj != null) {
-                                for (User opponent : randomUsers) {
-                                    currentUserObj.getOpponentList().add(opponent.getId());
-                                }
+//                                for (User opponent : randomUsers) {
+//                                    currentUserObj.getOpponentList().add(opponent.getId());
+//                                }
                                 db.collection("users").document(currentUser.getUid())
                                         .set(currentUserObj)
                                         .addOnSuccessListener(aVoid -> {

@@ -1,7 +1,5 @@
 package com.example.dualingo;
 
-import static java.security.AccessController.getContext;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -14,14 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dualingo.Adapters.VocabularyAdapter;
-import com.example.dualingo.LearningFragment.FillInBlankFragment;
-import com.example.dualingo.LearningFragment.TranslateFragment;
 import com.example.dualingo.Models.Vocabulary;
 
 import java.util.ArrayList;

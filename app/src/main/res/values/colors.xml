@@ -38,4 +38,6 @@
     <color name="duolingo">#57cc02</color>
     <color name="oldColor">#FFC107</color>
     <color name="semi_transparent_black">#80000000</color>
+    <color name="semi_transparent_red">#66FF0000</color>
+    <color name="semi_transparent_yellow">#66FFFF00</color>
 </resources>

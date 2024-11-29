@@ -36,4 +36,7 @@ public interface SessionDAO {
     // Lấy một session theo ID
     @Query("SELECT * FROM session WHERE idSession = :id")
     Session getSessionById(String id);
+
+    @Query("SELECT * FROM session ORDER BY orderIndex ASC")
+    LiveData<List<Session>> getAllSessionsOrdered();
 }

@@ -3,9 +3,6 @@ package com.example.dualingo.Models;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverters;
-
-import com.example.dualingo.Converter.ListStringConverter;
 
 import java.util.List;
 
@@ -16,32 +13,23 @@ public class Session {
     private String idSession;
     private String sessionTitle;
     private String imgUrl;
-
     private List<String> lecturesId;
-    private int isUnlocked; // Trạng thái mở khóa Session, sử dụng 0 và 1
+    private int orderIndex; // Thứ tự của Session
 
     // Constructor mặc định
     public Session() {
     }
 
     // Constructor đầy đủ
-    public Session(String idSession, String sessionTitle, String imgUrl, List<String> lecturesId, int isUnlocked) {
+    public Session(String idSession, String sessionTitle, String imgUrl, List<String> lecturesId, int orderIndex) {
         this.idSession = idSession;
         this.sessionTitle = sessionTitle;
         this.imgUrl = imgUrl;
         this.lecturesId = lecturesId;
-        this.isUnlocked = isUnlocked;
+        this.orderIndex = orderIndex;
     }
 
     // Getters và Setters
-    public int getIsUnlocked() {
-        return isUnlocked;
-    }
-
-    public void setIsUnlocked(int isUnlocked) {
-        this.isUnlocked = isUnlocked;
-    }
-
     public String getIdSession() {
         return idSession;
     }
@@ -72,5 +60,13 @@ public class Session {
 
     public void setLecturesId(List<String> lecturesId) {
         this.lecturesId = lecturesId;
+    }
+
+    public int getOrderIndex() {
+        return orderIndex;
+    }
+
+    public void setOrderIndex(int orderIndex) {
+        this.orderIndex = orderIndex;
     }
 }

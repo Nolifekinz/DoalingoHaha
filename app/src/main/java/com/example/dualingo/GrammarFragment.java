@@ -71,7 +71,6 @@ public class GrammarFragment extends Fragment {
                         "Dùng với các trạng từ như now, right now, at the moment"),
                 List.of("I am watching TV.", "They are playing soccer right now.")
         ));
-        // Thêm nhiều mục ngữ pháp khác...
         return list;
     }
 }
