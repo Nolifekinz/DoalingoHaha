@@ -1,13 +1,13 @@
 package com.example.dualingo.LearningFragment;
 
 import android.Manifest;
-import android.content.Intent;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.AudioFormat;
+import android.media.AudioRecord;
+import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
-import android.speech.tts.TextToSpeech;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +21,16 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 
+import com.example.dualingo.DAO.SpeakingDAO;
 import com.example.dualingo.Models.Speaking;
 import com.example.dualingo.R;
 import com.example.dualingo.AppDatabase;
-import com.example.dualingo.DAO.SpeakingDAO;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.List;
 
 public class SpeakingFragment extends Fragment {
@@ -39,14 +39,17 @@ public class SpeakingFragment extends Fragment {
     private ProgressBar recordingIndicator;
     private Button recordButton, checkAnswerButton;
 
-    private TextToSpeech tts;
-    private SpeechRecognizer speechRecognizer;
-    private String recordedAnswer = "";
+    private AudioRecord audioRecord;
+    private String audioFilePath;
+    private boolean isRecording = false;
+    private Thread recordingThread;
 
+    private SpeakingDAO speakingDao;
     private List<Speaking> speakingList = new ArrayList<>();
-    private Speaking currentSpeaking;
 
-    private final String currentLectureId = "1"; // Giả sử bạn đã có ID của bài học hiện tại
+    public SpeakingFragment() {
+        // Required empty public constructor
+    }
 
     @Nullable
     @Override
@@ -60,148 +63,155 @@ public class SpeakingFragment extends Fragment {
         recordButton = view.findViewById(R.id.recordButton);
         checkAnswerButton = view.findViewById(R.id.checkAnswerButton);
 
-        recordingIndicator.setVisibility(View.GONE); // Hide recording indicator initially
+        // Initialize Room Database and SpeakingDao
+        speakingDao = AppDatabase.getDatabase(requireContext()).speakingDAO();
 
-        // Initialize Text-to-Speech
-        tts = new TextToSpeech(getContext(), status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                tts.setLanguage(Locale.ENGLISH);
-            }
-        });
+        // Get lectureId from Bundle
+        String lectureId = getArguments().getString("lectureId");
 
-        // Initialize SpeechRecognizer
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getContext());
+        // Fetch speaking data from Room based on lectureId
+        fetchSpeakingData(lectureId);
 
-        // Setup button listeners
-        recordButton.setOnClickListener(v -> startRecording());
+        // Set up file path for audio
+        audioFilePath = requireContext().getExternalFilesDir(null) + "/audioRecording.pcm";
+
+        // Set up button listeners
+        recordButton.setOnClickListener(v -> toggleRecording());
         checkAnswerButton.setOnClickListener(v -> checkAnswer());
 
         // Request microphone permission
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 1);
-        }
-
-        // Load speaking data from Room
-        loadSpeakingDataFromRoom();
+        checkAndRequestPermission();
 
         return view;
     }
 
-    private void loadSpeakingDataFromRoom() {
-        AppDatabase database = AppDatabase.getDatabase(getContext());
-        SpeakingDAO speakingDAO = database.speakingDAO();
+    private void checkAndRequestPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            // Request permission if not granted
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+        }
+    }
 
-        LiveData<List<Speaking>> liveDataSpeakingList = speakingDAO.getSpeaksByLectureId(currentLectureId);
-
-        liveDataSpeakingList.observe(getViewLifecycleOwner(), new Observer<List<Speaking>>() {
-            @Override
-            public void onChanged(List<Speaking> speakingList) {
-                if (speakingList != null && !speakingList.isEmpty()) {
-                    currentSpeaking = speakingList.get(0); // Lấy bài học đầu tiên
-                    questionTextView.setText(currentSpeaking.getQuestion()); // Hiển thị câu hỏi
+    private void fetchSpeakingData(String lectureId) {
+        new Thread(() -> {
+            speakingList = speakingDao.getSpeaksByLectureId(lectureId); // Query from Room based on lectureId
+            getActivity().runOnUiThread(() -> {
+                if (!speakingList.isEmpty()) {
+                    Speaking currentSpeaking = speakingList.get(0); // Use first item as example
+                    questionTextView.setText(currentSpeaking.getQuestion());
                 }
-            }
-        });
+            });
+        }).start();
+    }
 
-
-        if (!speakingList.isEmpty()) {
-            // Select the first speaking lesson
-            currentSpeaking = speakingList.get(0);
-
-            // Update UI with the question of the current lesson
-            questionTextView.setText(currentSpeaking.getQuestion());
+    private void toggleRecording() {
+        if (isRecording) {
+            stopRecording();
+        } else {
+            startRecording();
         }
     }
 
     private void startRecording() {
-        // Show recording indicator and disable record button
-        recordingIndicator.setVisibility(View.VISIBLE);
-        recordButton.setEnabled(false);
+        // Check permission before starting
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+            // Show recording indicator and disable record button
+            recordingIndicator.setVisibility(View.VISIBLE);
+            recordButton.setEnabled(false);
 
-        // Start speech recognition intent
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
+            // Set up AudioRecord
+            int sampleRate = 16000; // Set the sample rate (16kHz is common for speech)
+            int channelConfig = AudioFormat.CHANNEL_IN_MONO; // Mono channel
+            int audioFormat = AudioFormat.ENCODING_PCM_16BIT; // 16-bit encoding
 
-        speechRecognizer.setRecognitionListener(new RecognitionListener() {
-            @Override
-            public void onResults(Bundle results) {
-                ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-                if (matches != null && !matches.isEmpty()) {
-                    recordedAnswer = matches.get(0).trim();
-                }
-                Toast.makeText(getContext(), "Recorded: " + recordedAnswer, Toast.LENGTH_SHORT).show();
+            int bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);
+            audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, channelConfig, audioFormat, bufferSize);
+
+            try {
+                // Start the recording in a new thread
+                audioRecord.startRecording();
+                isRecording = true;
+
+                recordingThread = new Thread(() -> writeAudioDataToFile());
+                recordingThread.start();
+
+            } catch (SecurityException e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "Microphone access denied. Please grant the permission.", Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onEndOfSpeech() {
-                // Hide recording indicator and re-enable record button
-                recordingIndicator.setVisibility(View.GONE);
-                recordButton.setEnabled(true);
-                checkAnswer(); // Automatically check answer after recording
-            }
-
-            @Override public void onReadyForSpeech(Bundle params) {}
-            @Override public void onBeginningOfSpeech() {}
-            @Override public void onRmsChanged(float rmsdB) {}
-            @Override public void onBufferReceived(byte[] buffer) {}
-            @Override public void onError(int error) {
-                recordingIndicator.setVisibility(View.GONE);
-                recordButton.setEnabled(true);
-
-                String errorMessage = getSpeechRecognitionErrorMessage(error);
-                Toast.makeText(getContext(), "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override public void onPartialResults(Bundle partialResults) {}
-            @Override public void onEvent(int eventType, Bundle params) {}
-        });
-
-        speechRecognizer.startListening(intent);
-    }
-
-    private String getSpeechRecognitionErrorMessage(int error) {
-        switch (error) {
-            case SpeechRecognizer.ERROR_AUDIO: return "Audio recording error";
-            case SpeechRecognizer.ERROR_CLIENT: return "Client error";
-            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS: return "Insufficient permissions";
-            case SpeechRecognizer.ERROR_NETWORK: return "Network error";
-            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT: return "Network timeout";
-            case SpeechRecognizer.ERROR_NO_MATCH: return "No match found";
-            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY: return "Recognizer is busy";
-            case SpeechRecognizer.ERROR_SERVER: return "Server error";
-            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT: return "Speech timeout";
-            default: return "Unknown error";
+        } else {
+            // Permission not granted, show a toast or request permission again
+            Toast.makeText(getContext(), "Permission is required to record audio.", Toast.LENGTH_SHORT).show();
+            checkAndRequestPermission();
         }
     }
 
+    private void writeAudioDataToFile() {
+        byte[] audioData = new byte[1024];
+        FileOutputStream fos = null;
+
+        try {
+            fos = new FileOutputStream(audioFilePath);
+            while (isRecording) {
+                int read = audioRecord.read(audioData, 0, audioData.length);
+                if (read != AudioRecord.ERROR_INVALID_OPERATION) {
+                    fos.write(audioData, 0, read);
+                }
+            }
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stopRecording() {
+        // Stop recording and release resources
+        isRecording = false;
+        audioRecord.stop();
+        audioRecord.release();
+        audioRecord = null;
+        recordingIndicator.setVisibility(View.GONE);
+        recordButton.setEnabled(true);
+    }
+
     private void checkAnswer() {
+        stopRecording(); // Stop recording after checking answer
+
+        // Process the recorded audio
+        String recordedAnswer = processRecordedAudio(audioFilePath); // Example method for processing audio
+
         if (recordedAnswer.isEmpty()) {
             Toast.makeText(getContext(), "Please record your answer first!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        String correctAnswer = currentSpeaking.getQuestion().trim().toLowerCase();
-        String userAnswer = recordedAnswer.toLowerCase();
+        // Get the correct answer from the fetched data
+        if (!speakingList.isEmpty()) {
+            String correctAnswer = speakingList.get(0).getQuestion().trim().toLowerCase(); // Assuming using first item
+            String userAnswer = recordedAnswer.toLowerCase();
 
-        if (userAnswer.equals(correctAnswer)) {
-            resultTextView.setText("Correct!");
-            resultTextView.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-        } else {
-            resultTextView.setText("Incorrect. Try again!");
-            resultTextView.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+            if (userAnswer.equals(correctAnswer)) {
+                resultTextView.setText("Correct!");
+                resultTextView.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+            } else {
+                resultTextView.setText("Incorrect. Try again!");
+                resultTextView.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+            }
         }
+    }
+
+    private String processRecordedAudio(String audioFilePath) {
+        // Implement a method to process the audio file and return the text (you can use libraries like Speech-to-Text)
+        return ""; // Return transcribed text
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
-        }
-        if (speechRecognizer != null) {
-            speechRecognizer.destroy();
+        if (audioRecord != null) {
+            audioRecord.release();
+            audioRecord = null;
         }
     }
 

@@ -14,10 +14,10 @@ import com.example.dualingo.LearningFragment.ArrangingFragment;
 import com.example.dualingo.LearningFragment.FillInBlankFragment;
 import com.example.dualingo.LearningFragment.ListeningFragment;
 import com.example.dualingo.LearningFragment.SpeakingFragment;
-
 public class LearningActivity extends AppCompatActivity {
 
     Fragment learningFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,40 +29,31 @@ public class LearningActivity extends AppCompatActivity {
             return insets;
         });
 
-        String questionType = getCurrentQuestionType();
-        switchFragment(questionType);
-
-
-    }
-    private String getCurrentQuestionType() {
-        return "translate";
+        String questionType = getIntent().getStringExtra("typeQuestion");
+        String lectureId = getIntent().getStringExtra("lectureId"); // Get lectureId from Intent
+        switchFragment(questionType, lectureId);
     }
 
-    private void switchFragment(String questionType) {
+    private void switchFragment(String questionType, String lectureId) {
         Fragment fragment;
-        String lectureId = getIntent().getStringExtra("lectureId");
         Bundle bundle = new Bundle();
-        bundle.putString("lectureId", lectureId);
+        bundle.putString("lectureId", lectureId);  // Pass lectureId to fragment
+
         if ("arranging".equals(questionType)) {
             fragment = new ArrangingFragment();
-        }
-        else if("fillBlank".equals(questionType)) {
+        } else if ("fill_blank".equals(questionType)) {
             fragment = new FillInBlankFragment();
-        }
-        else if("listening".equals(questionType)) {
+        } else if ("listening".equals(questionType)) {
             fragment = new ListeningFragment();
-        }
-        else if("speaking".equals(questionType)) {
+        } else if ("speaking".equals(questionType)) {
             fragment = new SpeakingFragment();
+        } else {
+            fragment = new SpeakingFragment(); // Default case
         }
-        else {
-            fragment = new SpeakingFragment();
-        }
+
         fragment.setArguments(bundle);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.LearningFragment, fragment)
                 .commit();
     }
-
 }

@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dualingo.LearningActivity;
+import com.example.dualingo.ListBaiHoc;
 import com.example.dualingo.Models.Lecture;
 import com.example.dualingo.Models.User;
 import com.example.dualingo.R;
@@ -70,7 +71,7 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
                 listener.onLectureClick(sessionPosition, position); // Chỉ cho phép click nếu bài học được mở
 
                 // Mở Activity mới và truyền ID của Lecture sang
-                Intent intent = new Intent(context, LearningActivity.class);
+                Intent intent = new Intent(context, ListBaiHoc.class);
                 intent.putExtra("lectureId", lecture.getIdLecture());
                 context.startActivity(intent);
             }

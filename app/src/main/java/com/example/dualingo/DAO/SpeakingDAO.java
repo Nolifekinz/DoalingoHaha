@@ -24,6 +24,10 @@ public interface SpeakingDAO {
     @Query("SELECT * FROM speaking ORDER BY RANDOM() LIMIT 5")
     List<Speaking> getRandomSpeaking();
 
+
+    @Query("SELECT * FROM speaking WHERE idLecture = :lectureId")
+    List<Speaking> getSpeaksByLectureId(String lectureId);
+
     @Delete
     void deleteSpeaking(Speaking speaking);
 }
