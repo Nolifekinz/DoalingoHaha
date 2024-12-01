@@ -39,7 +39,7 @@ import com.example.dualingo.Models.WrongQuestion;
         entities = {Arranging.class, FillBlank.class, Grammar.class, Introduction.class,
                 Lecture.class, Listening.class, Session.class, Speaking.class,
                 Vocabulary.class, VocabularyLesson.class, User.class, WrongQuestion.class},
-        version = 1
+        version = 2
 )
 
 @TypeConverters({ListStringConverter.class, FormulaConverter.class})

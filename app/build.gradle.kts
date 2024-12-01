@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.recyclerview)
     implementation(libs.room.common)
     implementation(libs.room.runtime)
+    implementation(libs.firebase.database)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -59,5 +60,6 @@ dependencies {
     annotationProcessor ("androidx.room:room-compiler:2.6.1")
     annotationProcessor(libs.room.compiler)
     implementation ("com.google.code.gson:gson:2.8.9")
-
+    implementation ("com.google.android.gms:play-services-auth:20.0.1")
+    implementation ("com.google.firebase:firebase-auth:21.0.1")
 }

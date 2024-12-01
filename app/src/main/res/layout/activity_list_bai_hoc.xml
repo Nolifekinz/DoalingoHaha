@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listBaiHoc"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ListBaiHoc">
+
+    <Button
+        android:id="@+id/btnGioithieu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Giới thiệu" />
+
+    <Button
+        android:id="@+id/btnBTSapxep"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bài tập sắp xếp" />
+
+    <Button
+        android:id="@+id/btnBTDien"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bài tập điền chỗ trống" />
+
+    <Button
+        android:id="@+id/btnBTNghe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bài tập nghe" />
+
+    <Button
+        android:id="@+id/btnBTNoi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bài tập nói" />
+
+</LinearLayout>

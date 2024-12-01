@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.example.dualingo.Models.Arranging;
+import com.example.dualingo.Models.FillBlank;
 
 import java.util.List;
 
@@ -21,8 +22,11 @@ public interface ArrangingDAO {
     @Query("SELECT * FROM arranging")
     List<Arranging> getAllArranging();
 
-    @Query("SELECT * FROM Arranging WHERE idLecture = :lectureId")
+    @Query("SELECT * FROM arranging WHERE idLecture = :lectureId")
     List<Arranging> getArrangingByLectureId(String lectureId);
+
+    @Query("SELECT * FROM arranging ORDER BY RANDOM() LIMIT 5")
+    List<Arranging> getRandomArranging();
 
     @Delete
     void deleteArranging(Arranging arranging);

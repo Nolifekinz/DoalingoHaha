@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,10 +26,8 @@ public class VocabularyFragment extends Fragment {
 
     private RecyclerView rvVocabulary;
     //private VocabularyAdapter adapter;
-    private StringListAdapter adapter;
+    private VocabularyAdapter adapter;
     private List<Vocabulary> vocabularyList;
-
-    private List<String> NameLessonList;
 
     @Nullable
     @Override
@@ -39,46 +40,21 @@ public class VocabularyFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        rvVocabulary = view.findViewById(R.id.rvVocabulary);
-        NameLessonList = getLessonList();
-//        vocabularyList = getLessonList(); // Hàm để tạo danh sách từ vựng
-//
-//        adapter = new VocabularyAdapter(vocabularyList, getContext());
-//        rvVocabulary.setLayoutManager(new LinearLayoutManager(getContext()));
-//        rvVocabulary.setAdapter(adapter);
+        rvVocabulary = view.findViewById(R.id.VocabOfLesson);
 
-        adapter = new StringListAdapter(NameLessonList, new StringListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                String item = NameLessonList.get(position);
-                Intent intent = new Intent(getContext(),VocabActivity.class);
-                intent.putExtra("lessname",item);
-                startActivity(intent);
-            }
-        });
+
+        vocabularyList = getVocabularyList("",""); // Hàm để tạo danh sách từ vựng
+
+        adapter = new VocabularyAdapter(vocabularyList, getContext());
         rvVocabulary.setLayoutManager(new LinearLayoutManager(getContext()));
         rvVocabulary.setAdapter(adapter);
+
     }
 
-    private List<String> getLessonList() {
-        List<String> list = new ArrayList<>();
-        list.add("Lesson 1"); // Thêm cách phát âm
-        list.add("Lesson 2"); // Thêm cách phát âm
-        list.add("Lesson 3");
-        list.add("Lesson 4");
-        list.add("Lesson 5");
-        list.add("Lesson 6");
-        list.add("Lesson 7");
-        // Thêm nhiều từ vựng khác...
-        return list;
-    }
-
-
-    private List<Vocabulary> getVocabularyList() {
+    private List<Vocabulary> getVocabularyList(String Session, String Lecture) {
         List<Vocabulary> list = new ArrayList<>();
         list.add(new Vocabulary("1", "apple", "quả táo", "noun", "I ate an apple.", "/ˈæp.əl/")); // Thêm cách phát âm
         list.add(new Vocabulary("2", "run", "chạy", "verb", "He can run fast.", "/rʌn/")); // Thêm cách phát âm
-        // Thêm nhiều từ vựng khác...
         return list;
     }
 

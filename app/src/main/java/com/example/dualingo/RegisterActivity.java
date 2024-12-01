@@ -78,7 +78,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 new User.Progress(1, 1),
                                 "",
                                 "",
-                                0L
+                                0L,
+                                1
                         );
                         FirebaseFirestore.getInstance().collection("users")
                                 .document(user.getUid())

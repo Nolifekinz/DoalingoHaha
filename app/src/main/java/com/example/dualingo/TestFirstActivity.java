@@ -1,6 +1,5 @@
 package com.example.dualingo;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,52 +16,62 @@ import com.example.dualingo.LearningFragment.ArrangingFragment;
 import com.example.dualingo.LearningFragment.FillInBlankFragment;
 import com.example.dualingo.LearningFragment.ListeningFragment;
 import com.example.dualingo.LearningFragment.SpeakingFragment;
+import com.example.dualingo.Models.Arranging;
+import com.example.dualingo.Models.FillBlank;
+import com.example.dualingo.Models.Listening;
+import com.example.dualingo.Models.Speaking;
 
-public class LearningActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class TestFirstActivity extends AppCompatActivity {
+
+    Button tiep;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_learning);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.LearningActivity), (v, insets) -> {
+        setContentView(R.layout.activity_test_first);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.TestFirstActivity), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        String typeQuestion = getIntent().getStringExtra("typeQuestion");
-
-        if(typeQuestion!=null) {
-            switchFragment(typeQuestion);
-        }else{
-            finish();
+        tiep = findViewById(R.id.nextTypeQuestion);
+        String typeQ = "";
+        
+        for(int i = 0 ; i<10 ; i++){
+            if(i<5){
+                typeQ = "fill";
+            }else if(i>=5 && i< 10){
+                typeQ = "arrange";
+            }
+            switchFragment(typeQ);
         }
     }
 
-    private void switchFragment(String typeQuestion) {
+    private void switchFragment(String questionType) {
         Fragment fragment;
-//        String lectureId = getIntent().getStringExtra("lectureId");
-//        Bundle bundle = new Bundle();
-        if(typeQuestion.equals("sapxep")) {
-            fragment = new ArrangingFragment();
-        }else if(typeQuestion.equals("dien")){
-            fragment = new FillInBlankFragment();
-        }else if(typeQuestion.equals("nghe")){
-            fragment = new ListeningFragment();
-        }else{
+
+        if("speak".equals(questionType)){
             fragment = new SpeakingFragment();
+        }else if("listen".equals(questionType)){
+            fragment = new ListeningFragment();
+        }else if("arrange".equals(questionType)){
+            fragment = new ArrangingFragment();
+        } else {
+            fragment = new FillInBlankFragment();
         }
 
         Bundle bundle = new Bundle();
-        bundle.putString("testOrLearn", "learn");
-        bundle.putString("lectureId","2");
+        bundle.putString("testOrLearn", "test");
         fragment.setArguments(bundle);
-
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.LearningFragment, fragment)
+                .replace(R.id.TestFragment, fragment)
                 .commit();
     }
 }

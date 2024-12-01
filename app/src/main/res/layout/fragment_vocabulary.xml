@@ -6,27 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".VocabularyFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/titleOfVocabFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Cùng học từ vựng nào !!!"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:fontFamily="@font/duolingo_fontfamily"/>
-    </LinearLayout>
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvVocabulary"
+        android:id="@+id/VocabOfLesson"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent"/>
 </LinearLayout>

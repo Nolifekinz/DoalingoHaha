@@ -76,6 +76,7 @@ public class SetTimeActivity extends AppCompatActivity {
                 Toast.makeText(this, "Lỗi khi đặt thông báo: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
+        finish();
     }
 
 }

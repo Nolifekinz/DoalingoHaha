@@ -5,10 +5,12 @@
     android:id="@+id/LearningActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".LearningActivity">
+
     <FrameLayout
         android:id="@+id/LearningFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="wrap_content" />
+
 </LinearLayout>
