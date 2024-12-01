@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.example.dualingo.Models.Arranging;
-import com.example.dualingo.Models.FillBlank;
 
 import java.util.List;
 

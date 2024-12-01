@@ -38,8 +38,10 @@ public class ArrangingFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentArrangingBinding.inflate(inflater, container, false);
         database = AppDatabase.getDatabase(getContext()); // Initialize Room database
-        setupRecyclerViews();
+
         loadArrangingDataFromRoom();
+
+        setupRecyclerViews();
 
         binding.submitButton.setOnClickListener(v -> checkResult());
 
