@@ -11,6 +11,7 @@ import com.example.dualingo.Models.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -52,6 +53,21 @@ public class DataSyncManager {
     // Lưu timestamp sau khi đồng bộ
     private void saveLastSyncTime() {
         sharedPreferences.edit().putLong(LAST_SYNC_KEY, System.currentTimeMillis()).apply();
+    }
+
+    public void syncRoomToFirestore() {
+        executor.execute(() -> {
+            User unsyncedUsers = database.userDAO().getCurrentUser(); // Lấy danh sách chưa đồng bộ
+
+            firestore.collection("users")
+                    .document(unsyncedUsers.getId())
+                    .set(unsyncedUsers)
+                    .addOnSuccessListener(aVoid -> {
+                        executor.execute(() -> database.userDAO().updateUser(unsyncedUsers));
+                    })
+                    .addOnFailureListener(Throwable::printStackTrace);
+
+        });
     }
 
     // Thực hiện đồng bộ trên Background Thread
