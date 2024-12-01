@@ -1,10 +1,13 @@
 package com.example.dualingo.LearningFragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.widget.Button;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dualingo.Adapters.WordAdapter;
 import com.example.dualingo.Models.Arranging;
 import com.example.dualingo.AppDatabase;
+import com.example.dualingo.R;
 import com.example.dualingo.databinding.FragmentArrangingBinding;
 
 import java.util.ArrayList;
@@ -32,6 +36,9 @@ public class ArrangingFragment extends Fragment {
     private List<String> selectedWords = new ArrayList<>();
     private WordAdapter wordAdapter;
     private WordAdapter resultAdapter;
+    private int correctAnswersCount = 3;
+    private int numberQuestion = 3;
+    private List<Arranging> incorrectQuestions = new ArrayList<>(); // Dành cho câu trả lời sai
 
     @Nullable
     @Override
@@ -48,12 +55,12 @@ public class ArrangingFragment extends Fragment {
 
     private void setupRecyclerViews() {
         // Set up RecyclerView for word list
-        binding.wordRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        binding.wordRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
         wordAdapter = new WordAdapter(getContext(), wordList, this::onWordClicked);
         binding.wordRecyclerView.setAdapter(wordAdapter);
 
         // Set up RecyclerView for result bar
-        binding.resultRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        binding.resultRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
         resultAdapter = new WordAdapter(getContext(), selectedWords, this::onResultWordClicked);
         binding.resultRecyclerView.setAdapter(resultAdapter);
 
@@ -68,17 +75,26 @@ public class ArrangingFragment extends Fragment {
 
             arrangingList.clear();
             if (lectureId != null) {
-                arrangingList.addAll(database.arrangingDAO().getArrangingByLectureId(lectureId)); // Truy vấn dựa trên idLecture
+                arrangingList.addAll(database.arrangingDAO().getArrangingByLectureId(lectureId));
+                List<Arranging> randomQuestions = getRandomQuestions(arrangingList, 3);
+                arrangingList.clear();
+                arrangingList.addAll(randomQuestions);
             }
 
             if (!arrangingList.isEmpty()) {
-                getActivity().runOnUiThread(this::showCurrentQuestion); // Update UI trên luồng chính
+                getActivity().runOnUiThread(this::showCurrentQuestion); // Cập nhật UI trên luồng chính
             } else {
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getContext(), "No questions found for this lecture!", Toast.LENGTH_SHORT).show();
                 });
             }
         }).start();
+    }
+
+    private List<Arranging> getRandomQuestions(List<Arranging> questions, int count) {
+        List<Arranging> randomQuestions = new ArrayList<>(questions);
+        Collections.shuffle(randomQuestions);  // Xáo trộn danh sách
+        return randomQuestions.subList(0, Math.min(count, randomQuestions.size()));  // Lấy 3 câu hỏi ngẫu nhiên
     }
 
 
@@ -90,7 +106,7 @@ public class ArrangingFragment extends Fragment {
             selectedWords.clear();
             wordAdapter.notifyDataSetChanged();
             resultAdapter.notifyDataSetChanged();
-            binding.tvQuestion.setText(currentQuestion.getQuestion());
+            binding.questionTextView.setText(currentQuestion.getQuestion());
         }
     }
 
@@ -134,18 +150,55 @@ public class ArrangingFragment extends Fragment {
         }
 
         String correctAnswer = arrangingList.get(currentQuestionIndex).getResult();
-        if (resultSentence.toString().trim().equals(correctAnswer)) {
-            Toast.makeText(getContext(), "Correct!", Toast.LENGTH_SHORT).show();
-            currentQuestionIndex++; // Move to the next question
-            if (currentQuestionIndex < arrangingList.size()) {
-                showCurrentQuestion();
-            } else {
-                Toast.makeText(getContext(), "You've completed all questions!", Toast.LENGTH_LONG).show();
-                // Logic for when the user completes all questions
-            }
+        boolean isCorrect = resultSentence.toString().trim().equals(correctAnswer);
+
+        if (isCorrect) {
+            arrangingList.remove(currentQuestionIndex);
+            numberQuestion--;
+            showResultDialog("Correct!", "Your answer is correct!", false);
         } else {
-            Toast.makeText(getContext(), "Incorrect! Try again.", Toast.LENGTH_SHORT).show();
+            if(numberQuestion!=0){
+                correctAnswersCount--;
+            }
+            numberQuestion--;
+            arrangingList.add(arrangingList.get(currentQuestionIndex));
+            arrangingList.remove(currentQuestionIndex);// Quay lại câu hỏi trước đó
+            showResultDialog("Incorrect!", "Your answer is incorrect!", false);
         }
+
+
+        // Kiểm tra số câu đúng chỉ với 3 câu hỏi
+        if (arrangingList.isEmpty()) {
+            String finalMessage = "Quiz Completed!\nCorrect answers: " + correctAnswersCount + " / 3";
+            showResultDialog("Quiz Completed", finalMessage, true);
+        }
+    }
+
+
+
+    private void showResultDialog(String title, String message, boolean isFinalResult) {
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.result_dialog);
+        dialog.setCancelable(false);
+
+        TextView tvTitle = dialog.findViewById(R.id.dialog_title);
+        TextView tvMessage = dialog.findViewById(R.id.dialog_message);
+        Button btnOk = dialog.findViewById(R.id.btn_ok);
+
+        tvTitle.setText(title);
+        tvMessage.setText(message);
+
+        btnOk.setOnClickListener(v -> {
+            dialog.dismiss();
+            if (isFinalResult) {
+
+                showResultDialog("Quiz Completed", message, true);
+            } else {
+                showCurrentQuestion();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override

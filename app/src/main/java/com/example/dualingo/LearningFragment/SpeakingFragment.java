@@ -21,12 +21,17 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import com.example.dualingo.Models.Speaking;
 import com.example.dualingo.R;
+import com.example.dualingo.AppDatabase;
+import com.example.dualingo.DAO.SpeakingDAO;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.List;
 
 public class SpeakingFragment extends Fragment {
 
@@ -38,7 +43,10 @@ public class SpeakingFragment extends Fragment {
     private SpeechRecognizer speechRecognizer;
     private String recordedAnswer = "";
 
-    private final Speaking currentSpeaking = new Speaking("1", "1", "Hello, how are you?");
+    private List<Speaking> speakingList = new ArrayList<>();
+    private Speaking currentSpeaking;
+
+    private final String currentLectureId = "1"; // Giả sử bạn đã có ID của bài học hiện tại
 
     @Nullable
     @Override
@@ -52,9 +60,7 @@ public class SpeakingFragment extends Fragment {
         recordButton = view.findViewById(R.id.recordButton);
         checkAnswerButton = view.findViewById(R.id.checkAnswerButton);
 
-        // Set question text
-        questionTextView.setText(currentSpeaking.getQuestion());
-        recordingIndicator.setVisibility(View.GONE);
+        recordingIndicator.setVisibility(View.GONE); // Hide recording indicator initially
 
         // Initialize Text-to-Speech
         tts = new TextToSpeech(getContext(), status -> {
@@ -75,7 +81,36 @@ public class SpeakingFragment extends Fragment {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, 1);
         }
 
+        // Load speaking data from Room
+        loadSpeakingDataFromRoom();
+
         return view;
+    }
+
+    private void loadSpeakingDataFromRoom() {
+        AppDatabase database = AppDatabase.getDatabase(getContext());
+        SpeakingDAO speakingDAO = database.speakingDAO();
+
+        LiveData<List<Speaking>> liveDataSpeakingList = speakingDAO.getSpeaksByLectureId(currentLectureId);
+
+        liveDataSpeakingList.observe(getViewLifecycleOwner(), new Observer<List<Speaking>>() {
+            @Override
+            public void onChanged(List<Speaking> speakingList) {
+                if (speakingList != null && !speakingList.isEmpty()) {
+                    currentSpeaking = speakingList.get(0); // Lấy bài học đầu tiên
+                    questionTextView.setText(currentSpeaking.getQuestion()); // Hiển thị câu hỏi
+                }
+            }
+        });
+
+
+        if (!speakingList.isEmpty()) {
+            // Select the first speaking lesson
+            currentSpeaking = speakingList.get(0);
+
+            // Update UI with the question of the current lesson
+            questionTextView.setText(currentSpeaking.getQuestion());
+        }
     }
 
     private void startRecording() {
@@ -83,6 +118,7 @@ public class SpeakingFragment extends Fragment {
         recordingIndicator.setVisibility(View.VISIBLE);
         recordButton.setEnabled(false);
 
+        // Start speech recognition intent
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
@@ -102,10 +138,9 @@ public class SpeakingFragment extends Fragment {
                 // Hide recording indicator and re-enable record button
                 recordingIndicator.setVisibility(View.GONE);
                 recordButton.setEnabled(true);
-                checkAnswer(); // Automatically check answer
+                checkAnswer(); // Automatically check answer after recording
             }
 
-            // Empty overrides for unused methods
             @Override public void onReadyForSpeech(Bundle params) {}
             @Override public void onBeginningOfSpeech() {}
             @Override public void onRmsChanged(float rmsdB) {}
@@ -113,13 +148,31 @@ public class SpeakingFragment extends Fragment {
             @Override public void onError(int error) {
                 recordingIndicator.setVisibility(View.GONE);
                 recordButton.setEnabled(true);
-                Toast.makeText(getContext(), "Recording error. Please try again.", Toast.LENGTH_SHORT).show();
+
+                String errorMessage = getSpeechRecognitionErrorMessage(error);
+                Toast.makeText(getContext(), "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
             }
+
             @Override public void onPartialResults(Bundle partialResults) {}
             @Override public void onEvent(int eventType, Bundle params) {}
         });
 
         speechRecognizer.startListening(intent);
+    }
+
+    private String getSpeechRecognitionErrorMessage(int error) {
+        switch (error) {
+            case SpeechRecognizer.ERROR_AUDIO: return "Audio recording error";
+            case SpeechRecognizer.ERROR_CLIENT: return "Client error";
+            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS: return "Insufficient permissions";
+            case SpeechRecognizer.ERROR_NETWORK: return "Network error";
+            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT: return "Network timeout";
+            case SpeechRecognizer.ERROR_NO_MATCH: return "No match found";
+            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY: return "Recognizer is busy";
+            case SpeechRecognizer.ERROR_SERVER: return "Server error";
+            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT: return "Speech timeout";
+            default: return "Unknown error";
+        }
     }
 
     private void checkAnswer() {

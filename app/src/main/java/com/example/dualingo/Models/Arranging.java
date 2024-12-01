@@ -11,7 +11,6 @@ public class Arranging {
     @PrimaryKey
     @NonNull
     private String idArranging;
-
     private String idLecture;
     private String question;
     private String result;

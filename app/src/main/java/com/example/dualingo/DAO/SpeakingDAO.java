@@ -1,5 +1,6 @@
 package com.example.dualingo.DAO;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -20,6 +21,9 @@ public interface SpeakingDAO {
 
     @Query("SELECT * FROM speaking")
     List<Speaking> getAllSpeaks();
+
+    @Query("SELECT * FROM speaking WHERE idLecture = :lectureId")
+    LiveData<List<Speaking>> getSpeaksByLectureId(String lectureId);
 
     @Delete
     void deleteSpeaking(Speaking speaking);

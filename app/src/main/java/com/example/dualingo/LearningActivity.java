@@ -45,7 +45,6 @@ public class LearningActivity extends AppCompatActivity {
         bundle.putString("lectureId", lectureId);
         if ("arranging".equals(questionType)) {
             fragment = new ArrangingFragment();
-            fragment.setArguments(bundle);
         }
         else if("fillBlank".equals(questionType)) {
             fragment = new FillInBlankFragment();
@@ -57,9 +56,9 @@ public class LearningActivity extends AppCompatActivity {
             fragment = new SpeakingFragment();
         }
         else {
-            fragment = new ArrangingFragment();
+            fragment = new SpeakingFragment();
         }
-
+        fragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.LearningFragment, fragment)

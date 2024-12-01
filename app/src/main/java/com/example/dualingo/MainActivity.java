@@ -103,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
     }
 }
 
-
-
+//
+//
 //private FirebaseFirestore db;
 //
 //    @Override
@@ -198,19 +198,18 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //    }
 //
-//    // Thêm Speaking Exercises
 //    private void addSpeakingExercises() {
 //        List<Speaking> speakingExercises = Arrays.asList(
-//                new Speaking("1", "1", "Say the greeting: Hello!"),
-//                new Speaking("2", "1", "Say: Nice to meet you!"),
-//                new Speaking("3", "2", "Introduce yourself: My name is ___"),
-//                new Speaking("4", "2", "Ask: What is your name?"),
-//                new Speaking("5", "3", "Say: Goodbye! See you later."),
-//                new Speaking("6", "3", "Say: Good morning!"),
-//                new Speaking("7", "4", "Say: How are you today?"),
-//                new Speaking("8", "4", "Ask: Where are you from?"),
-//                new Speaking("9", "5", "Introduce yourself: I am from ___"),
-//                new Speaking("10", "5", "Ask: Do you like English?")
+//                new Speaking("1", "1", "Hello"),
+//                new Speaking("2", "1", "Nice to meet you"),
+//                new Speaking("3", "2", "My name is Hung"),
+//                new Speaking("4", "2", "What is your name"),
+//                new Speaking("5", "3", "Goodbye See you later"),
+//                new Speaking("6", "3", "Good morning"),
+//                new Speaking("7", "4", "How are you today"),
+//                new Speaking("8", "4", "Where are you from"),
+//                new Speaking("9", "5", "I am from America"),
+//                new Speaking("10", "5", "Do you like English")
 //        );
 //
 //        for (Speaking speaking : speakingExercises) {
@@ -218,45 +217,55 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //    }
 //
-//        private void addArrangingExercises() {
-//            List<Arranging> arrangingExercises = Arrays.asList(
-//                    new Arranging("1", "1", "Arrange the words to form a sentence", "Good morning", Arrays.asList("Good", "morning")),
-//                    new Arranging("2", "1", "Arrange the words to form a sentence", "Nice to meet you", Arrays.asList("Nice", "to", "meet", "you")),
-//                    new Arranging("3", "2", "Arrange the words to form a question", "What is your name?", Arrays.asList("What", "is", "your", "name?")),
-//                    new Arranging("4", "2", "Arrange the words to form a sentence", "My name is Anna", Arrays.asList("My", "name", "is", "Anna")),
-//                    new Arranging("5", "3", "Arrange the words to form a question", "Where do you live?", Arrays.asList("Where", "do", "you", "live?")),
-//                    new Arranging("6", "3", "Arrange the words to form a sentence", "I like reading books", Arrays.asList("I", "like", "reading", "books")),
-//                    new Arranging("7", "1", "Arrange the words to form a sentence", "I go to school every day", Arrays.asList("I", "go", "to", "school", "every", "day")),
-//                    new Arranging("8", "1", "Arrange the words to form a sentence", "She works in a hospital", Arrays.asList("She", "works", "in", "a", "hospital")),
-//                    new Arranging("9", "2", "Arrange the words to form a sentence", "I went to the park yesterday", Arrays.asList("I", "went", "to", "the", "park", "yesterday")),
-//                    new Arranging("10", "2", "Arrange the words to form a sentence", "She worked last week", Arrays.asList("She", "worked", "last", "week"))
-//            );
 //
-//            for (Arranging arranging : arrangingExercises) {
-//                db.collection("Arranging").document(arranging.getIdArranging()).set(arranging);
-//            }
+//
+//    private void addArrangingExercises() {
+//        List<Arranging> arrangingExercises = Arrays.asList(
+//                new Arranging("1", "1", "Chào buổi sáng", "Good morning", Arrays.asList("Good", "morning")),
+//                new Arranging("2", "1", "Rất vui được gặp bạn", "Nice to meet you", Arrays.asList("Nice", "to", "meet", "you")),
+//                new Arranging("3", "2", "Bạn tên gì?", "What is your name?", Arrays.asList("What", "is", "your", "name?")),
+//                new Arranging("4", "2", "Tên tôi là Anna", "My name is Anna", Arrays.asList("My", "name", "is", "Anna")),
+//                new Arranging("5", "3", "Bạn sống ở đâu?", "Where do you live?", Arrays.asList("Where", "do", "you", "live?")),
+//                new Arranging("6", "3", "Tôi thích đọc sách", "I like reading books", Arrays.asList("I", "like", "reading", "books")),
+//                new Arranging("7", "1", "Tôi đi học mỗi ngày", "I go to school every day", Arrays.asList("I", "go", "to", "school", "every", "day")),
+//                new Arranging("8", "1", "Cô ấy làm việc trong bệnh viện", "She works in a hospital", Arrays.asList("She", "works", "in", "a", "hospital")),
+//                new Arranging("9", "2", "Tôi đã đến công viên hôm qua", "I went to the park yesterday", Arrays.asList("I", "went", "to", "the", "park", "yesterday")),
+//                new Arranging("10", "2", "Cô ấy đã làm việc tuần trước", "She worked last week", Arrays.asList("She", "worked", "last", "week"))
+//        );
+//
+//        for (Arranging arranging : arrangingExercises) {
+//            db.collection("Arranging").document(arranging.getIdArranging()).set(arranging);
 //        }
+//    }
 //
-//        private void addFillBlankExercises() {
-//            List<FillBlank> fillBlankExercises = Arrays.asList(
-//                    new FillBlank("1", "1", "Fill in the blank: ___ morning", "Good", Arrays.asList("Good", "Bad", "Early")),
-//                    new FillBlank("2", "1", "Fill in the blank: ___ you later", "See", Arrays.asList("See", "Meet", "Come")),
-//                    new FillBlank("3", "2", "Fill in the blank: My ___ is Anna", "name", Arrays.asList("name", "age", "job")),
-//                    new FillBlank("4", "3", "Fill in the blank: I ___ coffee every morning", "drink", Arrays.asList("drink", "eat", "make")),
-//                    new FillBlank("5", "3", "Fill in the blank: She ___ the piano well", "plays", Arrays.asList("plays", "drives", "writes")),
-//                    new FillBlank("6", "4", "Fill in the blank: I ___ a good book", "read", Arrays.asList("read", "ate", "cook")),
-//                    new FillBlank("7", "1", "Fill in the blank: I ___ to school every day.", "go", Arrays.asList("go", "went", "goes")),
-//                    new FillBlank("8", "1", "Fill in the blank: She ___ in a hospital.", "works", Arrays.asList("work", "works", "worked")),
-//                    new FillBlank("9", "1", "Fill in the blank: They ___ in London.", "live", Arrays.asList("live", "lived", "lives")),
-//                    new FillBlank("10", "2", "Fill in the blank: I ___ to the park yesterday.", "went", Arrays.asList("go", "went", "gone")),
-//                    new FillBlank("11", "2", "Fill in the blank: She ___ in a company last year.", "worked", Arrays.asList("works", "worked", "working")),
-//                    new FillBlank("12", "2", "Fill in the blank: They ___ in Paris for five years.", "lived", Arrays.asList("live", "lived", "living"))
-//            );
 //
-//            for (FillBlank fillBlank : fillBlankExercises) {
-//                db.collection("FillBlank").document(fillBlank.getIdFillBlank()).set(fillBlank);
-//            }
+//    private void addFillBlankExercises() {
+//        List<FillBlank> fillBlankExercises = Arrays.asList(
+//                new FillBlank("1", "1", "___ morning", "Good", Arrays.asList("Good", "Bad", "Early")),
+//                new FillBlank("2", "1", "___ you later", "See", Arrays.asList("See", "Meet", "Come")),
+//                new FillBlank("3", "2", "My ___ is Anna", "name", Arrays.asList("name", "age", "job")),
+//                new FillBlank("4", "3", "I ___ coffee every morning", "drink", Arrays.asList("drink", "eat", "make")),
+//                new FillBlank("5", "3", "She ___ the piano well", "plays", Arrays.asList("plays", "drives", "writes")),
+//                new FillBlank("6", "4", "I ___ a good book", "read", Arrays.asList("read", "ate", "cook")),
+//                new FillBlank("7", "1", "I ___ to school every day.", "go", Arrays.asList("go", "went", "goes")),
+//                new FillBlank("8", "1", "She ___ in a hospital.", "works", Arrays.asList("work", "works", "worked")),
+//                new FillBlank("9", "1", "They ___ in London.", "live", Arrays.asList("live", "lived", "lives")),
+//                new FillBlank("10", "2", "I ___ to the park yesterday.", "went", Arrays.asList("go", "went", "gone")),
+//                new FillBlank("11", "2", "She ___ in a company last year.", "worked", Arrays.asList("works", "worked", "working")),
+//                new FillBlank("12", "2", "They ___ in Paris for five years.", "lived", Arrays.asList("live", "lived", "living")),
+//                new FillBlank("13", "3", "I ___ my ___ every morning", "brush,teeth", Arrays.asList("brush", "teeth", "wash", "head", "play")),
+//                new FillBlank("14", "4", "She ___ a ___ in the kitchen", "cooked,meal", Arrays.asList("cooked", "meal", "ate", "baked", "cooking", "dish", "soup")),
+//                new FillBlank("15", "5", "We ___ to the ___ every weekend", "go,beach", Arrays.asList("go", "beach", "went","play")),
+//                new FillBlank("16", "6", "I ___ my ___ to school", "take,bike", Arrays.asList("take", "bike", "drive", "foot")),
+//                new FillBlank("17", "7", "They ___ a ___ at the party", "had,great time", Arrays.asList("had", "great time", "make", "enjoyed"))
+//
+//        );
+//
+//        for (FillBlank fillBlank : fillBlankExercises) {
+//            db.collection("FillBlank").document(fillBlank.getIdFillBlank()).set(fillBlank);
 //        }
+//    }
+//
 //
 //        private void addGrammarExercises() {
 //            Grammar grammar = new Grammar(
@@ -291,24 +300,24 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        }
 //
-//        private void addListeningExercises() {
-//            List<Listening> listeningExercises = Arrays.asList(
-//                    new Listening("1", "1", "Hello!", "Xin chào", Arrays.asList("Xin", "chào")),
-//                    new Listening("2", "1", "Nice to meet you!", "Rất vui được gặp bạn", Arrays.asList("Rất", "vui", "được", "gặp", "bạn")),
-//                    new Listening("3", "2", "What is your name?", "Tên bạn là gì", Arrays.asList("Tên", "bạn", "là", "gì")),
-//                    new Listening("4", "2", "My name is Anna.", "Tên tôi là Anna", Arrays.asList("Tên", "tôi", "là", "Anna")),
-//                    new Listening("5", "3", "Where do you live?", "Bạn sống ở đâu?", Arrays.asList("Bạn", "sống", "ở", "đâu")),
-//                    new Listening("6", "3", "I live in New York.", "Tôi sống ở New York", Arrays.asList("Tôi", "sống", "ở", "New", "York")),
-//                    new Listening("7", "1", "I go to school every day.", "Tôi đi học mỗi ngày", Arrays.asList("I", "go", "to", "school", "every", "day")),
-//                    new Listening("8", "1", "She works in a hospital.", "Cô ấy làm việc ở bệnh viện", Arrays.asList("She", "works", "in", "a", "hospital")),
-//                    new Listening("9", "2", "I went to the park yesterday.", "Tôi đã đi đến công viên hôm qua", Arrays.asList("I", "went", "to", "the", "park", "yesterday")),
-//                    new Listening("10", "2", "She worked last week.", "Cô ấy đã làm việc vào tuần trước", Arrays.asList("She", "worked", "last", "week"))
-//            );
+//    private void addListeningExercises() {
+//        List<Listening> listeningExercises = Arrays.asList(
+//                new Listening("1", "1", "Hello!", "Xin chào", Arrays.asList("Xin", "chào")),
+//                new Listening("2", "1", "Nice to meet you", "Rất vui được gặp bạn", Arrays.asList("Rất", "vui", "được", "gặp", "bạn")),
+//                new Listening("3", "1", "What is your name", "Tên bạn là gì", Arrays.asList("Tên", "bạn", "là", "gì")),
+//                new Listening("4", "2", "My name is Anna", "Tên tôi là Anna", Arrays.asList("Tên", "tôi", "là", "Anna")),
+//                new Listening("5", "2", "Where do you live", "Bạn sống ở đâu?", Arrays.asList("Bạn", "sống", "ở", "đâu")),
+//                new Listening("6", "3", "I live in New York", "Tôi sống ở New York", Arrays.asList("Tôi", "sống", "ở", "New", "York")),
+//                new Listening("7", "1", "I go to school every day", "Tôi đi học mỗi ngày", Arrays.asList("Tôi", "đi", "học", "mỗi", "ngày")),
+//                new Listening("8", "1", "She works in a hospital", "Cô ấy làm việc ở bệnh viện", Arrays.asList("Cô", "ấy", "làm", "việc", "ở", "bệnh", "viện")),
+//                new Listening("9", "2", "I went to the park yesterday", "Tôi đã đi đến công viên hôm qua", Arrays.asList("Tôi", "đã", "đi", "đến", "công", "viên", "hôm", "qua")),
+//                new Listening("10", "2", "She worked last week", "Cô ấy đã làm việc vào tuần trước", Arrays.asList("Cô", "ấy", "đã", "làm", "việc", "vào", "tuần", "trước"))
+//        );
 //
-//            for (Listening listening : listeningExercises) {
-//                db.collection("Listening").document(listening.getIdListening()).set(listening);
-//            }
+//        for (Listening listening : listeningExercises) {
+//            db.collection("Listening").document(listening.getIdListening()).set(listening);
 //        }
+//    }
 //
 //    private void addIntroductions() {
 //        List<Introduction> introductions = Arrays.asList(
@@ -325,4 +334,4 @@ public class MainActivity extends AppCompatActivity {
 //    }
 //
 //    }
-
+//

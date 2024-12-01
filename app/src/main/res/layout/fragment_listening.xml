@@ -16,28 +16,20 @@
         android:text="Bấm để nghe câu hỏi"
         android:textSize="18sp"
         android:textStyle="bold" />
-    <Button
+
+    <!-- ImageButton hình loa -->
+    <ImageButton
         android:id="@+id/listenButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Button" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_gravity="center_horizontal"
-        android:padding="4dp"
-        android:text="Chọn từ:"
-        android:textStyle="bold" />
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/listen_button"
+        android:padding="8dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_volume_up" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/wordRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:paddingTop="8dp" />
-
-    <!-- RecyclerView cho các từ đã chọn -->
+    <!-- RecyclerView cho kết quả của người dùng -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -49,7 +41,23 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/resultRecyclerView"
         android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="16dp"
+        android:paddingTop="8dp" />
+
+    <!-- RecyclerView cho danh sách từ -->
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="4dp"
+        android:text="Chọn từ:"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/wordRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
         android:layout_marginBottom="16dp"
         android:paddingTop="8dp" />
 

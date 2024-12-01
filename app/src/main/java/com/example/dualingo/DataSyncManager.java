@@ -78,6 +78,7 @@ public class DataSyncManager {
             syncCollection("VocabularyLesson", VocabularyLesson.class, data -> database.vocabularyLessonDAO().insertVocabularyLesson((VocabularyLesson) data));
             syncCollection("Session", Session.class, data -> database.sessionDAO().insert((Session) data));
             syncCollection("WrongQuestion", WrongQuestion.class, data -> database.wrongQuestionDAO().insertWrongQuestion((WrongQuestion) data));
+            syncCollection("UserExerciseProgress", UserExerciseProgress.class,data -> database.userExerciseProgressDAO().insertProgress((UserExerciseProgress) data));
             syncUser(FirebaseAuth.getInstance().getCurrentUser().getUid());
             // Lưu timestamp sau khi hoàn tất
             saveLastSyncTime();

@@ -1,10 +1,12 @@
 package com.example.dualingo.LearningFragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,14 +39,20 @@ public class ListeningFragment extends Fragment {
     private WordAdapter resultAdapter;
 
     private TextToSpeech tts;
-    private TextView questionTextView;
+
+    private int correctAnswersCount = 3;
+    private int numberQuestion = 3;
+    private String lectureId;  // Thêm biến lectureId
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listening, container, false);
 
-        questionTextView = view.findViewById(R.id.questionTextView);
+        // Lấy lectureId từ Bundle
+        if (getArguments() != null) {
+            lectureId = getArguments().getString("lectureId", ""); // Lấy lectureId
+        }
 
         // Initialize Text-to-Speech
         tts = new TextToSpeech(getContext(), status -> {
@@ -68,11 +76,11 @@ public class ListeningFragment extends Fragment {
         RecyclerView wordRecyclerView = view.findViewById(R.id.wordRecyclerView);
         RecyclerView resultRecyclerView = view.findViewById(R.id.resultRecyclerView);
 
-        wordRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        wordRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
         wordAdapter = new WordAdapter(getContext(), wordList, this::onWordClicked);
         wordRecyclerView.setAdapter(wordAdapter);
 
-        resultRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        resultRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
         resultAdapter = new WordAdapter(getContext(), selectedWords, this::onResultWordClicked);
         resultRecyclerView.setAdapter(resultAdapter);
 
@@ -82,12 +90,20 @@ public class ListeningFragment extends Fragment {
 
     private void loadListeningData() {
         new Thread(() -> {
-            // Lấy dữ liệu từ Room Database
-            listeningList = appDatabase.listeningDAO().getAllListenings();
+            // Lấy bài tập theo lectureId từ Room database
+            listeningList = appDatabase.listeningDAO().getListeningsByLectureId(lectureId);  // Truy vấn theo lectureId
+            List<Listening> randomQuestions = getRandomQuestions(listeningList, 3);
+            listeningList.clear();
+            listeningList.addAll(randomQuestions);
 
-            // Hiển thị câu hỏi đầu tiên trên giao diện
             requireActivity().runOnUiThread(this::showCurrentQuestion);
         }).start();
+    }
+
+    private List<Listening> getRandomQuestions(List<Listening> questions, int count) {
+        List<Listening> randomQuestions = new ArrayList<>(questions);
+        Collections.shuffle(randomQuestions);
+        return randomQuestions.subList(0, Math.min(count, randomQuestions.size()));
     }
 
     private void showCurrentQuestion() {
@@ -98,7 +114,6 @@ public class ListeningFragment extends Fragment {
             selectedWords.clear();
             wordAdapter.notifyDataSetChanged();
             resultAdapter.notifyDataSetChanged();
-            questionTextView.setText(currentQuestion.getQuestion());
         }
     }
 
@@ -149,17 +164,50 @@ public class ListeningFragment extends Fragment {
         }
 
         String correctAnswer = listeningList.get(currentQuestionIndex).getResult();
-        if (resultSentence.toString().trim().equals(correctAnswer)) {
-            Toast.makeText(getContext(), "Correct!", Toast.LENGTH_SHORT).show();
-            currentQuestionIndex++;
-            if (currentQuestionIndex < listeningList.size()) {
-                showCurrentQuestion();
-            } else {
-                Toast.makeText(getContext(), "You've completed all questions!", Toast.LENGTH_LONG).show();
-            }
+        boolean isCorrect = resultSentence.toString().trim().equals(correctAnswer);
+
+        if (isCorrect) {
+            listeningList.remove(currentQuestionIndex);
+            numberQuestion--;
+            showResultDialog("Correct!", "Your answer is correct!", false);
         } else {
-            Toast.makeText(getContext(), "Incorrect! Try again.", Toast.LENGTH_SHORT).show();
+            if(numberQuestion!=0){
+                correctAnswersCount--;
+            }
+            numberQuestion--;
+            listeningList.add(listeningList.get(currentQuestionIndex));
+            listeningList.remove(currentQuestionIndex);
+            showResultDialog("Incorrect!", "Your answer is incorrect!", false);
         }
+
+        if (listeningList.isEmpty()) {
+            String finalMessage = "Quiz Completed!\nCorrect answers: " + correctAnswersCount + " / 3";
+            showResultDialog("Quiz Completed", finalMessage, true);
+        }
+    }
+
+    private void showResultDialog(String title, String message, boolean isFinalResult) {
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.result_dialog);
+        dialog.setCancelable(false);
+
+        TextView tvTitle = dialog.findViewById(R.id.dialog_title);
+        TextView tvMessage = dialog.findViewById(R.id.dialog_message);
+        Button btnOk = dialog.findViewById(R.id.btn_ok);
+
+        tvTitle.setText(title);
+        tvMessage.setText(message);
+
+        btnOk.setOnClickListener(v -> {
+            dialog.dismiss();
+            if (isFinalResult) {
+                requireActivity().finish();
+            } else {
+                showCurrentQuestion();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override

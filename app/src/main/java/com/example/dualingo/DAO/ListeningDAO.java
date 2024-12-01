@@ -18,6 +18,9 @@ public interface ListeningDAO {
     @Query("SELECT * FROM listening WHERE idListening = :id")
     Listening getListeningById(String id);
 
+    @Query("SELECT * FROM listening WHERE idLecture = :lectureId")
+    List<Listening> getListeningsByLectureId(String lectureId);
+
     @Query("SELECT * FROM listening")
     List<Listening> getAllListenings();
 

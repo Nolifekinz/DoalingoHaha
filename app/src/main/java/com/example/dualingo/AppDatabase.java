@@ -18,6 +18,7 @@ import com.example.dualingo.DAO.ListeningDAO;
 import com.example.dualingo.DAO.SessionDAO;
 import com.example.dualingo.DAO.SpeakingDAO;
 import com.example.dualingo.DAO.UserDAO;
+import com.example.dualingo.DAO.UserExerciseProgressDAO;
 import com.example.dualingo.DAO.VocabularyDAO;
 import com.example.dualingo.DAO.VocabularyLessonDAO;
 
@@ -31,6 +32,7 @@ import com.example.dualingo.Models.Listening;
 import com.example.dualingo.Models.Session;
 import com.example.dualingo.Models.Speaking;
 import com.example.dualingo.Models.User;
+import com.example.dualingo.Models.UserExerciseProgress;
 import com.example.dualingo.Models.Vocabulary;
 import com.example.dualingo.Models.VocabularyLesson;
 import com.example.dualingo.Models.WrongQuestion;
@@ -38,7 +40,7 @@ import com.example.dualingo.Models.WrongQuestion;
 @Database(
         entities = {Arranging.class, FillBlank.class, Grammar.class, Introduction.class,
                 Lecture.class, Listening.class, Session.class, Speaking.class,
-                Vocabulary.class, VocabularyLesson.class, User.class, WrongQuestion.class},
+                Vocabulary.class, VocabularyLesson.class, User.class, WrongQuestion.class, UserExerciseProgress.class},
         version = 1
 )
 
@@ -56,6 +58,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract VocabularyDAO vocabularyDAO();
     public abstract VocabularyLessonDAO vocabularyLessonDAO();
     public abstract WrongQuestionDAO wrongQuestionDAO();
+    public abstract UserExerciseProgressDAO userExerciseProgressDAO();
 
     private static volatile AppDatabase INSTANCE;
 
