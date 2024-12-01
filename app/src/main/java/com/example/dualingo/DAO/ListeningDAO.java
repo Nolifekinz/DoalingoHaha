@@ -24,6 +24,9 @@ public interface ListeningDAO {
     @Query("SELECT * FROM listening")
     List<Listening> getAllListenings();
 
+    @Query("SELECT * FROM listening ORDER BY RANDOM() LIMIT 5")
+    List<Listening> getRandomListening();
+
     @Delete
     void deleteListening(Listening listening);
 }

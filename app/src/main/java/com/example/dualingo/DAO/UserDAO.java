@@ -22,6 +22,16 @@ public interface UserDAO {
     @Query("SELECT * FROM users LIMIT 1")
     User getCurrentUser();
 
+    @Query("SELECT * FROM users WHERE id=:id")
+    User getUserById(String id);
+
+    @Query("UPDATE users SET isNewUser = :isNewUser WHERE id = :userId")
+    void updateIsNewUser(String userId, int isNewUser);
+
+    @Query("UPDATE users SET exp = :exp WHERE id = :userId")
+    void updateExp(String userId, long exp);
+
     @Query("DELETE FROM users")
     void deleteAllUsers();
+
 }

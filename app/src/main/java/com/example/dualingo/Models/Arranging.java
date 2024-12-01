@@ -66,6 +66,4 @@ public class Arranging {
         this.result = result;
         this.wordList = wordList;
     }
-
-
 }

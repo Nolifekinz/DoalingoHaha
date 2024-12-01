@@ -22,13 +22,14 @@ public class User implements Parcelable {
     private Long exp = 0L;
     private Long rank = 0L;
     private int streak = 0;
+    private int isNewUser = 1;
     @Embedded
     private Progress progress;
     private String idBattle;
     private String idWrongQuestion;
     private Long lastStudyDate = 0L;
 
-    public User(String id, String email, String username, Long exp, Long rank, int streak, Progress progress, String idBattle, String idWrongQuestion, Long lastStudyDate) {
+    public User(String id, String email, String username, Long exp, Long rank, int streak, Progress progress, String idBattle, String idWrongQuestion, Long lastStudyDate,int isNewUser) {
         this.id = id;
         this.email = email;
         this.username = username;
@@ -39,6 +40,15 @@ public class User implements Parcelable {
         this.idBattle = idBattle;
         this.idWrongQuestion = idWrongQuestion;
         this.lastStudyDate = lastStudyDate;
+        this.isNewUser = isNewUser;
+    }
+
+    public void setIsNewUser(int isNewUser) {
+        this.isNewUser = isNewUser;
+    }
+
+    public int getIsNewUser() {
+        return isNewUser;
     }
 
     public User() {

@@ -18,8 +18,14 @@ public interface FillBlankDAO {
     @Query("SELECT * FROM fill_blank WHERE idFillBlank = :id")
     FillBlank getFillBlankById(String id);
 
+    @Query("SELECT * FROM fill_blank WHERE idLecture = :lectureId")
+    List<FillBlank> getFillBlankByLectureId(String lectureId);
+
     @Query("SELECT * FROM fill_blank")
     List<FillBlank> getAllFillBlanks();
+
+    @Query("SELECT * FROM fill_blank ORDER BY RANDOM() LIMIT 5")
+    List<FillBlank> getRandomFillBlank();
 
     @Delete
     void deleteFillBlank(FillBlank fillBlank);

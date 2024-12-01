@@ -8,18 +8,28 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.dualingo.Models.User;
 import com.example.dualingo.databinding.ActivityLoginBinding;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 public class LoginActivity extends AppCompatActivity {
+
+
     ActivityLoginBinding binding;
+    private AppDatabase database;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         binding= ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        database = AppDatabase.getDatabase(this);
         binding.btnLogin.setOnClickListener(view -> login());
 
         binding.btnGotoRegister.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
@@ -44,11 +54,35 @@ public class LoginActivity extends AppCompatActivity {
         setInProgress(true);
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
+
                     Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
+                    String id = authResult.getUser().getUid();
+
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+
+                    Future<Integer> future = executor.submit(() -> {
+                        User u = database.userDAO().getUserById(id);
+                        return u.getIsNewUser();
+                    });
+
+                    try {
+                        int isNewUser = future.get(); // Đợi kết quả từ luồng phụ
+                        if (isNewUser == 1) {
+                            Intent intent = new Intent(LoginActivity.this, TestOrNo.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra("id",id);
+                            startActivity(intent);
+                        }else{
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        executor.shutdown();
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();

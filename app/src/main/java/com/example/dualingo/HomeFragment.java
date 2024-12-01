@@ -44,19 +44,29 @@ public class HomeFragment extends Fragment  {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        // Khởi tạo database
+        database = AppDatabase.getDatabase(requireContext());
+
         recyclerViewSession = view.findViewById(R.id.rvSession);
         level = view.findViewById(R.id.level);
         streak = view.findViewById(R.id.streak);
         flag = view.findViewById(R.id.flag_language);
         notify = view.findViewById(R.id.notify);
 
-        // Khởi tạo database
-        database = AppDatabase.getDatabase(requireContext());
+        new Thread(()->{
+            streak.setText(String.valueOf(database.userDAO().getCurrentUser().getStreak()));
+            level.setText(String.valueOf(database.userDAO().getCurrentUser().getExp()));
+        }).start();
+
+
 
         level.setOnClickListener(v -> showPopup(R.id.level, v));
         streak.setOnClickListener(v -> showPopup(R.id.streak, v));
         flag.setOnClickListener(v -> showPopup(R.id.flag_language, v));
-        notify.setOnClickListener(v -> showPopup(R.id.notify, v));
+        notify.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), SetTimeActivity.class);
+            startActivity(intent);
+        });
 
         setupRecyclerViews();
         loadDataFromDatabase();
@@ -91,14 +101,13 @@ public class HomeFragment extends Fragment  {
     private void setupRecyclerViews() {
         sessionAdapter = new SessionAdapter(getContext(), sessionList, (sessionPos, lecturePos) -> {
             // Xử lý sự kiện khi người dùng click vào Lecture
-            Intent intent = new Intent(getContext(), LearningActivity.class);
+            Intent intent = new Intent(getContext(), ListBaiHoc.class);
             intent.putExtra("sessionPosition", sessionPos);
             intent.putExtra("lecturePosition", lecturePos);
             startActivity(intent);
         });
         recyclerViewSession.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewSession.setAdapter(sessionAdapter);
-
     }
 
     private void loadDataFromDatabase() {

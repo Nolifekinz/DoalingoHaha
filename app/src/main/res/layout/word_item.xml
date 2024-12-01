@@ -6,4 +6,5 @@
     android:padding="16dp"
     android:text="Word"
     android:textSize="18sp"
-    android:layout_margin="10dp"/>
+    android:layout_margin="10dp"
+    android:textColor="@color/green"/>
