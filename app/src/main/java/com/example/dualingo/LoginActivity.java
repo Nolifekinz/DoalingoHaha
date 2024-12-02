@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.dualingo.Models.User;
 import com.example.dualingo.databinding.ActivityLoginBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,31 +60,38 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Đăng nhập thành công", Toast.LENGTH_SHORT).show();
                     String id = authResult.getUser().getUid();
 
-                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    // Tham chiếu đến tài liệu trong Firestore
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    DocumentReference docRef = db.collection("users").document(id);
 
-                    Future<Integer> future = executor.submit(() -> {
-                        User u = database.userDAO().getUserById(id);
-                        return u.getIsNewUser();
-                    });
+                    docRef.get().addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            Long isNewUser = documentSnapshot.getLong("isNewUser"); // Lấy giá trị trường `isNewUser`
 
-                    try {
-                        int isNewUser = future.get(); // Đợi kết quả từ luồng phụ
-                        if (isNewUser == 1) {
-                            Intent intent = new Intent(LoginActivity.this, TestOrNo.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra("id",id);
-                            startActivity(intent);
-                        }else{
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                            finish();
+                            if (isNewUser != null) {
+                                if (isNewUser == 1) {
+                                    // Người dùng mới
+                                    Intent intent = new Intent(LoginActivity.this, TestOrNo.class);
+                                    intent.putExtra("id", id);
+                                    startActivity(intent);
+                                } else {
+                                    // Người dùng cũ
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    intent.putExtra("id", id);
+                                    startActivity(intent);
+                                }
+                                finish();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Không tìm thấy trường isNewUser!", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Tài liệu không tồn tại!", Toast.LENGTH_SHORT).show();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        executor.shutdown();
-                    }
+                        setInProgress(false); // Tắt trạng thái loading
+                    }).addOnFailureListener(e -> {
+                        Toast.makeText(getApplicationContext(), "Lỗi khi truy vấn Firestore: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        setInProgress(false);
+                    });
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();

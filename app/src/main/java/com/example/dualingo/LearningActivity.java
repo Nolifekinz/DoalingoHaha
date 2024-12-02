@@ -1,6 +1,9 @@
 package com.example.dualingo;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,11 +15,11 @@ import androidx.fragment.app.FragmentManager;
 
 import com.example.dualingo.LearningFragment.ArrangingFragment;
 import com.example.dualingo.LearningFragment.FillInBlankFragment;
+import com.example.dualingo.LearningFragment.LearnNewWordsFragment;
 import com.example.dualingo.LearningFragment.ListeningFragment;
 import com.example.dualingo.LearningFragment.SpeakingFragment;
-public class LearningActivity extends AppCompatActivity {
 
-    Fragment learningFragment;
+public class LearningActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,30 +32,39 @@ public class LearningActivity extends AppCompatActivity {
             return insets;
         });
 
-        String questionType = getIntent().getStringExtra("typeQuestion");
-        String lectureId = getIntent().getStringExtra("lectureId"); // Get lectureId from Intent
-        switchFragment(questionType, lectureId);
+        String typeQuestion = getIntent().getStringExtra("typeQuestion");
+
+        if(typeQuestion!=null) {
+            switchFragment(typeQuestion);
+        }else{
+            finish();
+        }
     }
 
-    private void switchFragment(String questionType, String lectureId) {
+    private void switchFragment(String typeQuestion) {
         Fragment fragment;
-        Bundle bundle = new Bundle();
-        bundle.putString("lectureId", lectureId);  // Pass lectureId to fragment
-
-        if ("arranging".equals(questionType)) {
+//        String lectureId = getIntent().getStringExtra("lectureId");
+//        Bundle bundle = new Bundle();
+        if(typeQuestion.equals("arranging")) {
             fragment = new ArrangingFragment();
-        } else if ("fill_blank".equals(questionType)) {
+        }else if(typeQuestion.equals("fill_blank")){
             fragment = new FillInBlankFragment();
-        } else if ("listening".equals(questionType)) {
+        }else if(typeQuestion.equals("listening")){
             fragment = new ListeningFragment();
-        } else if ("speaking".equals(questionType)) {
+        }else if(typeQuestion.equals("speaking")) {
             fragment = new SpeakingFragment();
-        } else {
-            fragment = new SpeakingFragment(); // Default case
+        }else {
+            fragment = new LearnNewWordsFragment();
         }
 
-        fragment.setArguments(bundle);
-        getSupportFragmentManager().beginTransaction()
+//        Bundle bundle = new Bundle();
+//        bundle.putString("testOrLearn", "learn");
+//        bundle.putString("lectureId","2");
+//        fragment.setArguments(bundle);
+
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
                 .replace(R.id.LearningFragment, fragment)
                 .commit();
     }

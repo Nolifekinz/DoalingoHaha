@@ -76,15 +76,8 @@ public class FillInBlankFragment extends Fragment {
 
 
         database = AppDatabase.getDatabase(getContext());
+
         setupRecyclerViews();
-
-
-        Bundle arguments = getArguments();
-        if(arguments!=null){
-            testOrLearn = arguments.getString("testOrLearn");
-        }else{
-            testOrLearn = "";
-        }
 
         getDatafromRoom(testOrLearn);
 
@@ -177,15 +170,11 @@ public class FillInBlankFragment extends Fragment {
         new Thread(() -> {
             String lectureId = getArguments() != null ? getArguments().getString("lectureId") : null;
             fillBlankList.clear();
-            if(c.equals("learn")){
-                System.out.println("learn");
-                if (lectureId != null) {
-                    fillBlankList.addAll(database.fillBlankDAO().getFillBlankByLectureId(lectureId)); // Truy vấn dựa trên idLecture
-                }else{
-                    fillBlankList.addAll(database.fillBlankDAO().getFillBlankByLectureId("1"));
-                }
+
+            if (lectureId != null) {
+                fillBlankList.addAll(database.fillBlankDAO().getFillBlankByLectureId(lectureId)); // Truy vấn dựa trên idLecture
             }else{
-                fillBlankList.addAll(database.fillBlankDAO().getRandomFillBlank()); // Truy vấn dựa trên idLecture
+                fillBlankList.addAll(database.fillBlankDAO().getFillBlankByLectureId("1"));
             }
 
             if (!fillBlankList.isEmpty()) {

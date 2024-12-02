@@ -53,10 +53,10 @@ public class HomeFragment extends Fragment  {
         flag = view.findViewById(R.id.flag_language);
         notify = view.findViewById(R.id.notify);
 
-        new Thread(()->{
-            streak.setText(String.valueOf(database.userDAO().getCurrentUser().getStreak()));
-            level.setText(String.valueOf(database.userDAO().getCurrentUser().getExp()));
-        }).start();
+//        new Thread(()->{
+//            streak.setText(String.valueOf(database.userDAO().getCurrentUser().getStreak()));
+//            level.setText(String.valueOf(database.userDAO().getCurrentUser().getExp()));
+//        }).start();
 
 
 
@@ -68,8 +68,9 @@ public class HomeFragment extends Fragment  {
             startActivity(intent);
         });
 
-        setupRecyclerViews();
         loadDataFromDatabase();
+        setupRecyclerViews();
+
 
         return view;
     }

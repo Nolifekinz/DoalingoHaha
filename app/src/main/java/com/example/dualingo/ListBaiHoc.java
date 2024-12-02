@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class ListBaiHoc extends AppCompatActivity {
 
-    Button btnGioiThieu, btnBTSapxep, btnBTDien, btnBTNghe, btnBTNoi;
+    Button btnGioiThieu, btnBTSapxep, btnBTDien, btnBTNghe, btnBTNoi,btnBTTuVung;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +31,7 @@ public class ListBaiHoc extends AppCompatActivity {
         btnBTDien = findViewById(R.id.btnBTDien);
         btnBTNghe = findViewById(R.id.btnBTNghe);
         btnBTNoi = findViewById(R.id.btnBTNoi);
+        btnBTTuVung = findViewById(R.id.btnBTTuVung);
 
         String lectureId = getIntent().getStringExtra("lectureId");
 
@@ -66,6 +67,12 @@ public class ListBaiHoc extends AppCompatActivity {
             Intent intent = new Intent(ListBaiHoc.this, LearningActivity.class);
             intent.putExtra("lectureId", lectureId);
             intent.putExtra("typeQuestion", "speaking");
+            startActivity(intent);
+        });
+        btnBTTuVung.setOnClickListener(v ->{
+            Intent intent = new Intent(ListBaiHoc.this, LearningActivity.class);
+            intent.putExtra("lectureId", lectureId);
+            intent.putExtra("typeQuestion", "newWord");
             startActivity(intent);
         });
     }

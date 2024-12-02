@@ -7,21 +7,23 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.List;
+
 public class GridViewForVocabLearning extends BaseAdapter {
     private Context context;
-    private String[] items;
-    public GridViewForVocabLearning(Context context, String[] items) {
+    private List<String> items;
+    public GridViewForVocabLearning(Context context, List<String> items) {
         this.context = context;
         this.items = items;
     }
     @Override
     public int getCount() {
-        return items.length;
+        return items.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return items[position];
+        return items.get(position);
     }
 
     @Override
@@ -35,7 +37,7 @@ public class GridViewForVocabLearning extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.gridview_vocab_item, parent, false);
         }
         TextView textView = convertView.findViewById(R.id.txtResult);
-        textView.setText(items[position]);
+        textView.setText(items.get(position));
         return convertView;
     }
 }

@@ -41,15 +41,6 @@ public class TestFirstActivity extends AppCompatActivity {
 
         tiep = findViewById(R.id.nextTypeQuestion);
         String typeQ = "";
-        
-        for(int i = 0 ; i<10 ; i++){
-            if(i<5){
-                typeQ = "fill";
-            }else if(i>=5 && i< 10){
-                typeQ = "arrange";
-            }
-            switchFragment(typeQ);
-        }
     }
 
     private void switchFragment(String questionType) {
@@ -64,10 +55,6 @@ public class TestFirstActivity extends AppCompatActivity {
         } else {
             fragment = new FillInBlankFragment();
         }
-
-        Bundle bundle = new Bundle();
-        bundle.putString("testOrLearn", "test");
-        fragment.setArguments(bundle);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
