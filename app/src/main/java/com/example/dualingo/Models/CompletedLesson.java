@@ -1,12 +1,14 @@
 package com.example.dualingo.Models;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "completed_lesson")
 public class CompletedLesson {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+    @PrimaryKey
+    @NonNull
+    private String id;
     private String userId;
     private String lectureId;
     private int arranging;
@@ -18,7 +20,8 @@ public class CompletedLesson {
     public CompletedLesson() {
     }
 
-    public CompletedLesson(String userId, String lectureId, int arranging, int fillBlank, int listening, int speaking, int vocabulary) {
+    public CompletedLesson(String id, String userId, String lectureId, int arranging, int fillBlank, int listening, int speaking, int vocabulary) {
+        this.id = id;
         this.userId = userId;
         this.lectureId = lectureId;
         this.arranging = arranging;
@@ -28,11 +31,11 @@ public class CompletedLesson {
         this.vocabularyLesson = vocabulary;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

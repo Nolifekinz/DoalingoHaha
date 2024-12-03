@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.dualingo.DAO.SpeakingDAO;
+import com.example.dualingo.ListBaiHoc;
 import com.example.dualingo.Models.Arranging;
 import com.example.dualingo.Models.CompletedLesson;
 import com.example.dualingo.Models.Speaking;
@@ -236,6 +237,17 @@ public class SpeakingFragment extends Fragment {
         }
         if (speakingList.isEmpty()) {
             updateCompletedLesson(lectureId);
+            // Lấy thông tin User từ database và cập nhật EXP
+            new Thread(() -> {
+                User user = database.userDAO().getUserById(userId);
+                if (user != null) {
+                    long newExp = user.getExp() + correctAnswersCount;
+                    user.setExp(newExp);
+
+                    // Cập nhật lại thông tin User trong database
+                    database.userDAO().updateUser(user);
+                }
+            }).start();
             String finalMessage = "Quiz Completed!\nCorrect answers: " + correctAnswersCount + " / 3";
             showResultDialog("Quiz Completed", finalMessage, true);
         }
@@ -257,8 +269,10 @@ public class SpeakingFragment extends Fragment {
             dialog.dismiss();
             dialog.dismiss();
             if (isFinalResult) {
-
-                showResultDialog("Quiz Completed", message, true);
+                Intent intent = new Intent(getContext(), ListBaiHoc.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Xóa ngăn xếp để không quay lại ArrangingFragment
+                startActivity(intent);
+                requireActivity().finish();
             } else {
                 Speaking currentSpeaking = speakingList.get(currentQuestionIndex);
                 questionTextView.setText(currentSpeaking.getQuestion());
@@ -309,10 +323,15 @@ public class SpeakingFragment extends Fragment {
                     database.wrongQuestionDAO().insertOrUpdateWrongQuestion(newWrongQuestion);
                 } else {
                     // Nếu đã có bản ghi, cập nhật danh sách câu sai dạng Arranging
-                    List<String> wrongSpeakingList = new ArrayList<>(wrongQuestion.getIdWrongArrangingList());
+                    List<String> wrongSpeakingList = wrongQuestion.getIdWrongSpeakingList();
+                    if (wrongSpeakingList == null) {
+                        wrongSpeakingList = new ArrayList<>(); // Khởi tạo danh sách rỗng nếu nó null
+                    } else {
+                        wrongSpeakingList = new ArrayList<>(wrongSpeakingList); // Chuyển đổi thành danh sách mới
+                    }
                     if (!wrongSpeakingList.contains(question.getIdSpeaking())) {
                         wrongSpeakingList.add(question.getIdSpeaking());
-                        database.wrongQuestionDAO().updateWrongArrangingList(wrongQuestionId, wrongSpeakingList);
+                        database.wrongQuestionDAO().updateWrongSpeakingList(wrongQuestionId, wrongSpeakingList);
                     }
                 }
             }
@@ -328,7 +347,7 @@ public class SpeakingFragment extends Fragment {
 
                 if (completedLesson == null) {
                     // Nếu chưa có, tạo mới
-                    completedLesson = new CompletedLesson(userId, lectureId, 0, 0, 0, 1, 0);
+                    completedLesson = new CompletedLesson(userId+lectureId,userId, lectureId, 0, 0, 0, 1, 0);
                     database.completedLessonDAO().insertOrUpdate(completedLesson);
                 } else {
                     // Nếu đã có, cập nhật trạng thái

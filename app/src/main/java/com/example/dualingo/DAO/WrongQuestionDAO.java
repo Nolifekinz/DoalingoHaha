@@ -21,6 +21,18 @@ public interface WrongQuestionDAO {
     @Query("UPDATE wrong_questions SET idWrongArrangingList = :idWrongArrangingList WHERE idWrongQuestion = :idWrongQuestion")
     void updateWrongArrangingList(String idWrongQuestion, List<String> idWrongArrangingList);
 
+    @Query("UPDATE wrong_questions SET idWrongFillBlankList = :idWrongFillBlankList WHERE idWrongQuestion = :idWrongQuestion")
+    void updateWrongFillBlankList(String idWrongQuestion, List<String> idWrongFillBlankList);
+
+    @Query("UPDATE wrong_questions SET idWrongListeningList = :idWrongListeningList WHERE idWrongQuestion = :idWrongQuestion")
+    void updateWrongListeningList(String idWrongQuestion, List<String> idWrongListeningList);
+
+    @Query("UPDATE wrong_questions SET idWrongSpeakingList = :idWrongSpeakingList WHERE idWrongQuestion = :idWrongQuestion")
+    void updateWrongSpeakingList(String idWrongQuestion, List<String> idWrongSpeakingList);
+
+    @Query("UPDATE wrong_questions SET idWrongVocabularyList = :idWrongVocabularyList WHERE idWrongQuestion = :idWrongQuestion")
+    void updateWrongVocabularyList(String idWrongQuestion, List<String> idWrongVocabularyList);
+
     @Query("SELECT * FROM wrong_questions")
     List<WrongQuestion> getAllWrongQuestions();
 }

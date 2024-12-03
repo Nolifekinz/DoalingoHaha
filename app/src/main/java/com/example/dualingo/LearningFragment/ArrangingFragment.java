@@ -266,7 +266,13 @@ public class ArrangingFragment extends Fragment {
                     database.wrongQuestionDAO().insertOrUpdateWrongQuestion(newWrongQuestion);
                 } else {
                     // Nếu đã có bản ghi, cập nhật danh sách câu sai dạng Arranging
-                    List<String> wrongArrangingList = new ArrayList<>(wrongQuestion.getIdWrongArrangingList());
+                    List<String> wrongArrangingList = wrongQuestion.getIdWrongArrangingList();
+                    if (wrongArrangingList == null) {
+                        wrongArrangingList = new ArrayList<>(); // Khởi tạo danh sách rỗng nếu nó null
+                    } else {
+                        wrongArrangingList = new ArrayList<>(wrongArrangingList); // Chuyển đổi thành danh sách mới
+                    }
+
                     if (!wrongArrangingList.contains(question.getIdArranging())) {
                         wrongArrangingList.add(question.getIdArranging());
                         database.wrongQuestionDAO().updateWrongArrangingList(wrongQuestionId, wrongArrangingList);
@@ -285,7 +291,7 @@ public class ArrangingFragment extends Fragment {
 
                 if (completedLesson == null) {
                     // Nếu chưa có, tạo mới
-                    completedLesson = new CompletedLesson(userId, lectureId, 1, 0, 0, 0, 0);
+                    completedLesson = new CompletedLesson(userId+lectureId,userId, lectureId, 1, 0, 0, 0, 0);
                     database.completedLessonDAO().insertOrUpdate(completedLesson);
                 } else {
                     // Nếu đã có, cập nhật trạng thái

@@ -1,6 +1,7 @@
 package com.example.dualingo.LearningFragment;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dualingo.Adapters.WordAdapter;
 import com.example.dualingo.AppDatabase;
+import com.example.dualingo.ListBaiHoc;
 import com.example.dualingo.Models.Arranging;
 import com.example.dualingo.Models.CompletedLesson;
 import com.example.dualingo.Models.Listening;
@@ -191,6 +193,17 @@ public class ListeningFragment extends Fragment {
 
         if (listeningList.isEmpty()) {
             updateCompletedLesson(lectureId);
+            // Lấy thông tin User từ database và cập nhật EXP
+            new Thread(() -> {
+                User user = appDatabase.userDAO().getUserById(userId);
+                if (user != null) {
+                    long newExp = user.getExp() + correctAnswersCount;
+                    user.setExp(newExp);
+
+                    // Cập nhật lại thông tin User trong database
+                    appDatabase.userDAO().updateUser(user);
+                }
+            }).start();
             String finalMessage = "Quiz Completed!\nCorrect answers: " + correctAnswersCount + " / 3";
             showResultDialog("Quiz Completed", finalMessage, true);
         }
@@ -231,16 +244,22 @@ public class ListeningFragment extends Fragment {
 
                 if (wrongQuestion == null) {
                     // Nếu chưa có bản ghi cho wrongQuestionId, tạo mới
-                    List<String> wrongArrangingList = new ArrayList<>();
-                    wrongArrangingList.add(question.getIdListening());
-                    WrongQuestion newWrongQuestion = new WrongQuestion(wrongQuestionId, wrongArrangingList, null, null, null, null);
+                    List<String> wrongListeningList = new ArrayList<>();
+                    wrongListeningList.add(question.getIdListening());
+                    WrongQuestion newWrongQuestion = new WrongQuestion(wrongQuestionId, null, null, wrongListeningList, null, null);
                     appDatabase.wrongQuestionDAO().insertOrUpdateWrongQuestion(newWrongQuestion);
                 } else {
                     // Nếu đã có bản ghi, cập nhật danh sách câu sai dạng Arranging
-                    List<String> wrongArrangingList = new ArrayList<>(wrongQuestion.getIdWrongArrangingList());
-                    if (!wrongArrangingList.contains(question.getIdListening())) {
-                        wrongArrangingList.add(question.getIdListening());
-                        appDatabase.wrongQuestionDAO().updateWrongArrangingList(wrongQuestionId, wrongArrangingList);
+                    List<String> wrongListeningList = wrongQuestion.getIdWrongListeningList();
+                    if (wrongListeningList == null) {
+                        wrongListeningList = new ArrayList<>(); // Khởi tạo danh sách rỗng nếu nó null
+                    } else {
+                        wrongListeningList = new ArrayList<>(wrongListeningList); // Chuyển đổi thành danh sách mới
+                    }
+
+                    if (!wrongListeningList.contains(question.getIdListening())) {
+                        wrongListeningList.add(question.getIdListening());
+                        appDatabase.wrongQuestionDAO().updateWrongListeningList(wrongQuestionId, wrongListeningList);
                     }
                 }
             }
@@ -256,7 +275,7 @@ public class ListeningFragment extends Fragment {
 
                 if (completedLesson == null) {
                     // Nếu chưa có, tạo mới
-                    completedLesson = new CompletedLesson(userId, lectureId, 0, 0, 1, 0, 0);
+                    completedLesson = new CompletedLesson(userId+lectureId,userId, lectureId, 0, 0, 1, 0, 0);
                     appDatabase.completedLessonDAO().insertOrUpdate(completedLesson);
                 } else {
                     // Nếu đã có, cập nhật trạng thái
@@ -283,6 +302,9 @@ public class ListeningFragment extends Fragment {
         btnOk.setOnClickListener(v -> {
             dialog.dismiss();
             if (isFinalResult) {
+                Intent intent = new Intent(getContext(), ListBaiHoc.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Xóa ngăn xếp để không quay lại ArrangingFragment
+                startActivity(intent);
                 requireActivity().finish();
             } else {
                 showCurrentQuestion();
