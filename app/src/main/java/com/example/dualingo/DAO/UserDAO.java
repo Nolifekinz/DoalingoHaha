@@ -22,6 +22,9 @@ public interface UserDAO {
     @Query("SELECT * FROM users LIMIT 1")
     User getCurrentUser();
 
+    @Query("SELECT * FROM users LIMIT 1")
+    LiveData<User> getCurrentUserLive();
+
     @Query("SELECT * FROM users WHERE id=:id")
     User getUserById(String id);
 

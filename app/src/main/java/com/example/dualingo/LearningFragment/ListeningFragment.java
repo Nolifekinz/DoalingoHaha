@@ -19,13 +19,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dualingo.Adapters.WordAdapter;
 import com.example.dualingo.AppDatabase;
+import com.example.dualingo.Models.Arranging;
+import com.example.dualingo.Models.CompletedLesson;
 import com.example.dualingo.Models.Listening;
+import com.example.dualingo.Models.User;
+import com.example.dualingo.Models.WrongQuestion;
 import com.example.dualingo.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ListeningFragment extends Fragment {
 
@@ -42,7 +49,8 @@ public class ListeningFragment extends Fragment {
 
     private int correctAnswersCount = 3;
     private int numberQuestion = 3;
-    private String lectureId;  // Thêm biến lectureId
+    private String lectureId;
+    private String userId= FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     @Nullable
     @Override
@@ -172,6 +180,7 @@ public class ListeningFragment extends Fragment {
             showResultDialog("Correct!", "Your answer is correct!", false);
         } else {
             if(numberQuestion!=0){
+                handleWrongQuestion(listeningList.get(currentQuestionIndex));
                 correctAnswersCount--;
             }
             numberQuestion--;
@@ -181,10 +190,83 @@ public class ListeningFragment extends Fragment {
         }
 
         if (listeningList.isEmpty()) {
+            updateCompletedLesson(lectureId);
             String finalMessage = "Quiz Completed!\nCorrect answers: " + correctAnswersCount + " / 3";
             showResultDialog("Quiz Completed", finalMessage, true);
         }
     }
+
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    private void handleWrongQuestion(Listening question) {
+        executorService.execute(() -> {
+            // Lấy thông tin User từ database
+            User user = appDatabase.userDAO().getUserById(userId);
+
+            // Nếu không tìm thấy user, không làm gì thêm
+            if (user == null) {
+                return;
+            }
+
+            // Kiểm tra trường hợp wrongQuestionId là null
+            String wrongQuestionId = user.getIdWrongQuestion();
+            if (wrongQuestionId == null) {
+                // Nếu wrongQuestionId là null, tạo mới
+                wrongQuestionId = userId; // Phương thức tạo ID mới hoặc có thể dùng userId làm ID
+
+                // Tạo một đối tượng WrongQuestion mới
+                List<String> wrongListeningList = new ArrayList<>();
+                wrongListeningList.add(question.getIdListening());
+                WrongQuestion newWrongQuestion = new WrongQuestion(wrongQuestionId, null, wrongListeningList, null, null, null);
+
+                // Cập nhật lại thông tin user với wrongQuestionId mới
+                user.setIdWrongQuestion(wrongQuestionId);
+                appDatabase.userDAO().updateUser(user);  // Lưu lại thay đổi user
+
+                // Thêm WrongQuestion mới vào database
+                appDatabase.wrongQuestionDAO().insertOrUpdateWrongQuestion(newWrongQuestion);
+            } else {
+                // Nếu đã có wrongQuestionId, tìm bản ghi WrongQuestion trong database
+                WrongQuestion wrongQuestion = appDatabase.wrongQuestionDAO().getWrongQuestionById(wrongQuestionId);
+
+                if (wrongQuestion == null) {
+                    // Nếu chưa có bản ghi cho wrongQuestionId, tạo mới
+                    List<String> wrongArrangingList = new ArrayList<>();
+                    wrongArrangingList.add(question.getIdListening());
+                    WrongQuestion newWrongQuestion = new WrongQuestion(wrongQuestionId, wrongArrangingList, null, null, null, null);
+                    appDatabase.wrongQuestionDAO().insertOrUpdateWrongQuestion(newWrongQuestion);
+                } else {
+                    // Nếu đã có bản ghi, cập nhật danh sách câu sai dạng Arranging
+                    List<String> wrongArrangingList = new ArrayList<>(wrongQuestion.getIdWrongArrangingList());
+                    if (!wrongArrangingList.contains(question.getIdListening())) {
+                        wrongArrangingList.add(question.getIdListening());
+                        appDatabase.wrongQuestionDAO().updateWrongArrangingList(wrongQuestionId, wrongArrangingList);
+                    }
+                }
+            }
+        });
+    }
+
+
+    private void updateCompletedLesson(String lectureId) {
+        executorService.execute(() -> {
+            appDatabase.runInTransaction(() -> {
+                // Lấy CompletedLesson từ database
+                CompletedLesson completedLesson = appDatabase.completedLessonDAO().getCompletedLesson(lectureId, userId);
+
+                if (completedLesson == null) {
+                    // Nếu chưa có, tạo mới
+                    completedLesson = new CompletedLesson(userId, lectureId, 0, 0, 1, 0, 0);
+                    appDatabase.completedLessonDAO().insertOrUpdate(completedLesson);
+                } else {
+                    // Nếu đã có, cập nhật trạng thái
+                    completedLesson.setListening(1);
+                    appDatabase.completedLessonDAO().insertOrUpdate(completedLesson);
+                }
+            });
+        });
+    }
+
 
     private void showResultDialog(String title, String message, boolean isFinalResult) {
         final Dialog dialog = new Dialog(requireContext());

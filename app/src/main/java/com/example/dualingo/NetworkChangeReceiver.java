@@ -13,6 +13,8 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             // Nếu có mạng, thực hiện đồng bộ
             DataSyncManager syncManager = new DataSyncManager(context);
             syncManager.syncRoomToFirestore(); // Đồng bộ từ Room lên Firestore
+            syncManager.syncCompletedLessonToFirestore();
+            syncManager.syncWrongQuestionToFirestore();
             syncManager.syncData(context); // Đồng bộ từ Firestore về Room
         }
     }

@@ -12,26 +12,15 @@ import java.util.List;
 
 @Dao
 public interface WrongQuestionDAO {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertWrongQuestion(WrongQuestion wrongQuestion);
+    void insertOrUpdateWrongQuestion(WrongQuestion wrongQuestion);
 
-    @Update
-    void updateWrongQuestion(WrongQuestion wrongQuestion);
+    @Query("SELECT * FROM wrong_questions WHERE idWrongQuestion = :idWrongQuestion")
+    WrongQuestion getWrongQuestionById(String idWrongQuestion);
 
-    // Lấy tất cả các bản ghi trong bảng
+    @Query("UPDATE wrong_questions SET idWrongArrangingList = :idWrongArrangingList WHERE idWrongQuestion = :idWrongQuestion")
+    void updateWrongArrangingList(String idWrongQuestion, List<String> idWrongArrangingList);
+
     @Query("SELECT * FROM wrong_questions")
     List<WrongQuestion> getAllWrongQuestions();
-
-    // Lấy một bản ghi dựa vào ID
-    @Query("SELECT * FROM wrong_questions WHERE idWrongQuestion = :id")
-    WrongQuestion getWrongQuestionById(String id);
-
-    // Xóa một bản ghi dựa vào ID
-    @Query("DELETE FROM wrong_questions WHERE idWrongQuestion = :id")
-    void deleteWrongQuestionById(String id);
-
-    // Xóa tất cả các bản ghi
-    @Query("DELETE FROM wrong_questions")
-    void deleteAllWrongQuestions();
 }

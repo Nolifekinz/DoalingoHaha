@@ -1,13 +1,13 @@
 package com.example.dualingo.LearningFragment;
 
 import android.Manifest;
-import android.content.Context;
+import android.app.Dialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,39 +23,47 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.dualingo.DAO.SpeakingDAO;
+import com.example.dualingo.Models.Arranging;
+import com.example.dualingo.Models.CompletedLesson;
 import com.example.dualingo.Models.Speaking;
+import com.example.dualingo.Models.User;
+import com.example.dualingo.Models.WrongQuestion;
 import com.example.dualingo.R;
 import com.example.dualingo.AppDatabase;
+import com.google.firebase.auth.FirebaseAuth;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SpeakingFragment extends Fragment {
 
     private TextView questionTextView, resultTextView;
     private ProgressBar recordingIndicator;
     private Button recordButton, checkAnswerButton;
+    private AppDatabase database;
 
-    private AudioRecord audioRecord;
-    private String audioFilePath;
-    private boolean isRecording = false;
-    private Thread recordingThread;
+    private SpeechRecognizer speechRecognizer;
+    private boolean isListening = false;
 
     private SpeakingDAO speakingDao;
     private List<Speaking> speakingList = new ArrayList<>();
+    private int currentQuestionIndex = 0;
+    private int numberQuestion = 3;
+    private int correctAnswersCount = 3;
+    private String userId= FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private String lectureId;
 
     public SpeakingFragment() {
-        // Required empty public constructor
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_speaking, container, false);
-
+        database = AppDatabase.getDatabase(getContext());
         // Initialize views
         questionTextView = view.findViewById(R.id.questionTextView);
         resultTextView = view.findViewById(R.id.resultTextView);
@@ -67,20 +75,20 @@ public class SpeakingFragment extends Fragment {
         speakingDao = AppDatabase.getDatabase(requireContext()).speakingDAO();
 
         // Get lectureId from Bundle
-        String lectureId = getArguments().getString("lectureId");
+        lectureId = getArguments().getString("lectureId");
 
         // Fetch speaking data from Room based on lectureId
         fetchSpeakingData(lectureId);
 
-        // Set up file path for audio
-        audioFilePath = requireContext().getExternalFilesDir(null) + "/audioRecording.pcm";
-
-        // Set up button listeners
-        recordButton.setOnClickListener(v -> toggleRecording());
-        checkAnswerButton.setOnClickListener(v -> checkAnswer());
+        // Initialize SpeechRecognizer
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(requireContext());
 
         // Request microphone permission
         checkAndRequestPermission();
+
+        // Set up button listeners
+        recordButton.setOnClickListener(v -> toggleListening());
+        checkAnswerButton.setOnClickListener(v -> stopListening());
 
         return view;
     }
@@ -97,121 +105,247 @@ public class SpeakingFragment extends Fragment {
             speakingList = speakingDao.getSpeaksByLectureId(lectureId); // Query from Room based on lectureId
             getActivity().runOnUiThread(() -> {
                 if (!speakingList.isEmpty()) {
-                    Speaking currentSpeaking = speakingList.get(0); // Use first item as example
-                    questionTextView.setText(currentSpeaking.getQuestion());
+                    // Trộn ngẫu nhiên danh sách câu hỏi
+                    shuffleQuestions();
+
+                    // Lấy 3 câu hỏi ngẫu nhiên từ danh sách
+                    if (speakingList.size() >= 3) {
+                        Speaking currentSpeaking = speakingList.get(currentQuestionIndex);
+                        questionTextView.setText(currentSpeaking.getQuestion());
+                    } else {
+                        questionTextView.setText("Không đủ câu hỏi.");
+                    }
                 }
             });
         }).start();
     }
 
-    private void toggleRecording() {
-        if (isRecording) {
-            stopRecording();
+    private void shuffleQuestions() {
+        // Trộn ngẫu nhiên danh sách câu hỏi
+        Collections.shuffle(speakingList);
+
+        // Lấy chỉ 3 câu hỏi từ danh sách đã trộn
+        speakingList = speakingList.subList(0, Math.min(speakingList.size(), 3));
+    }
+
+
+    private void toggleListening() {
+        if (isListening) {
+            stopListening();
         } else {
-            startRecording();
+            startListening();
         }
     }
 
-    private void startRecording() {
-        // Check permission before starting
+    private void startListening() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-            // Show recording indicator and disable record button
+            // Show recording indicator
             recordingIndicator.setVisibility(View.VISIBLE);
             recordButton.setEnabled(false);
 
-            // Set up AudioRecord
-            int sampleRate = 16000; // Set the sample rate (16kHz is common for speech)
-            int channelConfig = AudioFormat.CHANNEL_IN_MONO; // Mono channel
-            int audioFormat = AudioFormat.ENCODING_PCM_16BIT; // 16-bit encoding
+            // Set up speech recognition intent
+            Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US");
 
-            int bufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioFormat);
-            audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, channelConfig, audioFormat, bufferSize);
+            speechRecognizer.setRecognitionListener(new RecognitionListener() {
+                @Override
+                public void onReadyForSpeech(Bundle params) {
+                    Toast.makeText(getContext(), "Bắt đầu nói...", Toast.LENGTH_SHORT).show();
+                }
 
-            try {
-                // Start the recording in a new thread
-                audioRecord.startRecording();
-                isRecording = true;
+                @Override
+                public void onBeginningOfSpeech() {
+                    resultTextView.setText("");
+                }
 
-                recordingThread = new Thread(() -> writeAudioDataToFile());
-                recordingThread.start();
+                @Override
+                public void onRmsChanged(float rmsdB) {
+                    // Optional: Show sound level indicator
+                }
 
-            } catch (SecurityException e) {
-                e.printStackTrace();
-                Toast.makeText(getContext(), "Microphone access denied. Please grant the permission.", Toast.LENGTH_SHORT).show();
-            }
+                @Override
+                public void onBufferReceived(byte[] buffer) {}
 
+                @Override
+                public void onEndOfSpeech() {
+                    recordingIndicator.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError(int error) {
+                    resultTextView.setText("Có lỗi xảy ra: " + error);
+                    recordingIndicator.setVisibility(View.GONE);
+                    isListening = false;
+                    recordButton.setEnabled(true);
+                }
+
+                @Override
+                public void onResults(Bundle results) {
+                    ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                    if (matches != null && !matches.isEmpty()) {
+                        String userAnswer = matches.get(0).toLowerCase().trim();
+                        compareAnswer(userAnswer);
+                    }
+                    isListening = false;
+                    recordButton.setEnabled(true);
+                }
+
+                @Override
+                public void onPartialResults(Bundle partialResults) {}
+
+                @Override
+                public void onEvent(int eventType, Bundle params) {}
+            });
+
+            // Start listening
+            speechRecognizer.startListening(intent);
+            isListening = true;
         } else {
-            // Permission not granted, show a toast or request permission again
-            Toast.makeText(getContext(), "Permission is required to record audio.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Bạn cần cấp quyền sử dụng microphone.", Toast.LENGTH_SHORT).show();
             checkAndRequestPermission();
         }
     }
 
-    private void writeAudioDataToFile() {
-        byte[] audioData = new byte[1024];
-        FileOutputStream fos = null;
+    private void stopListening() {
+        if (speechRecognizer != null && isListening) {
+            speechRecognizer.stopListening();
+            recordingIndicator.setVisibility(View.GONE);
+            recordButton.setEnabled(true);
+            isListening = false;
+        }
+    }
 
-        try {
-            fos = new FileOutputStream(audioFilePath);
-            while (isRecording) {
-                int read = audioRecord.read(audioData, 0, audioData.length);
-                if (read != AudioRecord.ERROR_INVALID_OPERATION) {
-                    fos.write(audioData, 0, read);
+    private void compareAnswer(String userAnswer) {
+        if (!speakingList.isEmpty()) {
+            String correctAnswer = speakingList.get(currentQuestionIndex).getQuestion().trim().toLowerCase();
+            if (userAnswer.equals(correctAnswer)) {
+                speakingList.remove(currentQuestionIndex);
+                numberQuestion--;
+                showResultDialog("Correct!", "Your answer is correct!", false);
+            } else {
+                if(numberQuestion!=0){
+                    handleWrongQuestion(speakingList.get(currentQuestionIndex));
+                    correctAnswersCount--;
+                }
+                numberQuestion--;
+                speakingList.add(speakingList.get(currentQuestionIndex));
+                speakingList.remove(currentQuestionIndex);
+                showResultDialog("Incorrect!", "Your answer is incorrect!", false);
+            }
+        }
+        if (speakingList.isEmpty()) {
+            updateCompletedLesson(lectureId);
+            String finalMessage = "Quiz Completed!\nCorrect answers: " + correctAnswersCount + " / 3";
+            showResultDialog("Quiz Completed", finalMessage, true);
+        }
+    }
+
+    private void showResultDialog(String title, String message, boolean isFinalResult) {
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.result_dialog);
+        dialog.setCancelable(false);
+
+        TextView tvTitle = dialog.findViewById(R.id.dialog_title);
+        TextView tvMessage = dialog.findViewById(R.id.dialog_message);
+        Button btnOk = dialog.findViewById(R.id.btn_ok);
+
+        tvTitle.setText(title);
+        tvMessage.setText(message);
+
+        btnOk.setOnClickListener(v -> {
+            dialog.dismiss();
+            dialog.dismiss();
+            if (isFinalResult) {
+
+                showResultDialog("Quiz Completed", message, true);
+            } else {
+                Speaking currentSpeaking = speakingList.get(currentQuestionIndex);
+                questionTextView.setText(currentSpeaking.getQuestion());
+            }
+        });
+
+        dialog.show();
+    }
+
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    private void handleWrongQuestion(Speaking question) {
+        executorService.execute(() -> {
+            // Lấy thông tin User từ database
+            User user = database.userDAO().getUserById(userId);
+
+            // Nếu không tìm thấy user, không làm gì thêm
+            if (user == null) {
+                return;
+            }
+
+            // Kiểm tra trường hợp wrongQuestionId là null
+            String wrongQuestionId = user.getIdWrongQuestion();
+            if (wrongQuestionId == null) {
+                // Nếu wrongQuestionId là null, tạo mới
+                wrongQuestionId = userId; // Phương thức tạo ID mới hoặc có thể dùng userId làm ID
+
+                // Tạo một đối tượng WrongQuestion mới
+                List<String> wrongSpeakingList = new ArrayList<>();
+                wrongSpeakingList.add(question.getIdSpeaking());
+                WrongQuestion newWrongQuestion = new WrongQuestion(wrongQuestionId, null, null, null, wrongSpeakingList, null);
+
+                // Cập nhật lại thông tin user với wrongQuestionId mới
+                user.setIdWrongQuestion(wrongQuestionId);
+                database.userDAO().updateUser(user);  // Lưu lại thay đổi user
+
+                // Thêm WrongQuestion mới vào database
+                database.wrongQuestionDAO().insertOrUpdateWrongQuestion(newWrongQuestion);
+            } else {
+                // Nếu đã có wrongQuestionId, tìm bản ghi WrongQuestion trong database
+                WrongQuestion wrongQuestion = database.wrongQuestionDAO().getWrongQuestionById(wrongQuestionId);
+
+                if (wrongQuestion == null) {
+                    // Nếu chưa có bản ghi cho wrongQuestionId, tạo mới
+                    List<String> wrongSpeakingList = new ArrayList<>();
+                    wrongSpeakingList.add(question.getIdSpeaking());
+                    WrongQuestion newWrongQuestion = new WrongQuestion(wrongQuestionId, null, null, wrongSpeakingList, null, null);
+                    database.wrongQuestionDAO().insertOrUpdateWrongQuestion(newWrongQuestion);
+                } else {
+                    // Nếu đã có bản ghi, cập nhật danh sách câu sai dạng Arranging
+                    List<String> wrongSpeakingList = new ArrayList<>(wrongQuestion.getIdWrongArrangingList());
+                    if (!wrongSpeakingList.contains(question.getIdSpeaking())) {
+                        wrongSpeakingList.add(question.getIdSpeaking());
+                        database.wrongQuestionDAO().updateWrongArrangingList(wrongQuestionId, wrongSpeakingList);
+                    }
                 }
             }
-            fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
-    private void stopRecording() {
-        // Stop recording and release resources
-        isRecording = false;
-        audioRecord.stop();
-        audioRecord.release();
-        audioRecord = null;
-        recordingIndicator.setVisibility(View.GONE);
-        recordButton.setEnabled(true);
+
+    private void updateCompletedLesson(String lectureId) {
+        executorService.execute(() -> {
+            database.runInTransaction(() -> {
+                // Lấy CompletedLesson từ database
+                CompletedLesson completedLesson = database.completedLessonDAO().getCompletedLesson(lectureId, userId);
+
+                if (completedLesson == null) {
+                    // Nếu chưa có, tạo mới
+                    completedLesson = new CompletedLesson(userId, lectureId, 0, 0, 0, 1, 0);
+                    database.completedLessonDAO().insertOrUpdate(completedLesson);
+                } else {
+                    // Nếu đã có, cập nhật trạng thái
+                    completedLesson.setSpeaking(1);
+                    database.completedLessonDAO().insertOrUpdate(completedLesson);
+                }
+            });
+        });
     }
 
-    private void checkAnswer() {
-        stopRecording(); // Stop recording after checking answer
-
-        // Process the recorded audio
-        String recordedAnswer = processRecordedAudio(audioFilePath); // Example method for processing audio
-
-        if (recordedAnswer.isEmpty()) {
-            Toast.makeText(getContext(), "Please record your answer first!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Get the correct answer from the fetched data
-        if (!speakingList.isEmpty()) {
-            String correctAnswer = speakingList.get(0).getQuestion().trim().toLowerCase(); // Assuming using first item
-            String userAnswer = recordedAnswer.toLowerCase();
-
-            if (userAnswer.equals(correctAnswer)) {
-                resultTextView.setText("Correct!");
-                resultTextView.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
-            } else {
-                resultTextView.setText("Incorrect. Try again!");
-                resultTextView.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
-            }
-        }
-    }
-
-    private String processRecordedAudio(String audioFilePath) {
-        // Implement a method to process the audio file and return the text (you can use libraries like Speech-to-Text)
-        return ""; // Return transcribed text
-    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (audioRecord != null) {
-            audioRecord.release();
-            audioRecord = null;
+        if (speechRecognizer != null) {
+            speechRecognizer.destroy();
+            speechRecognizer = null;
         }
     }
 
