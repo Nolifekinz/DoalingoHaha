@@ -80,6 +80,7 @@ public class HomeFragment extends Fragment {
                 // Cập nhật UI sau khi thay đổi streak
                 requireActivity().runOnUiThread(() -> {
                     streak.setText(String.valueOf(user.getStreak()));
+                    level.setText(String.valueOf(user.getExp()));
                 });
             } else {
                 System.out.println("Người dùng hiện tại không tồn tại!");

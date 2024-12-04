@@ -314,29 +314,35 @@ public class FillInBlankFragment extends Fragment {
             btnWrongResson.setVisibility(View.GONE);
         }
         else{
-            String question = "tôi đang giải bài tập Tiếng Anh, câu hỏi của tôi là: "+
-                    questionText+" tôi cần phải điền các từ Tiếng Anh vào chỗ trống. Và đây là câu trả lời của tôi:"+
-                    result+" Chỉ ra lỗi sai của tôi. Nói ngắn gọn bằng Tiếng Việt";
-            Content content = new Content.Builder()
-                    .addText(question)
-                    .build();
-
-            Executor executor = Executors.newSingleThreadExecutor();
-
-            ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
-            Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+            btnWrongResson.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onSuccess(GenerateContentResponse result) {
-                    // Update UI with response text
-                    requireActivity().runOnUiThread(() -> tvMessage.setText(result.getText()));
-                }
+                public void onClick(View view) {
+                    String question = "tôi đang giải bài tập Tiếng Anh, câu hỏi của tôi là: "+
+                            questionText+" tôi cần phải điền các từ Tiếng Anh vào chỗ trống. Và đây là câu trả lời của tôi:"+
+                            result+" Chỉ ra lỗi sai của tôi. Nói ngắn gọn bằng Tiếng Việt";
+                    Content content = new Content.Builder()
+                            .addText(question)
+                            .build();
 
-                @Override
-                public void onFailure(Throwable t) {
-                    t.printStackTrace();
-                    requireActivity().runOnUiThread(() -> tvMessage.setText("An error occurred. Please try again."));
+                    Executor executor = Executors.newSingleThreadExecutor();
+
+                    ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
+                    Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+                        @Override
+                        public void onSuccess(GenerateContentResponse result) {
+                            // Update UI with response text
+                            requireActivity().runOnUiThread(() -> tvMessage.setText(result.getText()));
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            t.printStackTrace();
+                            requireActivity().runOnUiThread(() -> tvMessage.setText("An error occurred. Please try again."));
+                        }
+                    }, executor);
                 }
-            }, executor);
+            });
+
         }
 
         tvTitle.setText(title);

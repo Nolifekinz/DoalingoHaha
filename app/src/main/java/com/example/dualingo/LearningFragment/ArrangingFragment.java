@@ -319,29 +319,35 @@ public class ArrangingFragment extends Fragment {
             btnWrongResson.setVisibility(View.GONE);
         }
         else{
-            String question="tôi đang giải bài tập Tiếng Anh, câu hỏi của tôi là 1 câu Tiếng Việt: "+
-                    questionText+" tôi cần phải sắp xếp các từ Tiếng Anh sao cho ra 1 câu có nghĩ giống câu Tiếng Việt. Và đây là câu sau khi tôi đã sắp xếp:"+
-                    result+" Chỉ ra lỗi sai của tôi. Nói ngắn gọn thôi";
-            Content content = new Content.Builder()
-                    .addText(question)
-                    .build();
-
-            Executor executor = Executors.newSingleThreadExecutor();
-
-            ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
-            Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+            btnWrongResson.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onSuccess(GenerateContentResponse result) {
-                    // Cập nhật giao diện với câu trả lời
-                    requireActivity().runOnUiThread(() -> tvMessage.setText(result.getText()));
-                }
+                public void onClick(View view) {
+                    String question="tôi đang giải bài tập Tiếng Anh, câu hỏi của tôi là 1 câu Tiếng Việt: "+
+                            questionText+" tôi cần phải sắp xếp các từ Tiếng Anh sao cho ra 1 câu có nghĩ giống câu Tiếng Việt. Và đây là câu sau khi tôi đã sắp xếp:"+
+                            result+" Chỉ ra lỗi sai của tôi. Nói ngắn gọn thôi";
+                    Content content = new Content.Builder()
+                            .addText(question)
+                            .build();
 
-                @Override
-                public void onFailure(Throwable t) {
-                    t.printStackTrace();
-                    requireActivity().runOnUiThread(() -> tvMessage.setText("Đã xảy ra lỗi. Vui lòng thử lại."));
+                    Executor executor = Executors.newSingleThreadExecutor();
+
+                    ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
+                    Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+                        @Override
+                        public void onSuccess(GenerateContentResponse result) {
+                            // Cập nhật giao diện với câu trả lời
+                            requireActivity().runOnUiThread(() -> tvMessage.setText(result.getText()));
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            t.printStackTrace();
+                            requireActivity().runOnUiThread(() -> tvMessage.setText("Đã xảy ra lỗi. Vui lòng thử lại."));
+                        }
+                    }, executor);
                 }
-            }, executor);
+            });
+
         }
 
         tvTitle.setText(title);
