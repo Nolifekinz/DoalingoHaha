@@ -18,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.dualingo.Adapters.WordAdapter;
 import com.example.dualingo.AppDatabase;
 import com.example.dualingo.GridViewForVocabLearning;
@@ -96,8 +98,7 @@ public class LearnNewWordsFragment extends Fragment {
             }
         });
 
-        //set up hình ảnh của từ
-        //imgOfVocabLearning.setImageResource(R.drawable.fire);
+
 
         //set up btncheck
         btnCheckOfVocabLearning.setOnClickListener(new View.OnClickListener() {
@@ -147,7 +148,11 @@ public class LearnNewWordsFragment extends Fragment {
             wordList.clear();
             wordList.addAll(currentQuestion.getWordList());
             txtQuestion.setText(currentQuestion.getQuestion());
-            imgOfVocabLearning.setImageResource(R.drawable.fire); // setup hình ảnh
+            Glide.with(this)
+                    .load(currentQuestion.getImgUrl())
+                    .placeholder(R.drawable.fire)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(imgOfVocabLearning);
             setupGridView();
         }else{
 
