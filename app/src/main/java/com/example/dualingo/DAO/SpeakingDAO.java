@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.example.dualingo.Models.FillBlank;
 import com.example.dualingo.Models.Speaking;
 
 import java.util.List;
@@ -23,6 +24,9 @@ public interface SpeakingDAO {
 
     @Query("SELECT * FROM speaking ORDER BY RANDOM() LIMIT 5")
     List<Speaking> getRandomSpeaking();
+
+    @Query("SELECT * FROM speaking WHERE idLecture IN (:lectureIds) ORDER BY RANDOM() LIMIT 3")
+    List<Speaking> getSpeakingByLectureIds(List<String> lectureIds);
 
 
     @Query("SELECT * FROM speaking WHERE idLecture = :lectureId")

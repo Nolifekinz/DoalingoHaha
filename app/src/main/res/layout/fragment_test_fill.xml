@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#2B2B2B"
+    android:id="@+id/fragment_test_fill"
     android:orientation="vertical">
 
     <LinearLayout
@@ -38,7 +39,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/questionTextView"
+            android:id="@+id/TestFillBlankQuestion"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:textColor="@color/white" />
@@ -53,7 +54,7 @@
 
         <!-- Kết quả của người dùng -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/resultRecyclerView"
+            android:id="@+id/TestFillBlankresultRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_gravity="center"
@@ -70,14 +71,14 @@
 
         <!-- Danh sách từ -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/wordRecyclerView"
+            android:id="@+id/TestFillBlankwordRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_gravity="center"
             android:paddingBottom="16dp" />
 
         <Button
-            android:id="@+id/checkBtn"
+            android:id="@+id/TestFillBlankCheckBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"

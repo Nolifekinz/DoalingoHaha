@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dualingo.Adapters.WordAdapter;
 import com.example.dualingo.AppDatabase;
 import com.example.dualingo.ListBaiHoc;
-import com.example.dualingo.Models.Arranging;
 import com.example.dualingo.Models.CompletedLesson;
 import com.example.dualingo.Models.Listening;
 import com.example.dualingo.Models.User;

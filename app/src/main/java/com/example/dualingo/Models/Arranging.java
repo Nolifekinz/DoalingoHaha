@@ -4,10 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
+
+import java.io.Serializable;
 import java.util.List;
 
 @Entity(tableName = "arranging")
-public class Arranging {
+public class Arranging implements Serializable {
     @PrimaryKey
     @NonNull
     private String idArranging;
