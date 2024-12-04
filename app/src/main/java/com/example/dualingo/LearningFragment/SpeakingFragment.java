@@ -128,7 +128,7 @@ public class SpeakingFragment extends Fragment {
                         questionTextView.setText(currentSpeaking.getQuestion());
 
                         // Gọi hàm highlightVocabularyWords để làm nổi bật từ vựng trong câu hỏi
-                        highlightVocabularyWords(currentSpeaking.getQuestion(), lectureId);
+//                        highlightVocabularyWords(currentSpeaking.getQuestion(), lectureId);
                     } else {
                         questionTextView.setText("Không đủ câu hỏi.");
                     }
@@ -137,72 +137,72 @@ public class SpeakingFragment extends Fragment {
         }).start();
     }
 
-    private void highlightVocabularyWords(String question, String lectureId) {
-        // Tạo ExecutorService để chạy tác vụ nền
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-
-        executor.submit(() -> {
-            // Lấy danh sách từ vựng từ database
-            List<Vocabulary> vocabularyList = getVocabulariesForLecture(lectureId);
-
-            // Tạo danh sách các từ tiếng Anh
-            List<String> englishWords = vocabularyList.stream()
-                    .map(Vocabulary::getEnglishWord)
-                    .collect(Collectors.toList());
-
-            // Chuyển câu hỏi thành SpannableString để có thể thay đổi style các từ trong đó
-            SpannableString spannableString = new SpannableString(question);
-
-            // Duyệt qua từng từ vựng và làm nổi bật chúng trong câu hỏi
-            for (String word : englishWords) {
-                int startIndex = question.toLowerCase().indexOf(word.toLowerCase());
-                while (startIndex != -1) {
-                    int endIndex = startIndex + word.length();
-
-                    // Đặt màu và sự kiện click cho từ vựng
-                    spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.teal_200)),
-                            startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                    spannableString.setSpan(new ClickableSpan() {
-                        @Override
-                        public void onClick(@NonNull View widget) {
-                            showWordMeaningDialog(word); // Gọi phương thức để hiển thị nghĩa của từ
-                        }
-                    }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                    // Tiếp tục tìm kiếm từ tiếp theo trong câu
-                    startIndex = question.toLowerCase().indexOf(word.toLowerCase(), endIndex);
-                }
-            }
-
-            // Áp dụng vào TextView trên UI Thread
-            requireActivity().runOnUiThread(() -> {
-                questionTextView.setText(spannableString);
-                questionTextView.setMovementMethod(LinkMovementMethod.getInstance()); // Đảm bảo cho phép click
-            });
-        });
-
-        // Dừng ExecutorService khi không cần thiết
-        executor.shutdown();
-    }
-
-    private void showWordMeaningDialog(String word) {
-        // Lấy nghĩa từ database và hiển thị Dialog
-        String meaning = database.vocabularyDAO().getMeaningByWord(word);
-        Dialog dialog = new Dialog(requireContext());
-        dialog.setContentView(R.layout.word_meaning_dialog);
-        TextView wordTextView = dialog.findViewById(R.id.wordTextView);
-        TextView meaningTextView = dialog.findViewById(R.id.meaningTextView);
-        Button closeButton = dialog.findViewById(R.id.closeButton);
-
-        wordTextView.setText(word);
-        meaningTextView.setText(meaning);
-
-        closeButton.setOnClickListener(v -> dialog.dismiss());
-
-        dialog.show();
-    }
-
+//    private void highlightVocabularyWords(String question, String lectureId) {
+//        // Tạo ExecutorService để chạy tác vụ nền
+//        ExecutorService executor = Executors.newSingleThreadExecutor();
+//
+//        executor.submit(() -> {
+//            // Lấy danh sách từ vựng từ database
+//            List<Vocabulary> vocabularyList = getVocabulariesForLecture(lectureId);
+//
+//            // Tạo danh sách các từ tiếng Anh
+//            List<String> englishWords = vocabularyList.stream()
+//                    .map(Vocabulary::getEnglishWord)
+//                    .collect(Collectors.toList());
+//
+//            // Chuyển câu hỏi thành SpannableString để có thể thay đổi style các từ trong đó
+//            SpannableString spannableString = new SpannableString(question);
+//
+//            // Duyệt qua từng từ vựng và làm nổi bật chúng trong câu hỏi
+//            for (String word : englishWords) {
+//                int startIndex = question.toLowerCase().indexOf(word.toLowerCase());
+//                while (startIndex != -1) {
+//                    int endIndex = startIndex + word.length();
+//
+//                    // Đặt màu và sự kiện click cho từ vựng
+//                    spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.teal_200)),
+//                            startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//                    spannableString.setSpan(new ClickableSpan() {
+//                        @Override
+//                        public void onClick(@NonNull View widget) {
+//                            showWordMeaningDialog(word); // Gọi phương thức để hiển thị nghĩa của từ
+//                        }
+//                    }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//                    // Tiếp tục tìm kiếm từ tiếp theo trong câu
+//                    startIndex = question.toLowerCase().indexOf(word.toLowerCase(), endIndex);
+//                }
+//            }
+//
+//            // Áp dụng vào TextView trên UI Thread
+//            requireActivity().runOnUiThread(() -> {
+//                questionTextView.setText(spannableString);
+//                questionTextView.setMovementMethod(LinkMovementMethod.getInstance()); // Đảm bảo cho phép click
+//            });
+//        });
+//
+//        // Dừng ExecutorService khi không cần thiết
+//        executor.shutdown();
+//    }
+//
+//    private void showWordMeaningDialog(String word) {
+//        // Lấy nghĩa từ database và hiển thị Dialog
+//        String meaning = database.vocabularyDAO().getMeaningByWord(word);
+//        Dialog dialog = new Dialog(requireContext());
+//        dialog.setContentView(R.layout.word_meaning_dialog);
+//        TextView wordTextView = dialog.findViewById(R.id.wordTextView);
+//        TextView meaningTextView = dialog.findViewById(R.id.meaningTextView);
+//        Button closeButton = dialog.findViewById(R.id.closeButton);
+//
+//        wordTextView.setText(word);
+//        meaningTextView.setText(meaning);
+//
+//        closeButton.setOnClickListener(v -> dialog.dismiss());
+//
+//        dialog.show();
+//    }
+//
 
     public List<Vocabulary> getVocabulariesForLecture(String lectureId) {
         String vocabularyIds = introductionDAO.getVocabularyIdsByLectureId(lectureId);

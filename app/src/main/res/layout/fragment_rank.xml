@@ -13,14 +13,6 @@
         android:layout_marginBottom="16dp" />
 
     <!-- Thời gian kết thúc mùa giải -->
-    <TextView
-        android:id="@+id/tvSeasonEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Giải đấu kết thúc sau: 3 ngày 9 giờ"
-        android:textSize="16sp"
-        android:textColor="#000000" />
 
     <!-- Divider -->
     <View

@@ -17,6 +17,8 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.dualingo.Models.Lecture;
 import com.example.dualingo.Models.Session;
 import com.example.dualingo.R;
@@ -69,7 +71,15 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
         }
 
         holder.tvSessionTitle.setText(session.getSessionTitle());
-        holder.image_session_title.setImageResource(R.drawable.fire);
+        if (session.getImgUrl() != null && !session.getImgUrl().isEmpty()) {
+            Glide.with(context)
+                    .load(session.getImgUrl())
+                    .placeholder(R.drawable.fire)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.image_session_title);
+        } else {
+            holder.image_session_title.setImageResource(R.drawable.fire);
+        }
 
         fetchLecturesFromRoom(session.getLecturesId(), holder, position);
     }

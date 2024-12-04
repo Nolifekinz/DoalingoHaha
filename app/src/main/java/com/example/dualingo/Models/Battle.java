@@ -11,6 +11,9 @@ public class Battle {
         this.opponentList = opponentList;
     }
 
+    public Battle() {
+    }
+
     public String getIdBattle() {
         return idBattle;
     }

@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/backgroundappbot"
+    >
 
     <!-- TextView hiển thị câu hỏi -->
     <TextView
@@ -12,9 +14,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/duolingo_medium"
         android:padding="8dp"
         android:text="Bấm để nghe câu hỏi"
-        android:textSize="18sp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <!-- ImageButton hình loa -->
@@ -34,8 +38,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/duolingo_medium"
         android:padding="4dp"
         android:text="Kết quả của bạn:"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -43,6 +50,7 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/progress_exercice"
         android:paddingTop="8dp" />
 
     <!-- RecyclerView cho danh sách từ -->
@@ -50,8 +58,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:fontFamily="@font/duolingo_medium"
         android:padding="4dp"
         android:text="Chọn từ:"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -59,6 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/progress_exercice"
         android:paddingTop="8dp" />
 
     <!-- Button để kiểm tra kết quả -->
@@ -67,5 +79,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Kiểm tra" />
+        android:text="Kiểm tra"
+        />
 </LinearLayout>

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dualingo.Adapters.WordAdapter;
@@ -52,6 +53,7 @@ public class TestArrangeFragment extends Fragment {
 
     RecyclerView TestArrangeResult,TestArrangeWord;
     Button TestSubmitArrange;
+    TextView txt;
 
     private WordAdapter wordAdapter;
     private WordAdapter resultAdapter;
@@ -68,6 +70,8 @@ public class TestArrangeFragment extends Fragment {
         TestArrangeResult = view.findViewById(R.id.TestresultRecyclerView);
         TestArrangeWord = view.findViewById(R.id.TestWordRecyclerView);
         TestSubmitArrange = view.findViewById(R.id.TestSubmitButton);
+        txt = view.findViewById(R.id.testQuestionTextView);
+
 
         TestSubmitArrange.setOnClickListener(v -> {
             checkResult();
@@ -111,6 +115,7 @@ public class TestArrangeFragment extends Fragment {
         selectedWords.clear();
         wordAdapter.notifyDataSetChanged();
         resultAdapter.notifyDataSetChanged();
+        txt.setText(arranging.getQuestion());
     }
 
     private void onWordClicked(String word) {

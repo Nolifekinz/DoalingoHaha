@@ -21,16 +21,17 @@
 
     <TextView
         android:id="@+id/splash_screen_name_app"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/duolingo_fontfamily"
+        android:layout_width="329dp"
+        android:layout_height="166dp"
+        android:fontFamily="@font/duolingo_medium"
         android:text="@string/name_app"
+        android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="30dp"
+        android:textSize="48sp"
+        android:textStyle="bold|italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logo_splash_screen"
-        app:layout_constraintVertical_bias="0.529" />
+        app:layout_constraintVertical_bias="0.542" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -101,11 +101,11 @@ public class TestListenFragment extends Fragment {
     }
 
     private void setupRecyclerViews() {
-        wordRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
+        wordRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         wordAdapter = new WordAdapter(getContext(), wordList, this::onWordClicked);
         wordRecyclerView.setAdapter(wordAdapter);
 
-        resultRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
+        resultRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         resultAdapter = new WordAdapter(getContext(), selectedWords, this::onResultWordClicked);
         resultRecyclerView.setAdapter(resultAdapter);
 

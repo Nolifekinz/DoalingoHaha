@@ -14,7 +14,9 @@
         android:orientation="horizontal"
         android:weightSum="4"
         tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+        tools:layout_editor_absoluteY="1dp"
+        android:background="@color/blueviolet"
+        >
 
         <ImageView
             android:id="@+id/flag_language"
@@ -24,7 +26,7 @@
             android:layout_weight="1"
             android:scaleX="0.8"
             android:scaleY="0.8"
-            android:src="@drawable/vietnam_flag" />
+            android:src="@drawable/english_flag" />
 
         <TextView
             android:id="@+id/streak"
@@ -36,6 +38,7 @@
             android:paddingStart="20dp"
             android:paddingEnd="10dp"
             android:text="50"
+            android:textColor="#FFFFFF"
             android:textSize="20sp"
             app:drawableStartCompat="@drawable/fire" />
 
@@ -48,6 +51,7 @@
             android:gravity="center"
             android:paddingStart="20dp"
             android:paddingEnd="10dp"
+            android:textColor="#FFFFFF"
             android:text="50"
             android:textSize="20sp"
             app:drawableStartCompat="@drawable/crown" />
@@ -67,7 +71,8 @@
         android:id="@+id/rvSession"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/linearLayout2" />
+        android:layout_below="@+id/linearLayout2"
+        android:background="#DFFFFFFF" />
 
 
 </LinearLayout>

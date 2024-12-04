@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.dualingo.Models.User;
 import com.example.dualingo.R;
 
@@ -36,6 +38,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
         holder.tvUserName.setText(user.getUsername());
         holder.tvScore.setText(String.valueOf(user.getExp()));
         // Load avatar người dùng nếu có
+        Glide.with(holder.itemView.getContext())
+                .load(user.getProfilePic())
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .placeholder(R.drawable.fire)
+                .into(holder.imgUser);
     }
 
     @Override

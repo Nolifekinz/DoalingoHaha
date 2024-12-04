@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.dualingo.LearningActivity;
 import com.example.dualingo.ListBaiHoc;
 import com.example.dualingo.Models.Lecture;
@@ -62,8 +64,16 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
             holder.overlay.setVisibility(View.VISIBLE); // Ẩn bài học nếu chưa đạt tiến trình
         }
 
-        // Thiết lập ảnh và tên cho bài học
+        // Thiết lập tên bài học
         holder.tvLectureTitle.setText(lecture.getTitle());
+
+        if (lecture.getImageResId() != null && !lecture.getImageResId().isEmpty()) {
+            Glide.with(context)
+                    .load(lecture.getImageResId())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .placeholder(R.drawable.fire)
+                    .into(holder.imgLecture);
+        }
 
         // Lắng nghe sự kiện click
         holder.itemView.setOnClickListener(v -> {
@@ -76,9 +86,8 @@ public class LectureAdapter extends RecyclerView.Adapter<LectureAdapter.LectureV
                 context.startActivity(intent);
             }
         });
-
-
     }
+
 
     @Override
     public int getItemCount() {

@@ -3,57 +3,70 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="#470C61"
     android:padding="16dp">
 
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:fontFamily="@font/duolingo_medium"
         android:text="Grammar Title"
-        android:textSize="18sp" />
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tvDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/duolingo_medium"
+        android:paddingTop="4dp"
         android:text="Description of the grammar rule"
-        android:textSize="16sp"
-        android:paddingTop="4dp" />
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tvFormula"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/duolingo_medium"
+        android:paddingTop="4dp"
         android:text="Formula"
-        android:textSize="16sp"
-        android:paddingTop="4dp" />
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tvExample"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Example of usage"
-        android:textSize="16sp"
+        android:fontFamily="@font/duolingo_medium"
         android:paddingTop="4dp"
+        android:text="Example of usage"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/tvKeyPoints"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Key Points"
-        android:textSize="14sp"
+        android:fontFamily="@font/duolingo_medium"
         android:paddingTop="4dp"
+        android:text="Key Points"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
         android:visibility="gone" />
 
     <TextView
         android:id="@+id/tvDetailedExamples"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Detailed Examples"
-        android:textSize="14sp"
+        android:fontFamily="@font/duolingo_medium"
         android:paddingTop="4dp"
+        android:text="Detailed Examples"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
         android:visibility="gone" />
 
 </LinearLayout>

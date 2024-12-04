@@ -4,24 +4,19 @@
     <item
         android:id="@+id/home"
         android:icon="@drawable/home"
-        android:title="Home" />
+        android:title="" />
     <item
         android:id="@+id/rank"
         android:icon="@drawable/coursesicon"
-        android:title="Rank" />
-
-    <item
-        android:id="@+id/duoal"
-        android:icon="@drawable/rank_silver"
-        android:title="Thi đấu" />
+        android:title="" />
 
     <item
         android:id="@+id/train"
         android:icon="@drawable/book"
-        android:title="Luyện Tập" />
+        android:title="" />
     <item
         android:id="@+id/avata"
         android:icon="@drawable/profileicon"
-        android:title="Cá Nhân" />
+        android:title="" />
 
 </menu>

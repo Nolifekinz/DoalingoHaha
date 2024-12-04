@@ -2,18 +2,19 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:background="@android:color/white"
-    android:elevation="2dp">
+    android:background="#470C61"
+    android:elevation="2dp"
+    android:padding="8dp">
 
     <!-- Từ tiếng Anh -->
     <TextView
         android:id="@+id/tvEnglishWord"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/duolingo_medium"
         android:text="English word"
-        android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <!-- Nghĩa tiếng Việt -->
@@ -23,30 +24,33 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tvWordType"
         android:layout_marginTop="4dp"
+        android:fontFamily="@font/duolingo_medium"
         android:text="Cách phát âm: /ˈæp.əl/"
-        android:textColor="@color/gray"
-        android:textSize="14sp" />
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tvVietnameseMeaning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nghĩa: meaning"
-        android:textColor="@color/black"
-        android:textSize="16sp"
         android:layout_below="@id/tvEnglishWord"
-        android:layout_marginTop="4dp"/>
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/duolingo_medium"
+        android:text="Nghĩa: meaning"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
 
     <!-- Loại từ -->
     <TextView
         android:id="@+id/tvWordType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Loại từ: loai tu"
-        android:textSize="14sp"
-        android:textColor="@color/gray"
         android:layout_below="@id/tvVietnameseMeaning"
-        android:layout_marginTop="2dp" />
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/duolingo_medium"
+        android:text="Loại từ: loai tu"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
 
     <!-- Cách phát âm -->
 
@@ -55,24 +59,26 @@
         android:id="@+id/ivSpeak"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_volume_up"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:padding="6dp"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
+        android:contentDescription="@string/speak"
         android:focusable="true"
-        android:contentDescription="@string/speak"/>
+        android:padding="6dp"
+        android:src="@drawable/ic_volume_up" />
 
     <!-- Phần ví dụ (ẩn mặc định) -->
     <TextView
         android:id="@+id/tvExample"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:visibility="gone"
         android:layout_below="@id/tvPronunciation"
+        android:fontFamily="@font/duolingo_medium"
         android:paddingTop="4dp"
-        android:text="Ví dụ: " />
+        android:text="Ví dụ: "
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:visibility="gone" />
 </RelativeLayout>

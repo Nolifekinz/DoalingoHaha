@@ -2,35 +2,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:orientation="vertical">
 
     <!-- Tiêu đề session -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
+        android:background="@color/darkorchid"
         android:orientation="horizontal"
-        android:weightSum="5"
-        android:background="@color/aqua">
+        android:weightSum="5">
 
         <ImageView
             android:id="@+id/image_session_title"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:src="@drawable/points"
             android:scaleX="0.8"
             android:scaleY="0.8"
-            android:layout_gravity="center" />
+            android:src="@drawable/points" />
 
         <TextView
             android:id="@+id/session_title"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_weight="4"
+            android:fontFamily="@font/duolingo_medium"
             android:gravity="center"
+
             android:text=""
-            android:textSize="40sp"
-            android:fontFamily="@font/duolingo_fontfamily" />
+            android:textColor="#FFFFFF"
+            android:textSize="30sp" />
     </LinearLayout>
 
     <!-- RecyclerView chứa các bài học -->

@@ -45,9 +45,6 @@ public class ShowKetQuaTest extends AppCompatActivity {
 
         showKQ.setText("Kết quả của bạn : " + socaudung + "/" + tongsocau);
 
-
-
-
         didenbaihoc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
+    android:background="@drawable/backgroundappbot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".VocabLearning"
@@ -36,10 +37,12 @@
         android:id="@+id/txtQuestionOfVocabLearning"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="Chọn đáp án đúng :"
-        android:textSize="20dp"
+        android:fontFamily="@font/duolingo_medium"
         android:gravity="center_vertical"
-        />
+        android:text="Chọn đáp án đúng :"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="normal|bold" />
 
     <ImageView
         android:id="@+id/imgOfWords"
@@ -64,10 +67,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"/>
+
     <Button
         android:id="@+id/btnCheckOfVocabLearning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="KIỂM TRA" />
+        android:fontFamily="@font/duolingo_medium"
+        android:text="KIỂM TRA"
+        android:textSize="20sp" />
 
 </LinearLayout>

@@ -205,16 +205,19 @@ public class TestSpeakFragment extends Fragment {
         String correctAnswer = speaking.getQuestion().trim().toLowerCase();
 
         if (userAnswer.equalsIgnoreCase(correctAnswer)) {
-            showResultDialog("Dung","Bạn đã trả lời đúng",false);
+            //showResultDialog("Dung","Bạn đã trả lời đúng",false);
             dung = true;
+            resultTextView.setText(userAnswer);
             Toast.makeText(getContext(), "Đúng!", Toast.LENGTH_SHORT).show();
         } else {
             int similarity = calculateLevenshteinDistance(correctAnswer, userAnswer);
             if (similarity <= 2) { // Cho phép sai lệch 2 ký tự
-                showResultDialog("Gần đúng","Gần Đúng Rồi",false);
+                //showResultDialog("Gần đúng","Gần Đúng Rồi",false);
+                resultTextView.setText(userAnswer);
                 Toast.makeText(getContext(), "Gần đúng! Cố gắng hơn.", Toast.LENGTH_SHORT).show();
             } else {
-                showResultDialog("Sai","Bạn đã trả lời sai",false);
+                //showResultDialog("Sai","Bạn đã trả lời sai",false);
+                resultTextView.setText(userAnswer);
                 Toast.makeText(getContext(), "Sai!", Toast.LENGTH_SHORT).show();
             }
         }

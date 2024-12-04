@@ -74,8 +74,6 @@ public class MainActivity extends AppCompatActivity {
                 switchFragment(rankFragment);
             } else if (itemId == R.id.avata) {
                 switchFragment(personalInfoFragment);
-            } else if (itemId == R.id.duoal) {
-                switchFragment(grammarFragment);
             } else if (itemId == R.id.train) {
                 switchFragment(reviewFracment);
             }

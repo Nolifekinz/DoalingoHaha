@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/backgroundappbot"
     android:padding="16dp">
 
     <!-- Câu hỏi -->
@@ -10,19 +11,24 @@
         android:id="@+id/questionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Arrange the following words:"
-        android:textSize="16sp"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="16dp" />
+        android:fontFamily="@font/duolingo_medium"
+        android:paddingBottom="16dp"
+        android:text="Arrange the following words:"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
 
     <!-- Tiêu đề: Kết quả của bạn -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kết quả của bạn:"
-        android:textStyle="bold"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="8dp" />
+        android:fontFamily="@font/duolingo_medium"
+        android:paddingBottom="8dp"
+        android:text="Kết quả của bạn:"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <!-- Kết quả của người dùng -->
     <androidx.recyclerview.widget.RecyclerView
@@ -30,16 +36,20 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_gravity="center"
-        android:paddingBottom="16dp" />
+        android:paddingBottom="16dp"
+        android:background="@drawable/progress_exercice"/>
 
     <!-- Tiêu đề: Chọn từ -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chọn từ:"
-        android:textStyle="bold"
         android:layout_gravity="center_horizontal"
-        android:paddingBottom="8dp" />
+        android:fontFamily="@font/duolingo_medium"
+        android:paddingBottom="8dp"
+        android:text="Chọn từ:"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <!-- Danh sách từ -->
     <androidx.recyclerview.widget.RecyclerView
@@ -47,7 +57,8 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:layout_gravity="center"
-        android:paddingBottom="16dp" />
+        android:paddingBottom="16dp"
+        android:background="@drawable/progress_exercice"/>
 
     <!-- Nút Submit -->
     <Button
@@ -56,5 +67,6 @@
         android:layout_height="wrap_content"
         android:text="Submit"
         android:layout_gravity="center"
-        android:padding="8dp" />
+        android:padding="8dp"
+        />
 </LinearLayout>

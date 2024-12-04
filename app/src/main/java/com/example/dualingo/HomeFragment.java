@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.dualingo.Adapters.LectureAdapter;
 import com.example.dualingo.Adapters.SessionAdapter;
+import com.example.dualingo.DAO.UserDAO;
 import com.example.dualingo.Models.CompletedLesson;
 import com.example.dualingo.Models.Lecture;
 import com.example.dualingo.Models.Session;
@@ -43,6 +44,7 @@ public class HomeFragment extends Fragment {
     private ImageView flag, notify;
     private String sessionid;
     private int sessionIndex;
+    private DataSyncManager dataSyncManager;
 
     private AppDatabase database;
 
@@ -51,8 +53,6 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        DataSyncManager dataSyncManager = new DataSyncManager(getContext());
-        dataSyncManager.syncData(getContext());
         recyclerViewSession = view.findViewById(R.id.rvSession);
         level = view.findViewById(R.id.level);
         streak = view.findViewById(R.id.streak);
@@ -66,10 +66,26 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getContext(), SetTimeActivity.class);
             startActivity(intent);
         });
-
+        dataSyncManager = new DataSyncManager(getContext());
+        dataSyncManager.observeRoomChanges(getContext());
         database = AppDatabase.getDatabase(getContext());
 
         Executor executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            User user = database.userDAO().getCurrentUser();
+            if (user != null) {
+                user.updateStreak(); // Cập nhật streak dựa trên ngày học cuối cùng
+                database.userDAO().updateUser(user); // Lưu thay đổi vào database
+
+                // Cập nhật UI sau khi thay đổi streak
+                requireActivity().runOnUiThread(() -> {
+                    streak.setText(String.valueOf(user.getStreak()));
+                });
+            } else {
+                System.out.println("Người dùng hiện tại không tồn tại!");
+            }
+        });
+
         executor.execute(() -> {
             User user = database.userDAO().getCurrentUser();
             if (user != null && user.getProgress() != null) {
@@ -213,6 +229,7 @@ public class HomeFragment extends Fragment {
                 completedLesson.getSpeaking() == 1 &&
                 completedLesson.getVocabularyLesson() == 1;
     }
+
 
 
     @Override

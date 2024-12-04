@@ -1,0 +1,8 @@
+<!-- res/drawable/word_textview_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@android:color/white" /> <!-- Màu nền -->
+    <stroke
+        android:width="1dp"
+        android:color="@color/black" /> <!-- Đường viền -->
+    <corners android:radius="10dp" /> <!-- Bo đều 4 góc -->
+</shape>

@@ -9,10 +9,10 @@
         android:id="@+id/tvPosition"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:text="1"
-        android:textSize="24sp"
-        android:textColor="#000"
-        android:layout_gravity="center_vertical" />
+        android:textColor="#FFFFFF"
+        android:textSize="24sp" />
 
     <!-- Hình đại diện người dùng -->
     <ImageView
@@ -28,19 +28,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="center_vertical"
         android:text="Name"
-        android:textSize="16sp"
-        android:textColor="#000"
-        android:gravity="center_vertical" />
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
 
     <!-- Điểm -->
     <TextView
         android:id="@+id/tvScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:text="99"
-        android:textSize="16sp"
-        android:textColor="#000"
-        android:layout_gravity="center_vertical" />
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
 
 </LinearLayout>
