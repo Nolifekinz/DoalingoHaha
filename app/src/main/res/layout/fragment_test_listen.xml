@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_test_listen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- TextView hiển thị câu hỏi -->
+    <TextView
+        android:id="@+id/questionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="8dp"
+        android:text="Bấm để nghe câu hỏi"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- ImageButton hình loa -->
+    <ImageButton
+        android:id="@+id/TestlistenButton"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/listen_button"
+        android:padding="8dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_volume_up" />
+
+    <!-- RecyclerView cho kết quả của người dùng -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="4dp"
+        android:text="Kết quả của bạn:"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/TestListenresultRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="16dp"
+        android:paddingTop="8dp" />
+
+    <!-- RecyclerView cho danh sách từ -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="4dp"
+        android:text="Chọn từ:"
+        android:textStyle="bold" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/TestListenwordRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginBottom="16dp"
+        android:paddingTop="8dp" />
+
+    <!-- Button để kiểm tra kết quả -->
+    <Button
+        android:id="@+id/TestListensubmitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Kiểm tra" />
+</LinearLayout>

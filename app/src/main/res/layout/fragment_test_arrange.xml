@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/fragment_test_arrange"
+    android:padding="16dp">
+
+    <!-- Câu hỏi -->
+    <TextView
+        android:id="@+id/testQuestionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Arrange the following words:"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="16dp" />
+
+    <!-- Tiêu đề: Kết quả của bạn -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kết quả của bạn:"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="8dp" />
+
+    <!-- Kết quả của người dùng -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/TestresultRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:paddingBottom="16dp" />
+
+    <!-- Tiêu đề: Chọn từ -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chọn từ:"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="8dp" />
+
+    <!-- Danh sách từ -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/TestWordRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:paddingBottom="16dp" />
+
+    <!-- Nút Submit -->
+    <Button
+        android:id="@+id/TestSubmitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_gravity="center"
+        android:padding="8dp" />
+</LinearLayout>

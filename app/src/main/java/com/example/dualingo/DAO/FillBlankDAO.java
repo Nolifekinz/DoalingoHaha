@@ -21,6 +21,9 @@ public interface FillBlankDAO {
     @Query("SELECT * FROM fill_blank WHERE idLecture = :lectureId")
     List<FillBlank> getFillBlankByLectureId(String lectureId);
 
+    @Query("SELECT * FROM fill_blank WHERE idLecture IN (:lectureIds) ORDER BY RANDOM() LIMIT 3")
+    List<FillBlank> getFillBlankByLectureIds(List<String> lectureIds);
+
     @Query("SELECT * FROM fill_blank")
     List<FillBlank> getAllFillBlanks();
 

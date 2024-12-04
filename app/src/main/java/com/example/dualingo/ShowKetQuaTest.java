@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,44 +12,43 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.dualingo.Models.User;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class TestOrNo extends AppCompatActivity {
+import org.w3c.dom.Text;
 
-    Button btnGotoTest, btnGotoMain;
+public class ShowKetQuaTest extends AppCompatActivity {
+
+
+    TextView showKQ;
+    Button didenbaihoc ;
 
     private AppDatabase database;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_test_or_no);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.TestOrNo), (v, insets) -> {
+        setContentView(R.layout.activity_show_ket_qua_test);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.showKQ), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        btnGotoTest = findViewById(R.id.btnGotoTest);
-        btnGotoMain = findViewById(R.id.btnGotoMain);
+
+        showKQ = findViewById(R.id.hienthiketqua);
+        didenbaihoc = findViewById(R.id.didenbaihoc);
         database = AppDatabase.getDatabase(this);
 
+        int socaudung = getIntent().getIntExtra("socaudung",0);
+        int tongsocau = getIntent().getIntExtra("tongsocau",0);
         String id = getIntent().getStringExtra("id");
 
-        btnGotoTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(TestOrNo.this,TestFirstActivity.class);
-                intent.putExtra("id",id);
-                startActivity(intent);
-                finish();
-            }
-        });
+        showKQ.setText("Kết quả của bạn : " + socaudung + "/" + tongsocau);
 
 
-        btnGotoMain.setOnClickListener(new View.OnClickListener() {
+
+
+        didenbaihoc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -68,12 +67,10 @@ public class TestOrNo extends AppCompatActivity {
                         });
 
                 new Thread(()->{
-
                     database.userDAO().updateIsNewUser(id,0);
 
-
                     runOnUiThread(() -> { // Chuyển về UI Thread sau khi cập nhật xong
-                        Intent intent = new Intent(TestOrNo.this, MainActivity.class);
+                        Intent intent = new Intent(ShowKetQuaTest.this, MainActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
@@ -81,5 +78,7 @@ public class TestOrNo extends AppCompatActivity {
                 }).start();
             }
         });
+
+
     }
 }

@@ -24,6 +24,9 @@ public interface ArrangingDAO {
     @Query("SELECT * FROM arranging WHERE idLecture = :lectureId")
     List<Arranging> getArrangingByLectureId(String lectureId);
 
+    @Query("SELECT * FROM arranging WHERE idLecture IN (:lectureIds) ORDER BY RANDOM() LIMIT 3")
+    List<Arranging> getArrangeByLectureIds(List<String> lectureIds);
+
     @Query("SELECT * FROM arranging ORDER BY RANDOM() LIMIT 5")
     List<Arranging> getRandomArranging();
 

@@ -4,10 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity(tableName = "fill_blank")
-public class FillBlank {
+public class FillBlank implements Serializable {
     @PrimaryKey
     @NonNull
     private String idFillBlank;

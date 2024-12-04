@@ -62,8 +62,10 @@ public class SessionAdapter extends RecyclerView.Adapter<SessionAdapter.SessionV
 
         if (currentUser.getProgress().getSessionIndex() >= position+1) {
             holder.overlay.setVisibility(View.GONE); // Session được mở
+
         } else {
             holder.overlay.setVisibility(View.VISIBLE); // Session bị khóa
+            holder.overlay.setOnClickListener(null);
         }
 
         holder.tvSessionTitle.setText(session.getSessionTitle());

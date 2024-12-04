@@ -22,9 +22,11 @@ import com.example.dualingo.Adapters.SessionAdapter;
 import com.example.dualingo.Models.Lecture;
 import com.example.dualingo.Models.Session;
 import com.example.dualingo.databinding.FragmentHomeBinding;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment  {
 
@@ -52,13 +54,6 @@ public class HomeFragment extends Fragment  {
         streak = view.findViewById(R.id.streak);
         flag = view.findViewById(R.id.flag_language);
         notify = view.findViewById(R.id.notify);
-
-//        new Thread(()->{
-//            streak.setText(String.valueOf(database.userDAO().getCurrentUser().getStreak()));
-//            level.setText(String.valueOf(database.userDAO().getCurrentUser().getExp()));
-//        }).start();
-
-
 
         level.setOnClickListener(v -> showPopup(R.id.level, v));
         streak.setOnClickListener(v -> showPopup(R.id.streak, v));
