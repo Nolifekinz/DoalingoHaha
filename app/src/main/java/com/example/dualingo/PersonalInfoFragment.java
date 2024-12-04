@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.dualingo.Models.User;
 import com.example.dualingo.databinding.FragmentPersonalInfoBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -208,6 +209,7 @@ public class PersonalInfoFragment extends Fragment {
                         String profilePicUrl = (String) documentSnapshot.get("profilePic");
                         Glide.with(this)
                                 .load(profilePicUrl)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(binding.ivAvatar);
                         binding.btnFollowers.setText(followerCount);
                         binding.btnFollows.setText(followingCount);

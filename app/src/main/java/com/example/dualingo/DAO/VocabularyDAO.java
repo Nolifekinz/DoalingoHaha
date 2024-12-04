@@ -21,6 +21,12 @@ public interface VocabularyDAO {
     @Query("SELECT * FROM vocabulary")
     List<Vocabulary> getAllVocabulary();
 
+    @Query("SELECT vietnameseMeaning FROM vocabulary WHERE englishWord = :word")
+    String getMeaningByWord(String word);
+
+    @Query("SELECT * FROM vocabulary WHERE idVocabulary IN (:vocabularyIds)")
+    List<Vocabulary> getVocabulariesByIds(List<String> vocabularyIds);
+
     @Delete
     void deleteVocabulary(Vocabulary vocabulary);
 }

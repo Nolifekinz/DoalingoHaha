@@ -86,11 +86,11 @@ public class ListeningFragment extends Fragment {
         RecyclerView wordRecyclerView = view.findViewById(R.id.wordRecyclerView);
         RecyclerView resultRecyclerView = view.findViewById(R.id.resultRecyclerView);
 
-        wordRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
+        wordRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         wordAdapter = new WordAdapter(getContext(), wordList, this::onWordClicked);
         wordRecyclerView.setAdapter(wordAdapter);
 
-        resultRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
+        resultRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         resultAdapter = new WordAdapter(getContext(), selectedWords, this::onResultWordClicked);
         resultRecyclerView.setAdapter(resultAdapter);
 
@@ -271,7 +271,7 @@ public class ListeningFragment extends Fragment {
         executorService.execute(() -> {
             appDatabase.runInTransaction(() -> {
                 // Lấy CompletedLesson từ database
-                CompletedLesson completedLesson = appDatabase.completedLessonDAO().getCompletedLesson(lectureId, userId);
+                CompletedLesson completedLesson = appDatabase.completedLessonDAO().getCompletedLesson(userId, lectureId);
 
                 if (completedLesson == null) {
                     // Nếu chưa có, tạo mới
@@ -303,6 +303,7 @@ public class ListeningFragment extends Fragment {
             dialog.dismiss();
             if (isFinalResult) {
                 Intent intent = new Intent(getContext(), ListBaiHoc.class);
+                intent.putExtra("lectureId",lectureId );
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Xóa ngăn xếp để không quay lại ArrangingFragment
                 startActivity(intent);
                 requireActivity().finish();

@@ -31,10 +31,10 @@
             android:background="@drawable/progress_exercice"
             android:ems="10"
             android:fontFamily="@font/duolingo_medium"
-            android:hint="#USERNAME"
+            android:hint="Nhập email"
             android:inputType="textPersonName"
             android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF" />
+            android:textColorHint="#5BFFFFFF" />
 
         <EditText
             android:id="@+id/etPassword"
@@ -43,12 +43,13 @@
             android:layout_marginStart="0dp"
             android:layout_marginTop="110dp"
             android:layout_marginEnd="0dp"
+            android:fontFamily="@font/duolingo_medium"
             android:background="@drawable/progress_exercice"
             android:ems="10"
-            android:hint="#PASSWORD"
+            android:hint="Nhập mật khẩu"
             android:inputType="textPassword"
             android:textColor="#FFFFFF"
-            tools:textColorHint="#FFFFFF" />
+            android:textColorHint="#5BFFFFFF" />
 
         <EditText
             android:id="@+id/etConfirmPassword"
@@ -57,12 +58,13 @@
             android:layout_marginStart="0dp"
             android:layout_marginTop="175dp"
             android:layout_marginEnd="0dp"
+            android:fontFamily="@font/duolingo_medium"
             android:background="@drawable/progress_exercice"
             android:ems="10"
-            android:hint="#CONFIRM PASSWORD"
-            android:inputType="textEmailAddress"
+            android:hint="Xác nhận mật khẩu"
+            android:inputType="textPassword"
             android:textColor="#FFFFFF"
-            tools:textColorHint="#FFFFFF" />
+            android:textColorHint="#5BFFFFFF" />
 
         <TextView
             android:id="@+id/tagLogin"

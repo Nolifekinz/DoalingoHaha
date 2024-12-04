@@ -61,7 +61,7 @@ public class ArrangingFragment extends Fragment {
 
     private String result;
     private String correctAnswer;
-    private String questionText;
+    private String questionText, lectureId;
 
 
     @Nullable
@@ -85,12 +85,12 @@ public class ArrangingFragment extends Fragment {
 
     private void setupRecyclerViews() {
         // Set up RecyclerView for word list
-        binding.wordRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
+        binding.wordRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         wordAdapter = new WordAdapter(getContext(), wordList, this::onWordClicked);
         binding.wordRecyclerView.setAdapter(wordAdapter);
 
         // Set up RecyclerView for result bar
-        binding.resultRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 4));
+        binding.resultRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
         resultAdapter = new WordAdapter(getContext(), selectedWords, this::onResultWordClicked);
         binding.resultRecyclerView.setAdapter(resultAdapter);
 
@@ -102,7 +102,7 @@ public class ArrangingFragment extends Fragment {
 
     private void loadArrangingDataFromRoom() {
         new Thread(() -> {
-            String lectureId = getArguments() != null ? getArguments().getString("lectureId") : null;
+            lectureId = getArguments() != null ? getArguments().getString("lectureId") : null;
 
             arrangingList.clear();
             if (lectureId != null) {
@@ -287,7 +287,7 @@ public class ArrangingFragment extends Fragment {
         executorService.execute(() -> {
             database.runInTransaction(() -> {
                 // Lấy CompletedLesson từ database
-                CompletedLesson completedLesson = database.completedLessonDAO().getCompletedLesson(lectureId, userId);
+                CompletedLesson completedLesson = database.completedLessonDAO().getCompletedLesson( userId,lectureId);
 
                 if (completedLesson == null) {
                     // Nếu chưa có, tạo mới
@@ -351,6 +351,7 @@ public class ArrangingFragment extends Fragment {
             dialog.dismiss();
             if (isFinalResult) {
                 Intent intent = new Intent(getContext(), ListBaiHoc.class);
+                intent.putExtra("lectureId",lectureId );
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Xóa ngăn xếp để không quay lại ArrangingFragment
                 startActivity(intent);
                 requireActivity().finish();

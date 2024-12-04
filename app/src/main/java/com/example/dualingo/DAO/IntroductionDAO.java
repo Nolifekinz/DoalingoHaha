@@ -21,6 +21,9 @@ public interface IntroductionDAO {
     @Query("SELECT * FROM introduction")
     List<Introduction> getAllIntroductions();
 
+    @Query("SELECT vocabularyId FROM introduction WHERE idLecture = :lectureId")
+    String getVocabularyIdsByLectureId(String lectureId);
+
     @Delete
     void deleteIntroduction(Introduction introduction);
 }

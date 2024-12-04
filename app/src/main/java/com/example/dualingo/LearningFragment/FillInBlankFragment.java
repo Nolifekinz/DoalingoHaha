@@ -62,7 +62,7 @@ public class FillInBlankFragment extends Fragment {
 
     private String result;
     private String correctAnswer;
-    private String questionText;
+    private String questionText,lectureId;
 
     @Nullable
     @Override
@@ -202,7 +202,7 @@ public class FillInBlankFragment extends Fragment {
         }
 
         if (fillBlankList.isEmpty()) {
-            String lectureId = getArguments() != null ? getArguments().getString("lectureId") : null;
+            lectureId = getArguments() != null ? getArguments().getString("lectureId") : null;
             if (lectureId != null) {
                 updateCompletedLesson(lectureId);
             }
@@ -285,7 +285,7 @@ public class FillInBlankFragment extends Fragment {
         executorService.execute(() -> {
             database.runInTransaction(() -> {
                 // Lấy CompletedLesson từ database
-                CompletedLesson completedLesson = database.completedLessonDAO().getCompletedLesson(lectureId, userId);
+                CompletedLesson completedLesson = database.completedLessonDAO().getCompletedLesson(userId, lectureId);
 
                 if (completedLesson == null) {
                     // Nếu chưa có, tạo mới
@@ -293,7 +293,7 @@ public class FillInBlankFragment extends Fragment {
                     database.completedLessonDAO().insertOrUpdate(completedLesson);
                 } else {
                     // Nếu đã có, cập nhật trạng thái
-                    completedLesson.setArranging(1);
+                    completedLesson.setFillBlank(1);
                     database.completedLessonDAO().insertOrUpdate(completedLesson);
                 }
             });
@@ -346,6 +346,7 @@ public class FillInBlankFragment extends Fragment {
             dialog.dismiss();
             if (isFinalResult) {
                 Intent intent = new Intent(getContext(), ListBaiHoc.class);
+                intent.putExtra("lectureId",lectureId );
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Clear stack to avoid returning to FillBlankFragment
                 startActivity(intent);
                 requireActivity().finish();

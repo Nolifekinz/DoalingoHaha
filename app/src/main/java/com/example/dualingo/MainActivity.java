@@ -11,8 +11,23 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.dualingo.Models.Arranging;
+import com.example.dualingo.Models.FillBlank;
+import com.example.dualingo.Models.Formula;
+import com.example.dualingo.Models.Grammar;
+import com.example.dualingo.Models.Introduction;
+import com.example.dualingo.Models.Lecture;
+import com.example.dualingo.Models.Listening;
+import com.example.dualingo.Models.Session;
+import com.example.dualingo.Models.Speaking;
+import com.example.dualingo.Models.Vocabulary;
+import com.example.dualingo.Models.VocabularyLesson;
 import com.example.dualingo.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private Fragment rankFragment;
     private Fragment personalInfoFragment;
     private Fragment grammarFragment;
-    private Fragment vocabularyFragment;
+    private Fragment reviewFracment;
     private NetworkChangeReceiver networkChangeReceiver;
 
     @Override
@@ -46,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         rankFragment = new RankFragment();
         personalInfoFragment = new PersonalInfoFragment();
         grammarFragment = new GrammarFragment();
-        vocabularyFragment = new VocabularyFragment();
+        reviewFracment = new ReviewFragment();
 
         setInitialFragment(homeFragment);
 
@@ -62,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (itemId == R.id.duoal) {
                 switchFragment(grammarFragment);
             } else if (itemId == R.id.train) {
-                switchFragment(vocabularyFragment);
+                switchFragment(reviewFracment);
             }
             return true;
         });
@@ -93,15 +108,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
-        networkChangeReceiver = new NetworkChangeReceiver();
-        registerReceiver(networkChangeReceiver, filter);
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
 
@@ -112,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 }
 
 
-//
+
 //
 //private FirebaseFirestore db;
 //
@@ -144,9 +150,9 @@ public class MainActivity extends AppCompatActivity {
 //    // Thêm Sessions
 //    private void addSessions() {
 //        List<Session> sessions = Arrays.asList(
-//                new Session("1", "English for Beginners", "url_to_image1", Arrays.asList("1", "2", "3", "4", "5", "6"), 1),
-//                new Session("2", "Basic Conversations", "url_to_image2", Arrays.asList("7", "8", "9", "10", "11", "12"), 2),
-//                new Session("3", "Advanced English", "url_to_image3", Arrays.asList("13", "14", "15", "16", "17", "18"),3)
+//                new Session("1", "Tiếng Anh cho người mới bắt đầu", "url_to_image1", Arrays.asList("1", "2", "3", "4", "5", "6"), 1),
+//                new Session("2", "Hội thoại cơ bản", "url_to_image2", Arrays.asList("7", "8", "9", "10", "11", "12"), 2),
+//                new Session("3", "Tiếng Anh nâng cao", "url_to_image3", Arrays.asList("13", "14", "15", "16", "17", "18"), 3)
 //        );
 //
 //        for (Session session : sessions) {
@@ -156,30 +162,31 @@ public class MainActivity extends AppCompatActivity {
 //
 //    private void addLectures() {
 //        List<Lecture> lectures = Arrays.asList(
-//                new Lecture("1", "Greetings", "image_res_id_1", 1),
-//                new Lecture("2", "Introductions", "image_res_id_2", 2),
-//                new Lecture("3", "Common Phrases", "image_res_id_3", 3),
-//                new Lecture("4", "Formal Greetings", "image_res_id_4", 4),
-//                new Lecture("5", "Small Talk", "image_res_id_5", 5),
-//                new Lecture("6", "Travel English", "image_res_id_6", 6),
-//                new Lecture("7", "Business Vocabulary", "image_res_id_7", 1),
-//                new Lecture("8", "Workplace Conversations", "image_res_id_8", 2),
-//                new Lecture("9", "English for Meetings", "image_res_id_9", 3),
-//                new Lecture("10", "English for Phone Calls", "image_res_id_10", 4),
-//                new Lecture("11", "Shopping Vocabulary", "image_res_id_11", 5),
-//                new Lecture("12", "Ordering Food", "image_res_id_12", 6),
-//                new Lecture("13", "English for Interviews", "image_res_id_13", 1),
-//                new Lecture("14", "Making Appointments", "image_res_id_14", 2),
-//                new Lecture("15", "Health and Fitness Vocabulary", "image_res_id_15", 3),
-//                new Lecture("16", "English for Travel Emergencies", "image_res_id_16", 4),
-//                new Lecture("17", "English for Social Media", "image_res_id_17", 5),
-//                new Lecture("18", "Cultural Differences", "image_res_id_18", 6)
+//                new Lecture("1", "Chào hỏi", "image_res_id_1", 1),
+//                new Lecture("2", "Giới thiệu bản thân", "image_res_id_2", 2),
+//                new Lecture("3", "Các câu nói thông dụng", "image_res_id_3", 3),
+//                new Lecture("4", "Chào hỏi trang trọng", "image_res_id_4", 4),
+//                new Lecture("5", "Trò chuyện ngắn", "image_res_id_5", 5),
+//                new Lecture("6", "Tiếng Anh khi đi du lịch", "image_res_id_6", 6),
+//                new Lecture("7", "Từ vựng trong kinh doanh", "image_res_id_7", 1),
+//                new Lecture("8", "Hội thoại nơi làm việc", "image_res_id_8", 2),
+//                new Lecture("9", "Tiếng Anh trong các cuộc họp", "image_res_id_9", 3),
+//                new Lecture("10", "Tiếng Anh khi gọi điện thoại", "image_res_id_10", 4),
+//                new Lecture("11", "Từ vựng khi mua sắm", "image_res_id_11", 5),
+//                new Lecture("12", "Gọi món ăn", "image_res_id_12", 6),
+//                new Lecture("13", "Tiếng Anh trong phỏng vấn", "image_res_id_13", 1),
+//                new Lecture("14", "Sắp xếp cuộc hẹn", "image_res_id_14", 2),
+//                new Lecture("15", "Từ vựng về sức khỏe và thể hình", "image_res_id_15", 3),
+//                new Lecture("16", "Tiếng Anh trong trường hợp khẩn cấp khi đi du lịch", "image_res_id_16", 4),
+//                new Lecture("17", "Tiếng Anh trên mạng xã hội", "image_res_id_17", 5),
+//                new Lecture("18", "Sự khác biệt văn hóa", "image_res_id_18", 6)
 //        );
 //
 //        for (Lecture lecture : lectures) {
 //            db.collection("Lecture").document(lecture.getIdLecture()).set(lecture);
 //        }
 //    }
+//
 //
 //
 //    // Thêm Vocabularies
@@ -212,9 +219,9 @@ public class MainActivity extends AppCompatActivity {
 //                new Speaking("1", "1", "Hello"),
 //                new Speaking("2", "1", "Nice to meet you"),
 //                new Speaking("3", "2", "My name is Hung"),
-//                new Speaking("4", "2", "What is your name"),
+//                new Speaking("4", "1", "What is your name"),
 //                new Speaking("5", "3", "Goodbye See you later"),
-//                new Speaking("6", "3", "Good morning"),
+//                new Speaking("6", "1", "Good morning"),
 //                new Speaking("7", "4", "How are you today"),
 //                new Speaking("8", "4", "Where are you from"),
 //                new Speaking("9", "5", "I am from America"),
@@ -279,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
 //        private void addGrammarExercises() {
 //            Grammar grammar = new Grammar(
 //                    "1",
-//                    "Present Simple",
+//                    "Thì hiện tại đơn",
 //                    "Dùng để diễn tả một thói quen hàng ngày hoặc một chân lý.",
 //                    "I go to school every day.",
 //                    new Formula(
@@ -298,8 +305,8 @@ public class MainActivity extends AppCompatActivity {
 //            List<VocabularyLesson> vocabularyLessons = Arrays.asList(
 //                    new VocabularyLesson("1", "1", "Match the word with its meaning", "url_to_image1", "Hello", Arrays.asList("Hello", "Goodbye")),
 //                    new VocabularyLesson("2", "1", "Select the correct word", "url_to_image2", "Thank you", Arrays.asList("Please", "Thank you", "Sorry")),
-//                    new VocabularyLesson("3", "2", "Choose the correct word: I am ___", "url_to_image3", "happy", Arrays.asList("happy", "sad", "angry")),
-//                    new VocabularyLesson("4", "3", "What is the opposite of 'Goodbye'?", "url_to_image4", "Hello", Arrays.asList("Hello", "Please", "Thanks")),
+//                    new VocabularyLesson("3", "1", "Choose the correct word: I am ___", "url_to_image3", "happy", Arrays.asList("happy", "sad", "angry")),
+//                    new VocabularyLesson("4", "1", "What is the opposite of 'Goodbye'?", "url_to_image4", "Hello", Arrays.asList("Hello", "Please", "Thanks")),
 //                    new VocabularyLesson("5", "3", "What is the opposite of 'hot'?", "url_to_image5", "cold", Arrays.asList("cold", "warm", "cool")),
 //                    new VocabularyLesson("6", "4", "Choose the correct word: This is a ___", "url_to_image6", "dog", Arrays.asList("dog", "cat", "bird"))
 //            );
@@ -330,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //    private void addIntroductions() {
 //        List<Introduction> introductions = Arrays.asList(
-//                new Introduction("1", "Basic Vocabulary and Grammar Rules", Arrays.asList("1", "2"), Arrays.asList("1", "2"), "1"),  // Thêm idLecture
+//                new Introduction("1", "Basic Vocabulary and Grammar Rules", Arrays.asList("1", "2","3","4","5","6","7","8","9"), Arrays.asList("1", "2"), "1"),  // Thêm idLecture
 //                new Introduction("2", "Conversational Phrases and Common Grammar", Arrays.asList("3", "4"), Arrays.asList("3", "4"), "2"),
 //                new Introduction("3", "Formal and Informal Greetings", Arrays.asList("5", "6"), Arrays.asList("5", "6"), "3"),
 //                new Introduction("4", "Phrasal Verbs and Common Idioms", Arrays.asList("7", "8"), Arrays.asList("7", "8"), "4"),
@@ -343,4 +350,4 @@ public class MainActivity extends AppCompatActivity {
 //    }
 //
 //    }
-//
+

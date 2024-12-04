@@ -204,7 +204,7 @@ public class DataSyncManager {
 
     public void syncCompletedLesson(String userId) {
         executor.execute(() -> {
-            firestore.collection("completed_lessons")
+            firestore.collection("CompletedLesson")
                     .whereEqualTo("userId", userId)
                     .get()
                     .addOnCompleteListener(task -> {

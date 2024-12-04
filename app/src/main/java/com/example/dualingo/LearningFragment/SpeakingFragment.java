@@ -8,6 +8,11 @@ import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,22 +27,27 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.dualingo.DAO.IntroductionDAO;
 import com.example.dualingo.DAO.SpeakingDAO;
+import com.example.dualingo.DAO.VocabularyDAO;
 import com.example.dualingo.ListBaiHoc;
 import com.example.dualingo.Models.Arranging;
 import com.example.dualingo.Models.CompletedLesson;
 import com.example.dualingo.Models.Speaking;
 import com.example.dualingo.Models.User;
+import com.example.dualingo.Models.Vocabulary;
 import com.example.dualingo.Models.WrongQuestion;
 import com.example.dualingo.R;
 import com.example.dualingo.AppDatabase;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class SpeakingFragment extends Fragment {
 
@@ -46,6 +56,8 @@ public class SpeakingFragment extends Fragment {
     private Button recordButton, checkAnswerButton;
     private AppDatabase database;
 
+    private VocabularyDAO vocabularyDAO;
+    private IntroductionDAO introductionDAO;
     private SpeechRecognizer speechRecognizer;
     private boolean isListening = false;
 
@@ -74,7 +86,8 @@ public class SpeakingFragment extends Fragment {
 
         // Initialize Room Database and SpeakingDao
         speakingDao = AppDatabase.getDatabase(requireContext()).speakingDAO();
-
+        vocabularyDAO=AppDatabase.getDatabase(requireContext()).vocabularyDAO();
+        introductionDAO=AppDatabase.getDatabase(requireContext()).introductionDAO();
         // Get lectureId from Bundle
         lectureId = getArguments().getString("lectureId");
 
@@ -113,12 +126,89 @@ public class SpeakingFragment extends Fragment {
                     if (speakingList.size() >= 3) {
                         Speaking currentSpeaking = speakingList.get(currentQuestionIndex);
                         questionTextView.setText(currentSpeaking.getQuestion());
+
+                        // Gọi hàm highlightVocabularyWords để làm nổi bật từ vựng trong câu hỏi
+                        highlightVocabularyWords(currentSpeaking.getQuestion(), lectureId);
                     } else {
                         questionTextView.setText("Không đủ câu hỏi.");
                     }
                 }
             });
         }).start();
+    }
+
+    private void highlightVocabularyWords(String question, String lectureId) {
+        // Tạo ExecutorService để chạy tác vụ nền
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        executor.submit(() -> {
+            // Lấy danh sách từ vựng từ database
+            List<Vocabulary> vocabularyList = getVocabulariesForLecture(lectureId);
+
+            // Tạo danh sách các từ tiếng Anh
+            List<String> englishWords = vocabularyList.stream()
+                    .map(Vocabulary::getEnglishWord)
+                    .collect(Collectors.toList());
+
+            // Chuyển câu hỏi thành SpannableString để có thể thay đổi style các từ trong đó
+            SpannableString spannableString = new SpannableString(question);
+
+            // Duyệt qua từng từ vựng và làm nổi bật chúng trong câu hỏi
+            for (String word : englishWords) {
+                int startIndex = question.toLowerCase().indexOf(word.toLowerCase());
+                while (startIndex != -1) {
+                    int endIndex = startIndex + word.length();
+
+                    // Đặt màu và sự kiện click cho từ vựng
+                    spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.teal_200)),
+                            startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    spannableString.setSpan(new ClickableSpan() {
+                        @Override
+                        public void onClick(@NonNull View widget) {
+                            showWordMeaningDialog(word); // Gọi phương thức để hiển thị nghĩa của từ
+                        }
+                    }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                    // Tiếp tục tìm kiếm từ tiếp theo trong câu
+                    startIndex = question.toLowerCase().indexOf(word.toLowerCase(), endIndex);
+                }
+            }
+
+            // Áp dụng vào TextView trên UI Thread
+            requireActivity().runOnUiThread(() -> {
+                questionTextView.setText(spannableString);
+                questionTextView.setMovementMethod(LinkMovementMethod.getInstance()); // Đảm bảo cho phép click
+            });
+        });
+
+        // Dừng ExecutorService khi không cần thiết
+        executor.shutdown();
+    }
+
+    private void showWordMeaningDialog(String word) {
+        // Lấy nghĩa từ database và hiển thị Dialog
+        String meaning = database.vocabularyDAO().getMeaningByWord(word);
+        Dialog dialog = new Dialog(requireContext());
+        dialog.setContentView(R.layout.word_meaning_dialog);
+        TextView wordTextView = dialog.findViewById(R.id.wordTextView);
+        TextView meaningTextView = dialog.findViewById(R.id.meaningTextView);
+        Button closeButton = dialog.findViewById(R.id.closeButton);
+
+        wordTextView.setText(word);
+        meaningTextView.setText(meaning);
+
+        closeButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+
+    public List<Vocabulary> getVocabulariesForLecture(String lectureId) {
+        String vocabularyIds = introductionDAO.getVocabularyIdsByLectureId(lectureId);
+        String[] vocabularyIdsArray = vocabularyIds.split(",");
+        List<String> vocabularyIdsList = Arrays.asList(vocabularyIdsArray);
+        return vocabularyDAO.getVocabulariesByIds(vocabularyIdsList);
     }
 
     private void shuffleQuestions() {
@@ -270,6 +360,7 @@ public class SpeakingFragment extends Fragment {
             dialog.dismiss();
             if (isFinalResult) {
                 Intent intent = new Intent(getContext(), ListBaiHoc.class);
+                intent.putExtra("lectureId",lectureId );
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK); // Xóa ngăn xếp để không quay lại ArrangingFragment
                 startActivity(intent);
                 requireActivity().finish();
@@ -343,7 +434,7 @@ public class SpeakingFragment extends Fragment {
         executorService.execute(() -> {
             database.runInTransaction(() -> {
                 // Lấy CompletedLesson từ database
-                CompletedLesson completedLesson = database.completedLessonDAO().getCompletedLesson(lectureId, userId);
+                CompletedLesson completedLesson = database.completedLessonDAO().getCompletedLesson(userId, lectureId);
 
                 if (completedLesson == null) {
                     // Nếu chưa có, tạo mới

@@ -21,6 +21,10 @@ public interface VocabularyLessonDAO {
     @Query("SELECT * FROM vocabulary_lesson")
     List<VocabularyLesson> getAllVocabularyLessons();
 
+    @Query("SELECT * FROM vocabulary_lesson WHERE idLecture = :lectureId ORDER BY RANDOM() LIMIT 3")
+    List<VocabularyLesson> getRandomQuestionsByLectureId(String lectureId);
+
+
     @Delete
     void deleteVocabularyLesson(VocabularyLesson vocabularyLesson);
 }

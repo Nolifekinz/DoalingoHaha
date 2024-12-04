@@ -1,0 +1,127 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    android:padding="16dp">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Ôn tập kiến thức"
+        android:textSize="22sp"
+        android:textColor="@color/primaryText"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
+
+    <!-- CardView for "Học lại câu hỏi sai" -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardReviewWrongAnswers"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@id/titleText"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/cardBackground"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Image for Review Wrong Answers -->
+            <ImageView
+                android:id="@+id/imgReviewWrongAnswers"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/review_wrong_answers"
+                android:contentDescription="Học lại câu hỏi sai"
+                android:scaleType="fitCenter"
+                android:layout_marginStart="16dp" />
+
+            <!-- Text Content -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/imgReviewWrongAnswers"
+                android:layout_marginStart="16dp"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Học lại câu hỏi sai"
+                    android:textSize="18sp"
+                    android:textColor="@color/primaryText"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Xem lại các câu hỏi mà bạn đã trả lời sai."
+                    android:textSize="14sp"
+                    android:textColor="@color/secondaryText" />
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- CardView for "Làm bài tập ôn luyện" -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardPracticeExercises"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@id/cardReviewWrongAnswers"
+        android:background="@color/cardBackground"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Image for Practice Exercises -->
+            <ImageView
+                android:id="@+id/imgPracticeExercises"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/practice_exercises"
+                android:contentDescription="Làm bài tập ôn luyện"
+                android:scaleType="fitCenter"
+                android:layout_marginStart="16dp" />
+
+            <!-- Text Content -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/imgPracticeExercises"
+                android:layout_marginStart="16dp"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Làm bài tập ôn luyện"
+                    android:textSize="18sp"
+                    android:textColor="@color/primaryText"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Thực hiện các bài tập để củng cố kiến thức."
+                    android:textSize="14sp"
+                    android:textColor="@color/secondaryText" />
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

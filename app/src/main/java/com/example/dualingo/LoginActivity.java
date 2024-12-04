@@ -34,12 +34,18 @@ public class LoginActivity extends AppCompatActivity {
         database = AppDatabase.getDatabase(this);
         binding.btnLogin.setOnClickListener(view -> login());
 
+        binding.btnForgotPassword.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, ForgotPassword.class)));
+
         binding.btnGotoRegister.setOnClickListener(view -> startActivity(new Intent(LoginActivity.this, RegisterActivity.class)));
     }
 
     void login() {
         String email = binding.etUsername.getText().toString();
         String password = binding.etPassword.getText().toString();
+        if (email.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Bạn chưa nhập email", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(getApplicationContext(), "Sai định dạng email", Toast.LENGTH_SHORT).show();
             return;
@@ -94,16 +100,11 @@ public class LoginActivity extends AppCompatActivity {
                     });
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(getApplicationContext(), "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Sai tài khoản hoặc mật khẩu", Toast.LENGTH_SHORT).show();
                     setInProgress(false);
                 });
     }
 
-    void resetPassword(String email) {
-        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
-                .addOnSuccessListener(aVoid -> Toast.makeText(getApplicationContext(), "Email đặt lại mật khẩu đã được gửi", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "Gửi email thất bại", Toast.LENGTH_SHORT).show());
-    }
 
     void setInProgress(Boolean inProgress) {
 //        if (inProgress) {

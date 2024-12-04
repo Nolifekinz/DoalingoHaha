@@ -26,7 +26,10 @@ public interface LectureDAO {
     LiveData<List<Lecture>> getAllLecturesLive();  // Phương thức mới trả về LiveData
 
     @Query("SELECT * FROM lecture WHERE idLecture IN (:lectureIds)")
-    LiveData<List<Lecture>> getLectureByIds(List<String> lectureIds);
+    LiveData<List<Lecture>> getLiveLectureByIds(List<String> lectureIds);
+
+    @Query("SELECT * FROM lecture WHERE idLecture IN (:lectureIds)")
+    List<Lecture> getLectureByIds(List<String> lectureIds);
 
     @Query("SELECT * FROM lecture WHERE idLecture IN (:lectureIds) ORDER BY orderIndex ASC")
     LiveData<List<Lecture>> getLectureByIdsOrdered(List<String> lectureIds);

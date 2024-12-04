@@ -40,4 +40,9 @@
     <color name="semi_transparent_black">#80000000</color>
     <color name="semi_transparent_red">#66FF0000</color>
     <color name="semi_transparent_yellow">#66FFFF00</color>
+    <color name="backgroundColor">#F9FAFB</color>
+    <color name="cardBackground">#FFFFFF</color>
+    <color name="primaryText">#212121</color>
+    <color name="secondaryText">#757575</color>
+    <color name="teal_200">#03DAC5</color>
 </resources>

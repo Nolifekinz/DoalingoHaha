@@ -1,47 +1,216 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/listBaiHoc"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ListBaiHoc">
+    android:background="@color/backgroundColor"
+    android:padding="16dp">
 
-    <Button
-        android:id="@+id/btnGioithieu"
+    <!-- Header với nút quay lại và tiêu đề -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Giới thiệu" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-    <Button
-        android:id="@+id/btnBTSapxep"
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@null"
+            android:contentDescription="Quay lại"
+            android:src="@drawable/x_button" />
+
+        <TextView
+            android:id="@+id/txtLectureTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Tên Lecture"
+            android:textSize="20sp"
+            android:textColor="@color/primaryText"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Các dạng bài -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Bài tập sắp xếp" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp">
 
-    <Button
-        android:id="@+id/btnBTDien"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Bài tập điền chỗ trống" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <Button
-        android:id="@+id/btnBTNghe"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Bài tập nghe" />
+            <!-- Giới thiệu -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:background="#E9E4EA"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp">
 
-    <Button
-        android:id="@+id/btnBTNoi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Bài tập nói" />
+                <TextView
+                    android:id="@+id/txtGioithieu"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Giới thiệu"
+                    android:textColor="@color/primaryText"
+                    android:textSize="16sp" />
 
-    <Button
-        android:id="@+id/btnBTTuVung"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Học từ vựng" />
+                <ImageView
+                    android:id="@+id/imgGioithieu"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/ic_incomplete"
+                    android:visibility="gone" />
+            </LinearLayout>
 
+            <!-- Bài tập sắp xếp -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp"
+                android:background="#E9E4EA"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/txtBTSapxep"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Bài tập sắp xếp"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText" />
+
+                <ImageView
+                    android:id="@+id/imgBTSapxep"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/ic_incomplete"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- Bài tập điền chỗ trống -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp"
+                android:background="#E9E4EA"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/txtBTDien"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Bài tập điền chỗ trống"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText" />
+
+                <ImageView
+                    android:id="@+id/imgBTDien"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/ic_incomplete"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- Bài tập nghe -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp"
+                android:background="#E9E4EA"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/txtBTNghe"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Bài tập nghe"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText" />
+
+                <ImageView
+                    android:id="@+id/imgBTNghe"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/ic_incomplete"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- Bài tập nói -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp"
+                android:background="#E9E4EA"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/txtBTNoi"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Bài tập nói"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText" />
+
+                <ImageView
+                    android:id="@+id/imgBTNoi"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/ic_incomplete"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- Học từ vựng -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp"
+                android:background="#E9E4EA"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/txtBTTuVung"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Học từ vựng"
+                    android:textSize="16sp"
+                    android:textColor="@color/primaryText" />
+
+                <ImageView
+                    android:id="@+id/imgBTTuVung"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="16dp"
+                    android:src="@drawable/ic_incomplete"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
